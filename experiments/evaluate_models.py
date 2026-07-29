@@ -1,8 +1,18 @@
 import re
 
 import time
+import sys
 from pathlib import Path
 import logging
+
+# Allow this launcher to be run directly from the repository root:
+# `python experiments/evaluate_models.py`.
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+PATH_TO_MODELS = PROJECT_ROOT / "outputs"
+PATH_TO_OUTPUT = PROJECT_ROOT / "outputs" / "evaluation"
+
 from util import get_filename, get_model, get_memory
 from glob import glob
 from furl import furl
@@ -36,13 +46,13 @@ bfs = timeout(seconds=TIME_LIMIT)(bfs)
 
 
 def get_modelnames(path_to_models=PATH_TO_MODELS):
-    return glob(f"{path_to_models}*.pt")
+    return glob(str(Path(path_to_models) / "**" / "*.pt"), recursive=True)
 
 
 def load_net(param_file, use_cuda=USE_CUDA, debug=False):
     # f = furl(param_file)
     param_file_name = get_filename(param_file)
-    pattern = f"model_(?P<model>.*)_d_(?P<d>\d+)_seed_(?P<seed>\d+)"
+    pattern = r"model_(?P<model>.*)_d_(?P<d>\d+)_seed_(?P<seed>\d+)"
     match = re.search(pattern, param_file_name)
     d = int(match.group(2))
     model_name = match.group(1)
@@ -54,7 +64,33 @@ def load_net(param_file, use_cuda=USE_CUDA, debug=False):
     return net
 
 
-def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks, repeat=1, closed_graph=None, debug=False):
+def calculate_celf_coverages(graph, d, ks):
+    """Calculate CELF influence spread for each k on the evaluation graph."""
+    try:
+        celf_graph = graph if d == 1 else bfs(graph, d)
+    except Exception:
+        logging.exception(f"Failed to build the {d}-hop graph for CELF.")
+        return {k: np.nan for k in ks}
+
+    celf_coverages = {}
+    for k in ks:
+        try:
+            _, celf_n_covered = greedy(celf_graph, k)
+            celf_coverages[k] = celf_n_covered
+            # logging.info(
+            #     f"CELF baseline: d: {d}, k: {k}. "
+            #     f"Coverage: {celf_n_covered}/{graph.vcount()}="
+            #     f"{celf_n_covered/graph.vcount():.2f}."
+            # )
+        except Exception:
+            logging.exception(f"Failed to calculate CELF coverage for d={d}, k={k}.")
+            celf_coverages[k] = np.nan
+
+    return celf_coverages
+
+
+def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks,
+                   celf_coverages, repeat=1, closed_graph=None, debug=False):
     n, m = graph.vcount(), graph.ecount()
     net.eval()
 
@@ -85,7 +121,15 @@ def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks, re
                 # else:
                 #     n_covered = get_influence(closed_graph, nn_seeds)
                 n_covered = get_influence_d(graph, nn_seeds, d)
-                logging.info(f"k: {k}. Coverage: {n_covered}/{n}={n_covered/n:.2f}. Time: {t_mean:.2f} ({t_std:.2f})")
+                celf_n_covered = celf_coverages.get(k, np.nan)
+                coverage_ratio = n_covered / celf_n_covered
+                coverage_ratio_percent = coverage_ratio * 100
+                logging.info(
+                    f"k: {k}."
+                    f"N covered: {n_covered}. "
+                    f"CELF N covered: {celf_n_covered}. "
+                    f"Coverage ratio percent: {n_covered}/{celf_n_covered}={coverage_ratio_percent:.2f}. "
+                )
 
                 # Write to records
                 records.append({
@@ -97,10 +141,12 @@ def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks, re
                     "d": d,
                     "k": k,
                     "n_covered": n_covered,
-                    "coverage": n_covered/n,
-                    "t_mean": t_mean,
-                    "t_std": t_std,
-                    "memory": memory,
+                    # "coverage": n_covered/n,
+                    "celf_n_covered": celf_n_covered,
+                    "coverage_ratio_percent": coverage_ratio_percent,
+                    # "t_mean": t_mean,
+                    # "t_std": t_std,
+                    # "memory": memory,
                     "gpu": USE_CUDA,
                 })
         except:
@@ -114,10 +160,12 @@ def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks, re
                 "d": d,
                 "k": np.nan,
                 "n_covered": np.nan,
-                "coverage": np.nan,
-                "t_mean": np.nan,
-                "t_std": np.nan,
-                "memory": np.nan,
+                # "coverage": np.nan,
+                "celf_n_covered": np.nan,
+                "coverage_ratio_percent": np.nan,
+                # "t_mean": np.nan,
+                # "t_std": np.nan,
+                # "memory": np.nan,
                 "gpu": USE_CUDA
             })
     return records
@@ -125,6 +173,7 @@ def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks, re
 
 def evaluate_models(debug=False):
     model_param_names = get_modelnames()
+    PATH_TO_OUTPUT.mkdir(parents=True, exist_ok=True)
 
     for x in next_dglgraph(input_dim=HIDDEN_FEATS[0], n_limit=None, m_limit=None, use_cuda=USE_CUDA):
         name, graph, dglgraph, is_directed = x
@@ -134,10 +183,11 @@ def evaluate_models(debug=False):
         for d in [1, 2, 3]:
             # closed_graph = bfs_K__r_(graph, d=d)
             closed_graph = None
+            celf_coverages = None
 
             for param_name in model_param_names:
                 param_name_body = get_filename(param_name)
-                pattern = f"model_(?P<model>.*)_d_(?P<d>\d+)_seed_(?P<seed>\d+)_round_(?P<round>\d+)"
+                pattern = r"model_(?P<model>.*)_d_(?P<d>\d+)_seed_(?P<seed>\d+)_round_(?P<round>\d+)"
                 match = re.search(pattern, param_name_body)
                 net_d = int(match.group(2))
                 net_round = int(match.group(4))
@@ -145,6 +195,9 @@ def evaluate_models(debug=False):
                 # net_d = int(furl(param_name_body).args["d"])
                 if net_d != d:
                     continue
+
+                if celf_coverages is None:
+                    celf_coverages = calculate_celf_coverages(graph, d, KS)
                 
                 logging.info(f"Graph: {name}. Model: {param_name_body}. d: {d}.")
                 net = load_net(param_name)
@@ -155,11 +208,16 @@ def evaluate_models(debug=False):
                 # 清空records
                 records = []
                 records.extend(
-                    evaluate_model(net, d, model_name, seed, name, graph, dglgraph, ks=KS, repeat=1, closed_graph=closed_graph)
+                    evaluate_model(
+                        net, d, model_name, seed, name, graph, dglgraph,
+                        ks=KS, celf_coverages=celf_coverages, repeat=1,
+                        closed_graph=closed_graph
+                    )
                 )  # name => graph name
                 df_result = pd.DataFrame(records)
-                df_result.to_csv(f"{PATH_TO_OUTPUT}{final_name}.csv")
-                logging.info(f"Saving results of {graph_name_body} to {PATH_TO_OUTPUT}{final_name}.csv!")
+                output_file = PATH_TO_OUTPUT / f"{final_name}.csv"
+                df_result.to_csv(output_file)
+                logging.info(f"Saving results of {graph_name_body} to {output_file}!")
     return
 
 

@@ -15,12 +15,21 @@ import numpy as np
 from torch.utils.data import DataLoader, Dataset
 from opacus import PrivacyEngine
 import os
-sys.path.append(r"D:\demo\Awesome-Differential-Privacy-and-Meachine-Learning-20230731")  # Change the path
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DP_DEPENDENCY = (
+    PROJECT_ROOT
+    / ".deps"
+    / "Awesome-Differential-Privacy-and-Meachine-Learning"
+)
+if str(DP_DEPENDENCY) not in sys.path:
+    sys.path.insert(0, str(DP_DEPENDENCY))
 
 from optimizer.dp_optimizer import DPSGD, DPAdam
 
 # ==================== PARAMETERS ====================
-PATH_TO_PARAMS = "params/"
+PATH_TO_PARAMS = str(PROJECT_ROOT / "params") + os.sep
 USE_CUDA_TRAIN = True
 HIDDEN_FEATS = [32, 32, 32, 32, 32, 32]
 # ==================== END OF PARAMETERS ====================
@@ -456,10 +465,24 @@ def train(net, dataset, loss_function, n_epoch, batchsize, lr, k_train=32,
         #     break
 
     # 保存权重
+    epsilon_dir = f"eps_{target_epsilon}" if with_dp else "eps_10000"
+    model_dir = (
+        PROJECT_ROOT
+        / "outputs"
+        / (f"{dataset_name}_M" if with_dp else dir_name)
+        / epsilon_dir
+        / f"n_{subgraph_size}"
+        / f"M_{score_upper_bound}"
+        / "model"
+    )
+    model_dir.mkdir(parents=True, exist_ok=True)
+    model_path = model_dir / (
+        f"model_{model_name}_d_{d}_seed_{seed}_round_{round}.pt"
+    )
     if with_dp:
-        torch.save(net.state_dict(), f=f"D:/demo/result/0915_0925_multi_results/{dataset_name}_M/eps_{target_epsilon}/n_{subgraph_size}/M_{score_upper_bound}/model/model_{model_name}_d_{d}_seed_{seed}_round_{round}.pt")
+        torch.save(net.state_dict(), model_path)
     else:
-        torch.save(net.state_dict(), f=f"D:/demo/result/0915_0925_multi_results/{dir_name}/eps_10000/model/model_{model_name}_d_{d}_seed_{seed}_round_{round}.pt")
+        torch.save(net.state_dict(), model_path)
     print(f"Time per epoch: {np.mean(timer_list)}")
     # torch.save(net.state_dict(), f=f"D:/demo/result/d_{d}/kr/size_300_350/K_{K}_r_{r}/num_{num_subgraph}/model/model_{model_name}_d_{d}_seed_{seed}.pt")
     # net.load_state_dict(best_model_wts)

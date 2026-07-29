@@ -10,6 +10,10 @@ FEATURE_TYPE="1"
 
 DIRECTED_GRAPHS = None  # all
 UNDIRECTED_GRAPHS = []  # empty
+BLACK_LIST = ["bitcoinotc_train.txt"]
+STAT_CSV = "outputs/descriptive_statistics.csv"
+PATH_TO_DIRECTED_GRAPHS = "dataset/directed/"
+PATH_TO_UNDIRECTED_GRAPHS = "dataset/undirected/"
 
 # DIRECTED_GRAPHS = [  # small directed graphs
 #     "soc-sign-jazz.txt",

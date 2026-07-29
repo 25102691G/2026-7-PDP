@@ -1,31 +1,15 @@
-from model.GCN import DGCN2, DGCN3, DGCN4
-from model.APPNP import APPNP
-from model.GAT import GAT3, GAT2, GAT4
 from model.GRAT import GRAT2, GRAT3, GRAT4, GRATV2, GRATV3, GRATV4
-from model.GraphSAGE import GraphSAGE
-from model.GIN import GIN4
 import os
 import psutil
 
 
 MODEL_DICT = {
-    "APPNP": APPNP,
-    "DGCN2": DGCN2,
-    "DGCN3": DGCN3,
-    "DGCN4": DGCN4,
-
-    "GAT2": GAT2,
-    "GAT3": GAT3,
-    "GAT4": GAT4,
-
     "GRAT2": GRAT2,
     "GRAT3": GRAT3,
     "GRAT4": GRAT4,
     "GRATV2": GRATV2,
     "GRATV3": GRATV3,
     "GRATV4": GRATV4,
-
-    "GIN4": GIN4,
 }
 
 def get_model(model_name, *args):

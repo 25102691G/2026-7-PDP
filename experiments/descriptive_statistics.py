@@ -8,6 +8,9 @@ FILE_OUTPUT = "descriptive_statistics.csv"
 BLACK_LIST = [
     "LiveJournal.txt"
 ]
+PATH_TO_DIRECTED_GRAPHS = "dataset/directed/"
+PATH_TO_UNDIRECTED_GRAPHS = "dataset/undirected/"
+PATH_TO_OUTPUT = "outputs/"
 
 
 def get_graph_names(path_to_test):

@@ -1,6 +1,13 @@
 import argparse
 import random
 import sys
+from pathlib import Path
+
+# Allow this launcher to be run directly from the repository root:
+# `python experiments/train_models.py ...`.
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import numpy as np
 
@@ -15,7 +22,6 @@ import time
 import logging
 import pickle
 import logging
-from pathlib import Path
 import pandas as pd
 from itertools import product
 from furl import furl
@@ -237,6 +243,11 @@ if __name__ == '__main__':
     parser.add_argument("--lr", default=0.005)
     parser.add_argument("--n_epoch", default=20)
     parser.add_argument("--subgraph_size", default=40, type=int)
+    parser.add_argument("--num_subgraph", default=256, type=int)
+    parser.add_argument("--K", default=10, type=int,
+                        help="maximum node degree used by the sampler")
+    parser.add_argument("--r", default=1, type=int,
+                        help="maximum sampling/message-passing hops")
     parser.add_argument("--score_upper_bound", default=10, type=int)
     parser.add_argument("--target_epsilon", default=3, type=int)
     parser.add_argument("--gamma", default=0.99, type=float)

@@ -20,7 +20,8 @@ USE_CUDA_TEST = True
 
 # undirected
 # DIRECTED_TRAIN = False
-# PATH_TO_TRAIN = "dataset/graphs/undirected/"
+PATH_TO_TRAIN = "dataset/"
+PATH_TO_VAL = PATH_TO_TRAIN
 
 # DIRECTED_TEST = True
 # PATH_TO_TEST = "/home/featurize/dataset/dataset/graphs/directed/"
@@ -67,13 +68,13 @@ def load_train(input_dim, dataset, directed_train=DIRECTED_TRAIN,
         if dataset == "email":
             file = f"graphs/directed/trainset/email-Eu-core_train.txt"
         elif dataset == "bitcoin":
-            file = f"graphs/directed/trainset/bitcoinotc_train.txt"
+            file = f"directed/bitcoinotc_train.txt"
         elif dataset == "lastfm":
             file = f"graphs/directed/trainset/di_lastfm_asia_train.txt"
         elif dataset == "hepph":
             file = f"graphs/directed/trainset/di_hepph_train.txt"
         elif dataset == "facebook":
-            file = f"graphs/directed/trainset/di_Facebook_train.txt"
+            file = f"undirected/Facebook_train.txt"
         elif dataset == "gowalla":
             file = f"graphs/directed/trainset/di_gowalla_train.txt"
         #######################################################################
@@ -343,7 +344,9 @@ def connect_node_to_graph(visited, dglgraph):
     subgraph = igraph.Graph(directed=True)
     subgraph.add_vertices(len(nodes))
     for src, dst in zip(*edges):  # 使用 zip 解压 edges 中的源节点和目标节点
-        subgraph.add_edge(src.item(), dst.item())  # 转换为 int
+        # subdglgraph 保存的是反向消息边，
+        # 构造覆盖图时需要恢复成原始覆盖方向。
+        subgraph.add_edge(dst.item(), src.item())  # 转换为 int
 
     return subgraph, subdglgraph
 
