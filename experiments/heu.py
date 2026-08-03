@@ -114,7 +114,7 @@ def integrated_heu(x):
 
 def multiprocessing_heu():
     # pool = multiprocessing.Pool(4)
-    # list(pool.imap(integrated_heu, next_graph(m_limit=None)))
+    # list(pool.imap(integrated_heu, next_graph()))
     for x in next_graph():
         integrated_heu(x)
     return

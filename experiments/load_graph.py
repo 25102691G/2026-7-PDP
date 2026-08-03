@@ -68,7 +68,7 @@ def load_train(input_dim, dataset, directed_train=DIRECTED_TRAIN,
         if dataset == "email":
             file = f"graphs/directed/trainset/email-Eu-core_train.txt"
         elif dataset == "bitcoin":
-            file = f"directed/bitcoinotc_train.txt"
+            file = f"directed/bitcoin_train_edges.txt"
         elif dataset == "lastfm":
             file = f"graphs/directed/trainset/di_lastfm_asia_train.txt"
         elif dataset == "hepph":
@@ -79,6 +79,8 @@ def load_train(input_dim, dataset, directed_train=DIRECTED_TRAIN,
             file = f"graphs/directed/trainset/di_gowalla_train.txt"
         #######################################################################
 
+        # 这里会把节点编号理解为 0～最大节点 ID。缺失的编号也会被创建为孤立节点。
+        # 所以原始图需要先由 dataset/prepare_datasets.py 做连续重编号。
         g = igraph.Graph().Read_Edgelist(
             f"{path_to_train}{file}", directed=directed_train)
         dg = get_rev_dgl(g, feature_type, input_dim, directed_train, use_cuda)

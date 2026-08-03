@@ -175,7 +175,7 @@ def evaluate_models(debug=False):
     model_param_names = get_modelnames()
     PATH_TO_OUTPUT.mkdir(parents=True, exist_ok=True)
 
-    for x in next_dglgraph(input_dim=HIDDEN_FEATS[0], n_limit=None, m_limit=None, use_cuda=USE_CUDA):
+    for x in next_dglgraph(input_dim=HIDDEN_FEATS[0], use_cuda=USE_CUDA):
         name, graph, dglgraph, is_directed = x
         graph_name_body = get_filename(name)
 

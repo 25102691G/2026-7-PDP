@@ -219,7 +219,7 @@ def integrated_celf(x):
 
 def multiprocessing_celf():
     pool = multiprocessing.Pool(4)
-    list(pool.imap(integrated_celf, next_graph(m_limit=None)))
+    list(pool.imap(integrated_celf, next_graph()))
     return
 
 

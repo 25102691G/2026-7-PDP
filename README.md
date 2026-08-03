@@ -5,7 +5,7 @@ This repo contains the code and full version of the paper "PrivIM: Differentiall
 Run the following command to install requirements.
 
 ```
-$ pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Instructions
@@ -16,12 +16,12 @@ $ pip install -r requirements.txt
 
 ## Training
 ```
-$ python train_models.py --target_epsilon 3 --settings PrivIM+ --dataset bitcoin
+python experiments/train_models.py --target_epsilon 3 --settings PrivIM+ --dataset bitcoin
 ```
 
 ## Evaluation
 ```
-$ python evaluate_models.py
+python experiments/evaluate_models.py
 ```
 
 ## Overview
@@ -47,5 +47,35 @@ We evaluate our methods on six widely-used real-world directed or undirected gra
 | **HepPh**   |       12K           |         118.5K       | Undirected |    19.74        |
 | **Facebook**   |       22.5K            |         171K       | Undirected |    15.22        |
 | **Gowalla**   |       196K            |         950.3K       | Undirected |    9.67         |
+
+### Dataset preparation
+
+Use the unified preparation script to parse the raw files, canonicalize
+undirected edges, densely renumber nodes, and create a reproducible random
+node split:
+
+```bash
+python dataset/prepare_datasets.py all --seed 0 --train-ratio 0.5
+```
+
+The command writes each dataset below `dataset/prepared/<dataset>/`:
+
+- `<dataset>_train_edges.txt` and `<dataset>_test_edges.txt`: induced edge
+  lists with local, contiguous node IDs.
+- `train_nodes.csv` and `test_nodes.csv`: complete split membership, including
+  nodes that become isolated after the split.
+- `node_mapping.csv`: original-to-global node-ID mapping.
+- `metadata.json`: source hash, preprocessing options, and graph statistics.
+
+By default, self-loops are retained to preserve source statistics. Pass
+`--remove-self-loops` to remove them consistently before creating the induced
+subgraphs. Existing prepared outputs are protected unless `--force` is used.
+
+Friendster is skipped by `all` because its outputs are very large. Process it
+explicitly with:
+
+```bash
+python dataset/prepare_datasets.py friendster --include-large --skip-checksum
+```
 
 More real-world test graphs can be found in [SNAP](https://snap.stanford.edu/data/)
