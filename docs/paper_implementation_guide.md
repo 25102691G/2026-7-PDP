@@ -48,10 +48,17 @@ the released model's parameter shapes and gives a paired, identical model
 initialization for each seed. In controlled five-seed non-private runs it
 improved Facebook from `84.55 +/- 11.65` to `91.45 +/- 6.32` and Email from
 `96.85 +/- 1.58` to `97.73 +/- 0.93`; the paper reports `97.50 +/- 0.34` and
-`98.09 +/- 1.69`, respectively. Degree normalization is computed on the
-complete prepared message graph before subgraph induction. Both degree
-protocols remain repository diagnostics, not values claimed by the paper,
-until cross-dataset validation is complete. Training, evaluation, checkpoint
+`98.09 +/- 1.69`, respectively. Additional degree32 results are Bitcoin
+`98.81 +/- 0.89` (paper 98.99) and LastFM `94.44 +/- 2.74` (paper 97.93).
+However, paired all-one controls reached `99.47 +/- 0.72` on Bitcoin and
+`97.48 +/- 2.13` on LastFM, outperforming degree32 on both. Degree32 is thus
+not a universal replacement for the released feature convention, and
+dataset-specific post-hoc feature selection must not be presented as one
+uniform reproduction protocol.
+Degree normalization is computed on the complete prepared message graph
+before subgraph induction. Both degree protocols remain repository
+diagnostics, not values claimed by the paper, until cross-dataset validation
+and paired ones controls are complete. Training, evaluation, checkpoint
 metadata and resume validation must use the same feature protocol and input
 dimension.
 

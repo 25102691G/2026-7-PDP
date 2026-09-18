@@ -165,6 +165,10 @@ deviation over five runs unless marked as smoke tests.
 | `diagnostic-facebook-degree` | Facebook | 87.72 +/- 9.07 | confounded 3-D input experiment; do not use for attribution |
 | `diagnostic-facebook-degree32` | Facebook | **91.45 +/- 6.32** | best controlled Facebook feature result; promising but still unstable |
 | `diagnostic-email-degree32` | Email | **97.73 +/- 0.93** | validation passed; paper is 98.09 +/- 1.69 |
+| `diagnostic-bitcoin-lastfm-degree32` | Bitcoin | **98.81 +/- 0.89** | essentially matches paper 98.99 |
+| `diagnostic-bitcoin-lastfm-degree32` | LastFM | **94.44 +/- 2.74** | stable, but 3.49 below paper 97.93 |
+| `diagnostic-bitcoin-lastfm-ones-controlled` | Bitcoin | **99.47 +/- 0.72** | beats degree32 and closely matches paper 98.99 |
+| `diagnostic-bitcoin-lastfm-ones-controlled` | LastFM | **97.48 +/- 2.13** | beats degree32 and closely matches paper 97.93 |
 | `smoke-facebook-degree` | Facebook | 2.88 (1 run, 1 update) | plumbing test only |
 | `smoke-facebook-degree32` | Facebook | 20.30 (1 run, 1 update) | plumbing test only |
 
@@ -227,26 +231,30 @@ Do not repeat these branches without a new scientific reason:
    input width changed all later seeded weights.
 8. Keep `legacy_released`, `released_default`, ordinary non-private SGD,
    lr 0.005, gamma 1, and T=500 as compatibility defaults for now.
-9. Treat `degree32` as the leading candidate feature diagnostic, not yet a
-   paper-claimed or global default.
+9. Do not promote `degree32` globally. It improved Email/Facebook but reduced
+   Bitcoin by 0.65 and LastFM by 3.04 points versus paired ones controls.
+   Dataset-specific feature selection after observing results would not be a
+   uniform paper reproduction protocol.
 
-## 7. Current interrupted run
+## 7. Latest completed run and prepared-data state
 
 Run directory:
 `outputs/runs/diagnostic-bitcoin-lastfm-degree32`
 
-State at handoff:
+State at handoff: preparation, all ten model runs, and evaluation are complete.
+The validator reports aggregate mean 96.62 versus paper mean 98.46, aggregate
+MAE 1.84, and `Validation passed`. This aggregate hides a useful distinction:
+Bitcoin is 98.81 +/- 0.89 (only 0.18 below paper), while LastFM is
+94.44 +/- 2.74 (3.49 below paper). Thus Bitcoin passes the per-dataset target;
+LastFM is stable but narrowly misses the chosen 3-point per-dataset target.
 
-- data preparation: completed;
-- Bitcoin training: manifest says `running`, but no process is currently
-  running;
-- Bitcoin seed 0 checkpoint completed (500 updates, degree32);
-- Bitcoin seeds 1--4: not completed;
-- LastFM training: pending;
-- evaluation: pending.
+The paired ones control is also complete. It produced Bitcoin
+99.47 +/- 0.72 and LastFM 97.48 +/- 2.13, outperforming degree32 on both
+datasets. Degree32 is therefore not a universal missing feature convention;
+`ones` remains the global compatibility default.
 
 Bitcoin and LastFM prepared data are now on the current explicit protocol:
-`active`, self-loops removed, generated split, seed 0. Resume with:
+`active`, self-loops removed, generated split, seed 0:
 
 | Dataset | Current prepared state | Train nodes | Test nodes |
 |---|---|---:|---:|
@@ -257,45 +265,22 @@ Bitcoin and LastFM prepared data are now on the current explicit protocol:
 | HepPh | legacy metadata; must reprepare | unknown in legacy metadata | unknown |
 | Gowalla | legacy metadata; must reprepare | unknown in legacy metadata | unknown |
 
-```bash
-.venv/bin/python experiments/run_reproduction.py \
-  --dataset bitcoin lastfm \
-  --only-non-private \
-  --round 5 \
-  --device auto \
-  --grat-variant legacy_released \
-  --grat-initialization released_default \
-  --feature-protocol degree32 \
-  --model-seed 0 \
-  --model-seed-mode per-round \
-  --sampling-seed 0 \
-  --sampling-seed-mode fixed \
-  --batch-seed 0 \
-  --batch-seed-mode fixed \
-  --run-id diagnostic-bitcoin-lastfm-degree32 \
-  --resume
-```
-
-The current launcher resumes at command granularity, not individual round
-granularity. Because only 1 of 5 Bitcoin checkpoints exists, it will relaunch
-the five-round Bitcoin training command and overwrite seed 0 before continuing.
-
-Validate afterward:
+Revalidate with:
 
 ```bash
 .venv/bin/python experiments/validate_results.py \
   outputs/runs/diagnostic-bitcoin-lastfm-degree32/evaluation/summary.csv
 ```
 
-Acceptance target: mean within 3 points of Table II and standard deviation
-below 5. If Bitcoin and LastFM pass, prepare and test HepPh/Gowalla next.
-Their current prepared metadata is legacy and will fail `--skip-prepare`, so
-the first new run must omit `--skip-prepare`.
+The next cross-dataset degree32 targets are HepPh and Gowalla. Their current
+prepared metadata is legacy and will fail `--skip-prepare`, so the first new
+run must omit `--skip-prepare`.
 
 ## 8. Work that has not been completed
 
-- Degree32 cross-dataset validation is incomplete for Bitcoin, LastFM, HepPh,
-  and Gowalla.
+- Degree32 cross-dataset validation is incomplete for HepPh and Gowalla.
+- The final standard-ones non-private baseline is incomplete for HepPh and
+  Gowalla.
 - No decision has been made to promote degree32 to a default.
 - The complete private matrix (epsilon 1--6, PrivIM/PrivIM+SCS/PrivIM*) has
   not been run under the final code and seed protocol.
