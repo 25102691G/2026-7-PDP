@@ -1,4 +1,6 @@
 import re
+import argparse
+import json
 
 import time
 import sys
@@ -18,7 +20,8 @@ from glob import glob
 from furl import furl
 import torch
 import pandas as pd
-from experiments.igraph_loader import next_graph, next_dglgraph
+from experiments.igraph_loader import next_graph
+from experiments.graph_util import get_rev_dgl
 from baselines.heuristics import d_greedy, greedy, bfs, get_influence, get_influence_d
 import numpy as np
 from timeout_decorator import timeout
@@ -49,6 +52,13 @@ def get_modelnames(path_to_models=PATH_TO_MODELS):
     return glob(str(Path(path_to_models) / "**" / "*.pt"), recursive=True)
 
 
+def checkpoint_metadata(param_file):
+    metadata_path = Path(param_file).with_suffix(".json")
+    if not metadata_path.is_file():
+        return {}
+    return json.loads(metadata_path.read_text(encoding="utf-8"))
+
+
 def load_net(param_file, use_cuda=USE_CUDA, debug=False):
     # f = furl(param_file)
     param_file_name = get_filename(param_file)
@@ -56,9 +66,27 @@ def load_net(param_file, use_cuda=USE_CUDA, debug=False):
     match = re.search(pattern, param_file_name)
     d = int(match.group(2))
     model_name = match.group(1)
+    device = "cuda" if use_cuda else "cpu"
+    state_dict = torch.load(param_file, map_location=device)
+    metadata = checkpoint_metadata(param_file)
+    model_variant = None
+    if model_name in {"GRAT2", "GRAT3", "GRAT4"}:
+        if metadata:
+            model_variant = metadata.get("model_variant")
+        if model_variant is None:
+            # Historical checkpoints predate the explicit variant metadata.
+            model_variant = (
+                "legacy_released"
+                if any(key.endswith("fc.bias") for key in state_dict)
+                else "paper_appendix_g"
+            )
     # model_name = f.args["model"]
-    net = get_model(model_name, *HIDDEN_FEATS)
-    net.load_state_dict(torch.load(param_file))
+    input_dim = int(metadata.get("input_dim") or HIDDEN_FEATS[0])
+    net = get_model(
+        model_name, input_dim, *HIDDEN_FEATS[1:],
+        grat_variant=model_variant,
+    )
+    net.load_state_dict(state_dict)
     if use_cuda:
         net.cuda()
     return net
@@ -144,13 +172,13 @@ def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks,
                     # "coverage": n_covered/n,
                     "celf_n_covered": celf_n_covered,
                     "coverage_ratio_percent": coverage_ratio_percent,
-                    # "t_mean": t_mean,
-                    # "t_std": t_std,
-                    # "memory": memory,
-                    "gpu": USE_CUDA,
+                    "inference_seconds_mean": t_mean,
+                    "inference_seconds_std": t_std,
+                    "memory_mib": memory,
+                    "gpu": dglgraph.device.type == "cuda",
                 })
-        except:
-            logging.info(f"Failed to evaluate on {graph_name}!")
+        except Exception:
+            logging.exception(f"Failed to evaluate on {graph_name}!")
             records.append({
                 "graph": graph_name,
                 "model": model_name,
@@ -163,21 +191,63 @@ def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks,
                 # "coverage": np.nan,
                 "celf_n_covered": np.nan,
                 "coverage_ratio_percent": np.nan,
-                # "t_mean": np.nan,
-                # "t_std": np.nan,
-                # "memory": np.nan,
-                "gpu": USE_CUDA
+                "inference_seconds_mean": np.nan,
+                "inference_seconds_std": np.nan,
+                "memory_mib": np.nan,
+                "gpu": dglgraph.device.type == "cuda"
             })
     return records
 
 
-def evaluate_models(debug=False):
-    model_param_names = get_modelnames()
-    PATH_TO_OUTPUT.mkdir(parents=True, exist_ok=True)
+def _model_experiment(param_name, path_to_models=PATH_TO_MODELS):
+    relative = Path(param_name).resolve().relative_to(Path(path_to_models).resolve())
+    parts = relative.parts
+    if (
+        len(parts) < 7
+        or parts[0] == "evaluation"
+        or not parts[3].startswith("n_")
+        or not parts[4].startswith("Ng_")
+    ):
+        return None
+    return {
+        "dataset": parts[0],
+        "setting": parts[1],
+        "epsilon": parts[2],
+        "subgraph_size": parts[3],
+        "occurrence_bound": parts[4],
+        "relative_parent": relative.parent,
+    }
 
-    for x in next_dglgraph(input_dim=HIDDEN_FEATS[0], use_cuda=USE_CUDA):
-        name, graph, dglgraph, is_directed = x
+
+def evaluate_models(
+    datasets=None, settings=None, ks=None, use_cuda=None, debug=False,
+    path_to_models=PATH_TO_MODELS, path_to_output=PATH_TO_OUTPUT,
+):
+    use_cuda = torch.cuda.is_available() if use_cuda is None else use_cuda
+    ks = ks or [50]
+    model_param_names = []
+    for name in get_modelnames(path_to_models):
+        experiment = _model_experiment(name, path_to_models)
+        if experiment is None:
+            continue
+        if datasets and experiment["dataset"] not in datasets:
+            continue
+        if settings and experiment["setting"] not in settings:
+            continue
+        model_param_names.append(name)
+    path_to_output = Path(path_to_output)
+    path_to_output.mkdir(parents=True, exist_ok=True)
+    all_records = []
+
+    graph_datasets = sorted({
+        _model_experiment(name, path_to_models)["dataset"]
+        for name in model_param_names
+    })
+    for name, graph, is_directed in next_graph(datasets=graph_datasets):
+        suffix = "_test_edges.txt"
+        dataset_name = name[:-len(suffix)] if name.endswith(suffix) else name
         graph_name_body = get_filename(name)
+        feature_graphs = {}
 
         records = []
         for d in [1, 2, 3]:
@@ -186,6 +256,9 @@ def evaluate_models(debug=False):
             celf_coverages = None
 
             for param_name in model_param_names:
+                experiment = _model_experiment(param_name, path_to_models)
+                if experiment["dataset"] != dataset_name:
+                    continue
                 param_name_body = get_filename(param_name)
                 pattern = r"model_(?P<model>.*)_d_(?P<d>\d+)_seed_(?P<seed>\d+)_round_(?P<round>\d+)"
                 match = re.search(pattern, param_name_body)
@@ -197,10 +270,20 @@ def evaluate_models(debug=False):
                     continue
 
                 if celf_coverages is None:
-                    celf_coverages = calculate_celf_coverages(graph, d, KS)
+                    celf_coverages = calculate_celf_coverages(graph, d, ks)
                 
                 logging.info(f"Graph: {name}. Model: {param_name_body}. d: {d}.")
-                net = load_net(param_name)
+                metadata = checkpoint_metadata(param_name)
+                feature_protocol = metadata.get("feature_protocol", "ones")
+                input_dim = int(metadata.get("input_dim") or HIDDEN_FEATS[0])
+                feature_key = (feature_protocol, input_dim)
+                if feature_key not in feature_graphs:
+                    feature_graphs[feature_key] = get_rev_dgl(
+                        graph, feature_protocol, input_dim, is_directed,
+                        use_cuda,
+                    )
+                dglgraph = feature_graphs[feature_key]
+                net = load_net(param_name, use_cuda=use_cuda)
                 model_name = match.group(1)
                 seed = int(match.group(3))
                 # model_name = furl(param_name_body).args["model"]
@@ -210,16 +293,60 @@ def evaluate_models(debug=False):
                 records.extend(
                     evaluate_model(
                         net, d, model_name, seed, name, graph, dglgraph,
-                        ks=KS, celf_coverages=celf_coverages, repeat=1,
+                        ks=ks, celf_coverages=celf_coverages, repeat=1,
                         closed_graph=closed_graph
                     )
                 )  # name => graph name
                 df_result = pd.DataFrame(records)
-                output_file = PATH_TO_OUTPUT / f"{final_name}.csv"
-                df_result.to_csv(output_file)
+                df_result.insert(2, "setting", experiment["setting"])
+                df_result.insert(3, "epsilon", experiment["epsilon"])
+                df_result.insert(4, "subgraph_size", experiment["subgraph_size"])
+                df_result.insert(5, "occurrence_bound", experiment["occurrence_bound"])
+                df_result.insert(6, "feature_protocol", feature_protocol)
+                df_result.insert(7, "input_dim", input_dim)
+                output_dir = path_to_output / experiment["relative_parent"]
+                output_dir.mkdir(parents=True, exist_ok=True)
+                output_file = output_dir / f"{param_name_body}.csv"
+                df_result.to_csv(output_file, index=False)
+                all_records.extend(df_result.to_dict("records"))
                 logging.info(f"Saving results of {graph_name_body} to {output_file}!")
+    if all_records:
+        frame = pd.DataFrame(all_records)
+        summary = (
+            frame.groupby(
+                [
+                    "graph", "setting", "epsilon", "subgraph_size",
+                    "occurrence_bound", "feature_protocol", "input_dim",
+                    "model", "d", "k",
+                ],
+                as_index=False,
+            )
+            .agg(
+                runs=("seed", "count"),
+                influence_mean=("n_covered", "mean"),
+                influence_std=("n_covered", "std"),
+                coverage_ratio_mean=("coverage_ratio_percent", "mean"),
+                coverage_ratio_std=("coverage_ratio_percent", "std"),
+            )
+        )
+        summary.to_csv(path_to_output / "summary.csv", index=False)
     return
 
 
 if __name__ == '__main__':
-    evaluate_models(debug=False)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", nargs="+", choices=("email", "bitcoin", "lastfm", "hepph", "facebook", "gowalla"))
+    parser.add_argument("--settings", nargs="+")
+    parser.add_argument("--k", nargs="+", type=int, default=[50])
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
+    parser.add_argument("--models-root", type=Path, default=PATH_TO_MODELS)
+    parser.add_argument("--evaluation-root", type=Path, default=PATH_TO_OUTPUT)
+    cli_args = parser.parse_args()
+    cuda = cli_args.device == "cuda" or (
+        cli_args.device == "auto" and torch.cuda.is_available()
+    )
+    evaluate_models(
+        cli_args.dataset, cli_args.settings, cli_args.k, use_cuda=cuda,
+        debug=False, path_to_models=cli_args.models_root,
+        path_to_output=cli_args.evaluation_root,
+    )

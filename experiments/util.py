@@ -1,4 +1,5 @@
 from model.GRAT import GRAT2, GRAT3, GRAT4, GRATV2, GRATV3, GRATV4
+from model.ClassicalGNN import GAT3, GCN3, GIN3, GraphSAGE3
 import os
 import psutil
 
@@ -10,14 +11,23 @@ MODEL_DICT = {
     "GRATV2": GRATV2,
     "GRATV3": GRATV3,
     "GRATV4": GRATV4,
+    "GCN3": GCN3,
+    "GAT3": GAT3,
+    "GIN3": GIN3,
+    "GraphSAGE3": GraphSAGE3,
 }
 
-def get_model(model_name, *args):
+def get_model(model_name, *args, grat_variant=None,
+              grat_initialization="released_default"):
     """Generate model with given parameters
 
     Args:
         model_name (str): model's name (usually to specify the number of features in each layer)
     """
+    if model_name in {"GRAT2", "GRAT3", "GRAT4"} and grat_variant is not None:
+        return MODEL_DICT[model_name](
+            *args, variant=grat_variant, initialization=grat_initialization
+        )
     return MODEL_DICT[model_name](*args)
 
 

@@ -5,4 +5,5 @@ __pycache__/
 log/
 outputs/
 dataset/prepared/
-raw_dataset/
+raw_dataset/*
+!raw_dataset/README.md

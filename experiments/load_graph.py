@@ -1,6 +1,9 @@
 import random
 import time
 from collections import deque
+import hashlib
+import json
+from pathlib import Path
 
 import dgl
 import igraph
@@ -12,6 +15,8 @@ from matplotlib import pyplot as plt
 
 from graph_util import get_rev_dgl, gen_erdos_graphs
 import os
+
+from sampling import sample_privim, sample_privim_star
 
 
 # ==================== PARAMETERS ====================
@@ -58,34 +63,52 @@ N_TEST_NODE = 1000
 # ==================== END OF PARAMETERS ====================
 
 
-def load_train(input_dim, dataset, directed_train=DIRECTED_TRAIN,
+DATASET_DIRECTED = {
+    "email": True,
+    "bitcoin": True,
+    "lastfm": False,
+    "hepph": False,
+    "facebook": False,
+    "gowalla": False,
+}
+
+
+def _read_prepared_graph(dataset, split, path_to_train):
+    dataset_dir = Path(path_to_train) / "prepared" / dataset
+    edge_path = dataset_dir / f"{dataset}_{split}_edges.txt"
+    metadata_path = dataset_dir / "metadata.json"
+    if not edge_path.is_file():
+        raise FileNotFoundError(
+            f"prepared dataset not found: {edge_path}; run "
+            f"python dataset/prepare_datasets.py {dataset} --force"
+        )
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    vertex_count = int(
+        metadata.get(f"{split}_nodes", metadata[f"{split}_assigned_nodes"])
+    )
+    graph = igraph.Graph(n=vertex_count, directed=bool(metadata["directed"]))
+    edges = []
+    with edge_path.open(encoding="utf-8") as handle:
+        for line in handle:
+            if line.strip():
+                source, target = line.split()[:2]
+                edges.append((int(source), int(target)))
+    graph.add_edges(edges)
+    return graph
+
+
+def load_train(input_dim, dataset, directed_train=None,
                feature_type=FEATURE_TYPE, use_cuda=USE_CUDA_TRAIN,
                path_to_train=PATH_TO_TRAIN):
     graphs = []
     dglgraphs = []
-    for i in range(1):
-        ############################## dataset ################################
-        if dataset == "email":
-            file = f"graphs/directed/trainset/email-Eu-core_train.txt"
-        elif dataset == "bitcoin":
-            file = f"directed/bitcoin_train_edges.txt"
-        elif dataset == "lastfm":
-            file = f"graphs/directed/trainset/di_lastfm_asia_train.txt"
-        elif dataset == "hepph":
-            file = f"graphs/directed/trainset/di_hepph_train.txt"
-        elif dataset == "facebook":
-            file = f"undirected/Facebook_train.txt"
-        elif dataset == "gowalla":
-            file = f"graphs/directed/trainset/di_gowalla_train.txt"
-        #######################################################################
-
-        # 这里会把节点编号理解为 0～最大节点 ID。缺失的编号也会被创建为孤立节点。
-        # 所以原始图需要先由 dataset/prepare_datasets.py 做连续重编号。
-        g = igraph.Graph().Read_Edgelist(
-            f"{path_to_train}{file}", directed=directed_train)
-        dg = get_rev_dgl(g, feature_type, input_dim, directed_train, use_cuda)
-        graphs.append(g)
-        dglgraphs.append(dg)
+    g = _read_prepared_graph(dataset, "train", path_to_train)
+    expected_directed = DATASET_DIRECTED[dataset]
+    if g.is_directed() != expected_directed:
+        raise ValueError(f"prepared metadata has the wrong graph type for {dataset}")
+    dg = get_rev_dgl(g, feature_type, input_dim, g.is_directed(), use_cuda)
+    graphs.append(g)
+    dglgraphs.append(dg)
 
     return graphs, dglgraphs
 
@@ -400,256 +423,98 @@ def transfer_dgl_to_igraph(filtered_dglgraph):
     return filtered_dglgraph, filtered_graph
 
 def random_walking_with_restart(graphs, dglgraphs, args):
-    ############# 初始化 #############
-    split_subgraphs = []
-    split_subdglgraphs = []
-    max_attempts = 100
-    restart_prob = 0.3
+    """Build the subgraph container using the selected paper algorithm."""
+    if len(graphs) != 1 or len(dglgraphs) != 1:
+        raise ValueError("the paper configuration expects one training graph")
 
-    max_degree = args.K
-    max_hops = args.r
-    subgraph_size = args.subgraph_size
-    settings = args.settings[0]
-    model_name = args.model_name[0]
-    score_upper_bound = args.score_upper_bound
-    directed_or_not = judge_directed_or_not(args.dataset)
-    print(f"################## General Settings ##################\n"
-          f"Dataset Name: {args.dataset[0]}, Directed : {directed_or_not}\n"
-          f"Model Name: {model_name}, Settings: {settings},\n"
-          f"Max Degree: {max_degree}, Max Hops: {max_hops},\n"
-          f"Subgraph Size: {subgraph_size}\n")
+    graph = graphs[0].copy()
+    self_loops = [edge.index for edge in graph.es if edge.source == edge.target]
+    if self_loops:
+        graph.delete_edges(self_loops)
 
-    ############# 删除孤立点和自环结构 #############
-    graph_index = random.randint(0, len(graphs) - 1)  # 随机选择一个图
-    graph = graphs[graph_index]
-    dglgraph = dglgraphs[graph_index]
-    # 删掉自环
-    selfloop_edges = [edge for edge in graph.es if edge.source == edge.target]
-    graph.delete_edges(selfloop_edges)
-    dglgraph = dgl.remove_self_loop(dglgraph)
+    setting = args.settings[0]
+    q = min(1.0, args.num_subgraph / max(1, graph.vcount()))
+    sampling_seed = getattr(args, "sampling_seed", args.current_seed)
+    rng = random.Random(sampling_seed)
+    started = time.time()
 
-    isolated_nodes = [v.index for v in graph.vs if v.degree() == 0]
-    graph.delete_vertices(isolated_nodes)
+    if setting == "PrivIM":
+        sampling_graph, result = sample_privim(
+            graph,
+            size=args.subgraph_size,
+            theta=args.theta,
+            r=args.r,
+            sample_rate=q,
+            restart_probability=args.restart_probability,
+            walk_length=args.walk_length,
+            rng=rng,
+        )
+    elif setting in {"PrivIM+SCS", "PrivIM+", "PrivIM*"}:
+        sampling_graph = graph
+        result = sample_privim_star(
+            graph,
+            size=args.subgraph_size,
+            boundary_divisor=args.boundary_divisor,
+            sample_rate=q,
+            restart_probability=args.restart_probability,
+            walk_length=args.walk_length,
+            threshold=args.score_upper_bound,
+            decay=args.frequency_decay,
+            include_boundary_stage=setting in {"PrivIM+", "PrivIM*"},
+            rng=rng,
+        )
+    else:
+        raise ValueError(f"unsupported sampling setting: {setting}")
 
-    isolated_nodes_dgl = dglgraph.in_degrees() + dglgraph.out_degrees() == 0
-    dglgraph = dgl.remove_nodes(dglgraph, isolated_nodes_dgl.nonzero(as_tuple=True)[0].tolist())
+    # Rebuild the message graph after theta projection, then induce DGL and
+    # igraph subgraphs from exactly the same node sets.
+    sampling_dgl = get_rev_dgl(
+        sampling_graph,
+        args.feature_protocol,
+        args.input_dim,
+        sampling_graph.is_directed(),
+        args.use_cuda,
+    )
+    split_graphs = []
+    split_dglgraphs = []
+    for nodes in result.node_sets:
+        subgraph, subdglgraph = connect_node_to_graph(nodes, sampling_dgl)
+        split_graphs.append(subgraph)
+        split_dglgraphs.append(subdglgraph)
 
-    total_nodes = len(graph.vs)
-    total_edges = len(graph.es)
-
-    # 根据训练集点数确定采样率
-    q_b = start_nodes_sample_rate(total_nodes)
-    target_subgraph_count = int(q_b * total_nodes)
-
-    print(f"################## Graph Info ##################\n"
-          f"Total Nodes: {total_nodes}, Total Edges: {total_edges}\n"
-          f"q_b: {q_b}, Target Subgraph Number: {target_subgraph_count}\n")
-
-    ############# 带有返回原点的随机游走 #############
-    # 用一个二维数组存储每个点以及被使用的次数
-    unused_nodes = list(range(len(graph.vs)))  # 未使用的节点
-    node_score = [[node, 0] for node in range(len(graph.vs))]
-    failed_nodes = set()
-
-    subgraphs_collected = 0
-    ########################### Settings == "PrivIM" ###########################
-    if settings == "PrivIM":
-        # 开始计时
-        time_start = time.time()
-        while subgraphs_collected < target_subgraph_count:
-            # 从得分非最高的节点中随机选择一个作为起始节点
-            start_node_candidates = []
-            count = 0
-            for node, score in node_score:
-                if score != score_upper_bound and node not in failed_nodes:
-                    start_node_candidates.append(node)
-                    count += 1
-                if count >= 1000:
-                    break
-            if (not start_node_candidates or
-                    min([score for node, score in node_score])== score_upper_bound):
-                print("No start node candidates left.")
-                break
-
-            # 随机选择一个起始节点
-            start_node = random.choice(start_node_candidates)
-            attempts = 0
-            current_node = start_node
-            visited = set()
-
-            while len(visited) < subgraph_size and attempts < max_attempts:
-                if random.random() < restart_prob:
-                    current_node = start_node
-
-                neighbors = list(set(graph.neighbors(current_node)))
-                filtered_neighbors = [neighbor for neighbor in neighbors
-                                      if node_score[neighbor][1] < score_upper_bound]
-                if not filtered_neighbors:
-                    break
-
-                neighbor_scores = np.array([node_score[filtered_neighbor][1]
-                                            for filtered_neighbor in filtered_neighbors])
-                if neighbor_scores.sum() == 0:
-                    probabilities = np.ones_like(neighbor_scores) / len(filtered_neighbors)
-                else:
-                    probabilities = (1 / (neighbor_scores + 1)) / np.sum(1 / (neighbor_scores + 1))
-
-                # 采样下一个节点
-                next_node = np.random.choice(filtered_neighbors, p=probabilities)
-
-                if next_node not in visited:
-                    visited.add(next_node)
-                    current_node = next_node
-                    attempts = 0
-                else:
-                    current_node = next_node
-                    attempts += 1
-
-            if len(visited) == subgraph_size:
-                subgraph, subdglgraph = connect_node_to_graph(visited, dglgraph)
-                split_subgraphs.append(subgraph)
-                split_subdglgraphs.append(subdglgraph)
-                subgraphs_collected += 1
-                for node in visited:
-                    node_score[node][1] += 1
-            else:
-                failed_nodes.add(start_node)
-        # 计时结束
-        time_end = time.time()
-        print(f"PrivIM Sampling Time Cost: {time_end - time_start:.2f}s")
-
-    ########################### Settings == "PrivIM+" ###########################
-    elif settings == "PrivIM+":
-        # 开始计时
-        time_start = time.time()
-        while subgraphs_collected < target_subgraph_count:
-            # 从得分非最高的节点中随机选择一个作为起始节点
-            start_node_candidates = []
-            count = 0
-            for node, score in node_score:
-                if score != score_upper_bound and node not in failed_nodes:
-                    start_node_candidates.append(node)
-                    count += 1
-                if count >= 1000:
-                    break
-            if (not start_node_candidates or
-                    min([score for node, score in node_score])== score_upper_bound):
-                print("No start node candidates left.")
-                break
-
-            # 随机选择一个起始节点
-            start_node = random.choice(start_node_candidates)
-            attempts = 0
-            current_node = start_node
-            visited = set()
-
-            while len(visited) < subgraph_size and attempts < max_attempts:
-                if random.random() < restart_prob:
-                    current_node = start_node
-
-                neighbors = list(set(graph.neighbors(current_node)))
-                filtered_neighbors = [neighbor for neighbor in neighbors
-                                      if node_score[neighbor][1] < score_upper_bound]
-                if not filtered_neighbors:
-                    break
-
-                neighbor_scores = np.array([node_score[filtered_neighbor][1]
-                                            for filtered_neighbor in filtered_neighbors])
-                if neighbor_scores.sum() == 0:
-                    probabilities = np.ones_like(neighbor_scores) / len(filtered_neighbors)
-                else:
-                    probabilities = (1 / (neighbor_scores + 1)) / np.sum(1 / (neighbor_scores + 1))
-
-                # 采样下一个节点
-                next_node = np.random.choice(filtered_neighbors, p=probabilities)
-
-                if next_node not in visited:
-                    visited.add(next_node)
-                    current_node = next_node
-                    attempts = 0
-                else:
-                    current_node = next_node
-                    attempts += 1
-
-            if len(visited) == subgraph_size:
-                subgraph, subdglgraph = connect_node_to_graph(visited, dglgraph)
-                split_subgraphs.append(subgraph)
-                split_subdglgraphs.append(subdglgraph)
-                subgraphs_collected += 1
-                for node in visited:
-                    node_score[node][1] += 1
-            else:
-                failed_nodes.add(start_node)
-
-        # 大图采样完成，开始采样小图
-        print(f"Large Subgraphs Collected: {subgraphs_collected}")
-        failed_nodes = set()
-        start_node_candidates = []
-        minigraphs_collected = 0
-        while minigraphs_collected < target_subgraph_count / 4:
-            minigraph_size = int(subgraph_size / 2)
-            # 从得分非最高的节点中随机选择一个作为起始节点
-            start_node_candidates = []
-            count = 0
-            for node, score in node_score:
-                if score != score_upper_bound and node not in failed_nodes:
-                    start_node_candidates.append(node)
-                    count += 1
-                if count >= 1000:
-                    break
-            if (not start_node_candidates or
-                    min([score for node, score in node_score])== score_upper_bound):
-                print("No start node candidates left.")
-                break
-
-            start_node = random.choice(start_node_candidates)
-            attempts = 0
-            current_node = start_node
-            visited = set()
-            while len(visited) < minigraph_size and attempts < max_attempts:
-                if random.random() < restart_prob:
-                    current_node = start_node
-
-                neighbors = list(set(graph.neighbors(current_node)))
-                filtered_neighbors = [neighbor for neighbor in neighbors
-                                      if node_score[neighbor][1] < score_upper_bound]
-                if not filtered_neighbors:
-                    break
-
-                neighbor_scores = np.array([node_score[filtered_neighbor][1]
-                                            for filtered_neighbor in filtered_neighbors])
-                if neighbor_scores.sum() == 0:
-                    probabilities = np.ones_like(neighbor_scores) / len(filtered_neighbors)
-                else:
-                    probabilities = (1 / (neighbor_scores + 1)) / np.sum(1 / (neighbor_scores + 1))
-
-                # 采样下一个节点
-                next_node = np.random.choice(filtered_neighbors, p=probabilities)
-
-                if next_node not in visited:
-                    visited.add(next_node)
-                    current_node = next_node
-                    attempts = 0
-                else:
-                    current_node = next_node
-                    attempts += 1
-
-            if len(visited) == minigraph_size:
-                subgraph, subdglgraph = connect_node_to_graph(visited, dglgraph)
-                split_subgraphs.append(subgraph)
-                split_subdglgraphs.append(subdglgraph)
-                subgraphs_collected += 1
-                minigraphs_collected += 1
-                for node in visited:
-                    node_score[node][1] += 1
-            else:
-                failed_nodes.add(start_node)
-        print(f"Small Subgraphs Collected: {minigraphs_collected}")
-        # 计时结束
-        time_end = time.time()
-        print(f"PrivIM+ Sampling Time Cost: {time_end - time_start:.2f}s")
-    ########################### Settings == "Random" ###########################
-    return split_subgraphs, split_subdglgraphs
+    sampling_elapsed = time.time() - started
+    print(
+        f"Sampling {setting}: q={q:.6g}, stage1={result.stage1_count}, "
+        f"stage2={result.stage2_count}, max_frequency="
+        f"{max(result.frequencies, default=0)}, elapsed={sampling_elapsed:.2f}s"
+    )
+    sampling_metadata = {
+        "sampling_seed": sampling_seed,
+        "feature_protocol": args.feature_protocol,
+        "node_sets_sha256": hashlib.sha256(
+            json.dumps(result.node_sets, separators=(",", ":")).encode("utf-8")
+        ).hexdigest(),
+        "sampling_rate": q,
+        "restart_probability": args.restart_probability,
+        "walk_length": args.walk_length,
+        "sampling_hops": args.r,
+        "theta": args.theta if setting == "PrivIM" else None,
+        "frequency_threshold": (
+            args.score_upper_bound if setting != "PrivIM" else None
+        ),
+        "frequency_decay": (
+            args.frequency_decay if setting != "PrivIM" else None
+        ),
+        "boundary_divisor": (
+            args.boundary_divisor
+            if setting in {"PrivIM+", "PrivIM*"} else None
+        ),
+        "stage1_subgraphs": result.stage1_count,
+        "stage2_subgraphs": result.stage2_count,
+        "max_observed_frequency": max(result.frequencies, default=0),
+        "preprocessing_seconds": sampling_elapsed,
+    }
+    return split_graphs, split_dglgraphs, sampling_metadata
 def rate_split_dp(graphs, dglgraphs, num_subgraphs, min_node_threshold, K, r, k_training, args):
     split_graphs = []
     split_dglgraphs = []

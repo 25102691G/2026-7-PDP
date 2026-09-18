@@ -3,6 +3,16 @@ import torch
 import dgl
 import numpy as np
 
+FEATURE_PROTOCOLS = ("ones", "degree", "degree32")
+
+
+def feature_input_dim(protocol, ones_dim=32):
+    if protocol in {"ones", "1", "degree32"}:
+        return int(ones_dim)
+    if protocol in {"degree", "deg"}:
+        return 3
+    raise ValueError(f"unsupported feature protocol: {protocol}")
+
 
 # ==================== GRAPH LOADERS ====================
 def get_rev_graph(graph, train_graph_is_directed):
@@ -28,9 +38,22 @@ def gen_one_feature(graph, feature_dim):
 
 
 def gen_deg_feature(graph, *args):  # args is only a placeholder
-    indegree = torch.tensor(graph.indegree()).float()
-    zeros = torch.zeros(graph.vcount(), 1).squeeze(1)
-    return torch.stack([indegree, zeros], dim=1)
+    """Constant plus graph-normalized in/out degree structural features."""
+    indegree = torch.tensor(graph.indegree(), dtype=torch.float32)
+    outdegree = torch.tensor(graph.outdegree(), dtype=torch.float32)
+    indegree = indegree / indegree.max().clamp_min(1.0)
+    outdegree = outdegree / outdegree.max().clamp_min(1.0)
+    return torch.stack([torch.ones(graph.vcount()), indegree, outdegree], dim=1)
+
+
+def gen_deg_feature_padded(graph, feature_dim):
+    """Degree diagnostic with the released input width kept unchanged."""
+    if feature_dim < 3:
+        raise ValueError("degree32 requires feature_dim >= 3")
+    structural = gen_deg_feature(graph)
+    features = torch.zeros(graph.vcount(), feature_dim, dtype=torch.float32)
+    features[:, :3] = structural
+    return features
 
 
 def gen_one_hot_feayture(graph, *args):  # args is only a placeholder
@@ -40,20 +63,26 @@ def gen_one_hot_feayture(graph, *args):  # args is only a placeholder
 FEATURE_TYPE_DICT = {
     "0": gen_zero_feature,
     "1": gen_one_feature,
+    "ones": gen_one_feature,
     "onehot": gen_one_hot_feayture,
     "deg": gen_deg_feature,
+    "degree": gen_deg_feature,
+    "degree32": gen_deg_feature_padded,
 }
 
 def get_rev_dgl(graph, feature_type='0', feature_dim=None, is_directed=False, use_cuda=False):
     """get dgl graph from igraph
     """
-    
-    src, dst = zip(*graph.get_edgelist())
+    edges = graph.get_edgelist()
+    if edges:
+        src, dst = zip(*edges)
+    else:
+        src, dst = [], []
 
     if use_cuda:
-        dglgraph = dgl.graph((dst, src)).to(torch.device("cuda:0"))
+        dglgraph = dgl.graph((dst, src), num_nodes=graph.vcount()).to(torch.device("cuda:0"))
     else:
-        dglgraph = dgl.graph((dst, src))
+        dglgraph = dgl.graph((dst, src), num_nodes=graph.vcount())
         
     if not is_directed:
         dglgraph.add_edges(src, dst)
@@ -96,24 +125,24 @@ def gen_erdos_graphs(graphs_num, nodes_num, p, directed):
 def get_adj_mat(graph, d=1):
     if d == 1:
         adj_mat = np.array(graph.get_adjacency().data, dtype=bool)
-        adj_mat = torch.from_numpy(np.array(adj_mat, dtype=int)).float().cuda()
-        adj_mat += torch.eye(graph.vcount()).cuda()
-        return adj_mat.cpu()
+        adj_mat = torch.from_numpy(np.array(adj_mat, dtype=int)).float()
+        adj_mat += torch.eye(graph.vcount())
+        return adj_mat
     elif d == 2:
         return get_adj_mat_2(graph)
 
 
 def get_adj_mat_2(graph):
     adj_mat = np.array(graph.get_adjacency().data, dtype=bool)
-    adj_mat = torch.from_numpy(np.array(adj_mat, dtype=int)).float().cuda()
+    adj_mat = torch.from_numpy(np.array(adj_mat, dtype=int)).float()
     adj_mat = adj_mat.matmul(adj_mat) + adj_mat
-    adj_mat += torch.eye(graph.vcount()).cuda()
-    return adj_mat.cpu()
+    adj_mat += torch.eye(graph.vcount())
+    return adj_mat
 
 
 def get_adj_mat_3(graph):
     adj_mat = np.array(graph.get_adjacency().data, dtype=bool)
-    adj_mat = torch.from_numpy(np.array(adj_mat, dtype=int)).float().cuda()
+    adj_mat = torch.from_numpy(np.array(adj_mat, dtype=int)).float()
     adj_mat = adj_mat.matmul(adj_mat) + adj_mat
-    adj_mat += torch.eye(graph.vcount()).cuda()
-    return adj_mat.cpu()
+    adj_mat += torch.eye(graph.vcount())
+    return adj_mat

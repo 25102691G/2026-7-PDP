@@ -26,7 +26,7 @@ class KSetMaxCoverAdjLoss(nn.Module):
         self.C = C
 
     def forward(self, v, adj_mat, *args):
-        tmp = 1 - v.unsqueeze(1) * adj_mat.cuda()
+        tmp = 1 - v.unsqueeze(1) * adj_mat.to(v.device)
         tmp = torch.prod(tmp, dim=0)
         loss1 = torch.sum(tmp)
         loss2 = torch.sum(v)

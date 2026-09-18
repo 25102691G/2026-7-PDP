@@ -6,12 +6,8 @@ Processing route:
 1. Parse the raw edge endpoints without constructing an igraph graph.
 2. Randomly split the original node IDs into train/test sets.
 3. Keep only edges whose endpoints belong to the same split.
-4. Densely renumber the active nodes in each induced graph to ``0..N-1``.
-5. Write only ``<dataset>_train_edges.txt`` and
-   ``<dataset>_test_edges.txt``.
-
-Because a plain edge list cannot represent vertices with no edges, nodes that
-become isolated after the split are omitted from the output graphs.
+4. Apply the selected isolated-node policy.
+5. Densely renumber the retained nodes in each induced graph to ``0..N-1``.
 """
 
 from __future__ import annotations
@@ -19,9 +15,12 @@ from __future__ import annotations
 import argparse
 import csv
 import gzip
+import hashlib
+import json
 import os
 import random
 import shutil
+import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass
@@ -32,6 +31,15 @@ from typing import Dict, Iterator, List, Optional, Sequence, Set, TextIO, Tuple
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RAW_ROOT = PROJECT_ROOT / "raw_dataset"
 DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "dataset" / "prepared"
+
+PAPER_ARTIFACTS = {
+    "facebook": {
+        "revision": "31166ca",
+        "train": "dataset/undirected/Facebook_train.txt",
+        "test": "dataset/undirected/Facebook_test.txt",
+        "original_nodes": 22470,
+    },
+}
 
 
 @dataclass(frozen=True)
@@ -229,28 +237,39 @@ def induced_original_edges(
     return train_edges, test_edges, cross_edges
 
 
-def renumber_active_edges(
+def renumber_split_edges(
     original_edges: Sequence[Tuple[int, int]],
     split_order: Sequence[int],
-) -> Tuple[List[Tuple[int, int]], int]:
-    """Renumber only nodes that occur in the induced edge list."""
-    active_nodes: Set[int] = set()
-    for source, target in original_edges:
-        active_nodes.add(source)
-        active_nodes.add(target)
-
-    active_order = [node for node in split_order if node in active_nodes]
-    local_id = {original_id: index for index, original_id in enumerate(active_order)}
+) -> Tuple[List[Tuple[int, int]], Dict[int, int]]:
+    """Renumber the retained split nodes into a contiguous local ID space."""
+    local_id = {original_id: index for index, original_id in enumerate(split_order)}
     renumbered = [
         (local_id[source], local_id[target]) for source, target in original_edges
     ]
-    return renumbered, len(active_order)
+    return renumbered, local_id
 
 
-def output_names(dataset_name: str) -> Tuple[str, str]:
+def retained_split_order(
+    split_order: Sequence[int],
+    split_edges: Sequence[Tuple[int, int]],
+    isolated_policy: str,
+) -> List[int]:
+    if isolated_policy == "preserve":
+        return list(split_order)
+    if isolated_policy == "active":
+        active = {node for edge in split_edges for node in edge}
+        return [node for node in split_order if node in active]
+    raise ValueError(f"unsupported isolated-node policy: {isolated_policy}")
+
+
+def output_names(dataset_name: str) -> Tuple[str, ...]:
     return (
         f"{dataset_name}_train_edges.txt",
         f"{dataset_name}_test_edges.txt",
+        "train_nodes.csv",
+        "test_nodes.csv",
+        "node_mapping.csv",
+        "metadata.json",
     )
 
 
@@ -278,6 +297,21 @@ def write_edges(path: Path, edges: Sequence[Tuple[int, int]]) -> None:
             handle.write(f"{source} {target}\n")
 
 
+def write_node_split(path: Path, order: Sequence[int]) -> None:
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(("original_id", "local_id"))
+        writer.writerows((original_id, local_id) for local_id, original_id in enumerate(order))
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def publish_outputs(
     temp_dir: Path,
     final_dir: Path,
@@ -289,6 +323,144 @@ def publish_outputs(
     temp_dir.rmdir()
 
 
+def _read_git_artifact(revision: str, path: str) -> bytes:
+    try:
+        return subprocess.run(
+            ["git", "show", f"{revision}:{path}"],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+        ).stdout
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise FileNotFoundError(
+            f"paper split artifact is unavailable: {revision}:{path}"
+        ) from exc
+
+
+def _parse_artifact_edges(content: bytes, label: str) -> List[Tuple[int, int]]:
+    edges = []
+    for line_number, line in enumerate(content.decode("utf-8").splitlines(), 1):
+        fields = line.split()
+        if not fields:
+            continue
+        if len(fields) < 2:
+            raise ValueError(f"{label}:{line_number}: expected two endpoints")
+        edges.append((int(fields[0]), int(fields[1])))
+    if not edges:
+        raise ValueError(f"{label}: artifact contains no edges")
+    return edges
+
+
+def prepare_paper_artifact(
+    spec: DatasetSpec,
+    output_root: Path,
+    remove_self_loops: bool,
+    force: bool,
+) -> Dict[str, int]:
+    """Publish the fixed split shipped in the authors' repository history."""
+    artifact = PAPER_ARTIFACTS.get(spec.name)
+    if artifact is None:
+        raise ValueError(
+            f"{spec.name}: no fixed paper split artifact is available"
+        )
+    revision = artifact["revision"]
+    contents = {
+        split: _read_git_artifact(revision, artifact[split])
+        for split in ("train", "test")
+    }
+    split_edges = {
+        split: _parse_artifact_edges(
+            contents[split], f"{revision}:{artifact[split]}"
+        )
+        for split in ("train", "test")
+    }
+    self_loops_seen = sum(
+        source == target
+        for edges in split_edges.values()
+        for source, target in edges
+    )
+    if remove_self_loops:
+        split_edges = {
+            split: [(u, v) for u, v in edges if u != v]
+            for split, edges in split_edges.items()
+        }
+
+    node_counts = {
+        split: max(max(edge) for edge in edges) + 1
+        for split, edges in split_edges.items()
+    }
+    final_dir, temp_dir = reserve_output_directory(
+        output_root, spec.name, force
+    )
+    try:
+        write_edges(temp_dir / f"{spec.name}_train_edges.txt", split_edges["train"])
+        write_edges(temp_dir / f"{spec.name}_test_edges.txt", split_edges["test"])
+        for split in ("train", "test"):
+            write_node_split(
+                temp_dir / f"{split}_nodes.csv", range(node_counts[split])
+            )
+        with (temp_dir / "node_mapping.csv").open(
+            "w", encoding="utf-8", newline=""
+        ) as handle:
+            writer = csv.writer(handle)
+            writer.writerow(("artifact_local_id", "split", "local_id"))
+            for split in ("train", "test"):
+                writer.writerows(
+                    (node, split, node) for node in range(node_counts[split])
+                )
+
+        combined_hash = hashlib.sha256(
+            contents["train"] + b"\0" + contents["test"]
+        ).hexdigest()
+        metadata = {
+            "dataset": spec.name,
+            "directed": spec.directed,
+            "split_source": "paper-artifact",
+            "artifact_revision": revision,
+            "artifact_train_path": artifact["train"],
+            "artifact_test_path": artifact["test"],
+            "artifact_train_sha256": hashlib.sha256(contents["train"]).hexdigest(),
+            "artifact_test_sha256": hashlib.sha256(contents["test"]).hexdigest(),
+            "source_sha256": combined_hash,
+            "seed": None,
+            "train_ratio": 0.5,
+            "remove_self_loops": remove_self_loops,
+            "keep_duplicate_edges": False,
+            "isolated_policy": "artifact_edge_list",
+            "node_id_semantics": "artifact_local_ids",
+            "original_nodes": int(artifact["original_nodes"]),
+            "train_assigned_nodes": int(artifact["original_nodes"]) // 2,
+            "test_assigned_nodes": int(artifact["original_nodes"]) // 2,
+            "train_nodes": node_counts["train"],
+            "test_nodes": node_counts["test"],
+            "train_isolated_nodes_removed": None,
+            "test_isolated_nodes_removed": None,
+            "train_edges": len(split_edges["train"]),
+            "test_edges": len(split_edges["test"]),
+            "self_loops_seen": self_loops_seen,
+            "self_loops_removed": self_loops_seen if remove_self_loops else 0,
+            "cross_edges_removed": None,
+        }
+        (temp_dir / "metadata.json").write_text(
+            json.dumps(metadata, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        publish_outputs(temp_dir, final_dir, spec.name)
+    except BaseException:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        raise
+
+    return {
+        "train_assigned_nodes": metadata["train_assigned_nodes"],
+        "test_assigned_nodes": metadata["test_assigned_nodes"],
+        "train_active_nodes": node_counts["train"],
+        "test_active_nodes": node_counts["test"],
+        "train_edges": len(split_edges["train"]),
+        "test_edges": len(split_edges["test"]),
+        "cross_edges_removed": 0,
+    }
+
+
 def prepare_dataset(
     spec: DatasetSpec,
     raw_root: Path,
@@ -298,6 +470,7 @@ def prepare_dataset(
     remove_self_loops: bool,
     keep_duplicate_edges: bool,
     force: bool,
+    isolated_policy: str = "preserve",
 ) -> Dict[str, int]:
     if spec.too_large_for_memory:
         raise ValueError(
@@ -325,20 +498,61 @@ def prepare_dataset(
         train_nodes=set(train_order),
         test_nodes=set(test_order),
     )
-    train_edges, train_active_nodes = renumber_active_edges(
-        train_original_edges, train_order
+    retained_train_order = retained_split_order(
+        train_order, train_original_edges, isolated_policy
     )
-    test_edges, test_active_nodes = renumber_active_edges(
-        test_original_edges, test_order
+    retained_test_order = retained_split_order(
+        test_order, test_original_edges, isolated_policy
+    )
+    train_edges, train_local_ids = renumber_split_edges(
+        train_original_edges, retained_train_order
+    )
+    test_edges, test_local_ids = renumber_split_edges(
+        test_original_edges, retained_test_order
     )
 
     final_dir, temp_dir = reserve_output_directory(
         output_root, spec.name, force
     )
-    train_output_name, test_output_name = output_names(spec.name)
+    train_output_name, test_output_name = output_names(spec.name)[:2]
     try:
         write_edges(temp_dir / train_output_name, train_edges)
         write_edges(temp_dir / test_output_name, test_edges)
+        write_node_split(temp_dir / "train_nodes.csv", retained_train_order)
+        write_node_split(temp_dir / "test_nodes.csv", retained_test_order)
+        with (temp_dir / "node_mapping.csv").open(
+            "w", encoding="utf-8", newline=""
+        ) as handle:
+            writer = csv.writer(handle)
+            writer.writerow(("original_id", "split", "local_id"))
+            writer.writerows((node, "train", local) for node, local in train_local_ids.items())
+            writer.writerows((node, "test", local) for node, local in test_local_ids.items())
+        metadata = {
+            "dataset": spec.name,
+            "directed": spec.directed,
+            "split_source": "generated",
+            "source": str(source_path.relative_to(raw_root)),
+            "source_sha256": sha256_file(source_path),
+            "seed": seed,
+            "train_ratio": train_ratio,
+            "remove_self_loops": remove_self_loops,
+            "keep_duplicate_edges": keep_duplicate_edges,
+            "isolated_policy": isolated_policy,
+            **source_stats,
+            "original_nodes": len(original_nodes),
+            "train_assigned_nodes": len(train_order),
+            "test_assigned_nodes": len(test_order),
+            "train_nodes": len(retained_train_order),
+            "test_nodes": len(retained_test_order),
+            "train_isolated_nodes_removed": len(train_order) - len(retained_train_order),
+            "test_isolated_nodes_removed": len(test_order) - len(retained_test_order),
+            "train_edges": len(train_edges),
+            "test_edges": len(test_edges),
+            "cross_edges_removed": cross_edges,
+        }
+        (temp_dir / "metadata.json").write_text(
+            json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
         publish_outputs(temp_dir, final_dir, spec.name)
     except BaseException:
         shutil.rmtree(temp_dir, ignore_errors=True)
@@ -349,8 +563,8 @@ def prepare_dataset(
         "original_nodes": len(original_nodes),
         "train_assigned_nodes": len(train_order),
         "test_assigned_nodes": len(test_order),
-        "train_active_nodes": train_active_nodes,
-        "test_active_nodes": test_active_nodes,
+        "train_active_nodes": len(retained_train_order),
+        "test_active_nodes": len(retained_test_order),
         "train_edges": len(train_edges),
         "test_edges": len(test_edges),
         "cross_edges_removed": cross_edges,
@@ -383,6 +597,15 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--train-ratio", type=float, default=0.5)
     parser.add_argument(
+        "--split-source",
+        choices=("generated", "paper-artifact"),
+        default="generated",
+        help=(
+            "generate a seeded split from raw data, or import an exact fixed "
+            "split retained in the repository history"
+        ),
+    )
+    parser.add_argument(
         "--remove-self-loops",
         action="store_true",
         help="remove self-loop edges before splitting",
@@ -396,6 +619,15 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         "--force",
         action="store_true",
         help="replace existing dataset-prefixed train/test edge files",
+    )
+    parser.add_argument(
+        "--isolated-policy",
+        choices=("active", "preserve"),
+        default="active",
+        help=(
+            "active keeps only nodes incident to an edge after the split; "
+            "preserve retains all assigned split members"
+        ),
     )
     args = parser.parse_args(argv)
     return args
@@ -423,17 +655,27 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         raw_root = args.raw_root.resolve()
         output_root = args.output_root.resolve()
         for spec in selected_specs(args.datasets):
-            print(f"Preparing {spec.name} from {raw_root / spec.relative_path}")
-            stats = prepare_dataset(
-                spec=spec,
-                raw_root=raw_root,
-                output_root=output_root,
-                train_ratio=args.train_ratio,
-                seed=args.seed,
-                remove_self_loops=args.remove_self_loops,
-                keep_duplicate_edges=args.keep_duplicate_edges,
-                force=args.force,
-            )
+            if args.split_source == "paper-artifact":
+                print(f"Preparing {spec.name} from its fixed paper artifact")
+                stats = prepare_paper_artifact(
+                    spec=spec,
+                    output_root=output_root,
+                    remove_self_loops=args.remove_self_loops,
+                    force=args.force,
+                )
+            else:
+                print(f"Preparing {spec.name} from {raw_root / spec.relative_path}")
+                stats = prepare_dataset(
+                    spec=spec,
+                    raw_root=raw_root,
+                    output_root=output_root,
+                    train_ratio=args.train_ratio,
+                    seed=args.seed,
+                    remove_self_loops=args.remove_self_loops,
+                    keep_duplicate_edges=args.keep_duplicate_edges,
+                    force=args.force,
+                    isolated_policy=args.isolated_policy,
+                )
             print(
                 f"Prepared {spec.name}: "
                 f"assigned_nodes={stats['train_assigned_nodes']}/"

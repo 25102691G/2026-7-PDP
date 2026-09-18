@@ -1,4 +1,6 @@
 import os
+import json
+from pathlib import Path
 import igraph
 from graph_util import get_rev_dgl
 
@@ -9,9 +11,11 @@ FEATURE_TYPE="1"
 
 DIRECTED_GRAPHS = None  # all
 UNDIRECTED_GRAPHS = []  # empty
-BLACK_LIST = ["bitcoinotc_train.txt"]
+BLACK_LIST = ["bitcoin_train_edges.txt"]
 PATH_TO_DIRECTED_GRAPHS = "dataset/directed/"
 PATH_TO_UNDIRECTED_GRAPHS = "dataset/undirected/"
+PREPARED_ROOT = Path(__file__).resolve().parents[1] / "dataset" / "prepared"
+PAPER_DATASETS = ("email", "bitcoin", "lastfm", "hepph", "facebook", "gowalla")
 
 # DIRECTED_GRAPHS = [  # small directed graphs
 #     "soc-sign-jazz.txt",
@@ -57,12 +61,27 @@ def load_igraphs(graph_names, path, is_directed, black_list=BLACK_LIST):
         yield name, graph, is_directed
 
 
-def next_graph():
-    for path, is_directed, graph_names in [(PATH_TO_DIRECTED_GRAPHS, True, DIRECTED_GRAPHS), (PATH_TO_UNDIRECTED_GRAPHS, False, UNDIRECTED_GRAPHS)]:
-        if graph_names is None:
-            graph_names = get_graph_names(path)
-        for x in load_igraphs(graph_names, path, is_directed):
-            yield x
+def load_prepared_graph(dataset, split="test", prepared_root=PREPARED_ROOT):
+    directory = Path(prepared_root) / dataset
+    metadata = json.loads((directory / "metadata.json").read_text(encoding="utf-8"))
+    graph = igraph.Graph(
+        n=int(metadata.get(f"{split}_nodes", metadata[f"{split}_assigned_nodes"])),
+        directed=bool(metadata["directed"]),
+    )
+    edge_path = directory / f"{dataset}_{split}_edges.txt"
+    edges = []
+    with edge_path.open(encoding="utf-8") as handle:
+        for line in handle:
+            if line.strip():
+                source, target = line.split()[:2]
+                edges.append((int(source), int(target)))
+    graph.add_edges(edges)
+    return edge_path.name, graph, graph.is_directed()
+
+
+def next_graph(datasets=None, split="test"):
+    for dataset in datasets or PAPER_DATASETS:
+        yield load_prepared_graph(dataset, split)
 
 
 def load_dglgraphs(graph_names, path, is_directed, black_list=BLACK_LIST, input_dim=INPUT_DIM, feature_type=FEATURE_TYPE, use_cuda=False):
@@ -81,9 +100,9 @@ def load_dglgraphs(graph_names, path, is_directed, black_list=BLACK_LIST, input_
         yield name, graph, dglgraph, is_directed
 
 
-def next_dglgraph(input_dim=32, use_cuda=False):
-    for path, is_directed, graph_names in [(PATH_TO_DIRECTED_GRAPHS, True, DIRECTED_GRAPHS), (PATH_TO_UNDIRECTED_GRAPHS, False, UNDIRECTED_GRAPHS)]:
-        if graph_names is None:
-            graph_names = get_graph_names(path)
-        for x in load_dglgraphs(graph_names, path, is_directed, input_dim=input_dim, use_cuda=use_cuda):
-            yield x
+def next_dglgraph(input_dim=32, use_cuda=False, datasets=None, split="test"):
+    for name, graph, is_directed in next_graph(datasets=datasets, split=split):
+        dglgraph = get_rev_dgl(
+            graph, FEATURE_TYPE, input_dim, is_directed, use_cuda
+        )
+        yield name, graph, dglgraph, is_directed
