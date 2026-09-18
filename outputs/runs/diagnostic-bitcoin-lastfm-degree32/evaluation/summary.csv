@@ -1,0 +1,3 @@
+graph,setting,epsilon,subgraph_size,occurrence_bound,feature_protocol,input_dim,model,d,k,runs,influence_mean,influence_std,coverage_ratio_mean,coverage_ratio_std
+bitcoin_test_edges.txt,PrivIM+,eps_10000,n_60,Ng_4,degree32,32,GRAT3,1,50,5,1664.0,15.049916943292382,98.81235154394298,0.8937005310743693
+lastfm_test_edges.txt,PrivIM+,eps_10000,n_60,Ng_4,degree32,32,GRAT3,1,50,5,1198.4,34.832456129305626,94.43656422379827,2.7448743994724683

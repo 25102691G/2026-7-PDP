@@ -1,0 +1,2 @@
+dataset/prepared/**/*.csv text eol=lf
+outputs/runs/**/*.csv text eol=lf

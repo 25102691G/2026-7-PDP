@@ -10,29 +10,25 @@ the primary technical specification.
 ## 1. Critical repository state
 
 - Branch: `main`
-- Base commit: `f4a5ea303e318ca45ca233728a4f48e38f6e2f21`
-- Base commit subject: `数据处理模块`
+- Source implementation commits: `9e4ec16` (`Non private对齐`) and
+  `aa338b5` (handoff/guide corrections), both based on `f4a5ea3`.
+- At the time of this handoff update, local `main` was two commits ahead of
+  `origin/main`. Push the migration commit before cloning on another machine.
 - Paper SHA-256:
   `cf7fc97430366bec111d230d1a945a79c844980dd791373c1d04374514c647ad`
 - Current test status: **31 tests passing** with
   `.venv/bin/python -m unittest discover -s tests`.
-- The working tree contains many modified and untracked files. The work in
-  this handoff is **not represented by the base commit alone**. Copy the
-  complete working tree or commit it before moving machines.
-- `outputs/` is about 27 MB, `dataset/prepared/` about 15 MB,
+- The source, documentation, and tests are committed. The deterministic
+  prepared splits and a curated set of run manifests/evaluation summaries are
+  included by the migration commit described below.
+- `outputs/` is about 29 MB, `dataset/prepared/` about 15 MB,
   `raw_dataset/` about 31 GB, and `.venv/` about 6.4 GB on the current machine.
   Recreate `.venv` on the new device rather than copying it.
-- Experimental outputs and raw data may be ignored by Git. Committing source
-  changes does not replace separately copying `outputs/runs/`, prepared data,
-  and any raw datasets that should be retained.
-
-Current modified tracked files include `README.md`, dataset preparation,
-training/evaluation, GRAT, loss, and requirements files. Important untracked
-files include `AGENTS.md`, the complete `docs/` directory,
-`experiments/config.py`, `experiments/privacy.py`,
-`experiments/run_reproduction.py`, `experiments/sampling.py`,
-`experiments/seeding.py`, `experiments/validate_results.py`,
-`model/ClassicalGNN.py`, `tests/`, and `raw_dataset/`.
+- Full experimental outputs and raw data remain ignored by Git. The curated
+  records do not include model checkpoints, so separately archive
+  `outputs/runs/` when exact checkpoint-level continuation is required.
+- Raw data are not committed. Verify redownloaded or separately copied files
+  against `raw_dataset/checksums.sha256`.
 
 ## 2. Tested environment
 
@@ -262,8 +258,8 @@ Bitcoin and LastFM prepared data are now on the current explicit protocol:
 | Bitcoin | active, self-loops removed | 2,033 | 2,378 |
 | LastFM | active, self-loops removed | 3,096 | 3,196 |
 | Facebook | active, self-loops removed | 10,011 | 10,080 |
-| HepPh | legacy metadata; must reprepare | unknown in legacy metadata | unknown |
-| Gowalla | legacy metadata; must reprepare | unknown in legacy metadata | unknown |
+| HepPh | active, self-loops removed | 5,249 | 5,264 |
+| Gowalla | active, self-loops removed | 79,978 | 80,392 |
 
 Revalidate with:
 
@@ -272,9 +268,9 @@ Revalidate with:
   outputs/runs/diagnostic-bitcoin-lastfm-degree32/evaluation/summary.csv
 ```
 
-The next cross-dataset degree32 targets are HepPh and Gowalla. Their current
-prepared metadata is legacy and will fail `--skip-prepare`, so the first new
-run must omit `--skip-prepare`.
+The next cross-dataset degree32 targets are HepPh and Gowalla. Both prepared
+splits now satisfy the final `active`, self-loop-removed protocol and are
+committed for migration, so a verified clone may use `--skip-prepare`.
 
 ## 8. Work that has not been completed
 
@@ -310,18 +306,20 @@ run must omit `--skip-prepare`.
 
 Before leaving the current device:
 
-1. Commit all source/docs/tests changes, or archive the complete working tree.
-   A plain checkout of base commit `f4a5ea3` will lose nearly all work.
-2. Copy at minimum:
+1. Push local `main`. A clone made before pushing will stop at the old remote
+   commit and omit the reproduction implementation and migration records.
+2. The committed repository includes source/docs/tests, deterministic prepared
+   splits, raw-data checksums, and curated manifests/summaries. Additionally
+   copy when needed:
    - `PrivIM_Report.pdf`;
    - `AGENTS.md`, `README.md`, `docs/`;
    - `dataset/`, `experiments/`, `model/`, `tests/`;
    - `requirements.txt`;
-   - `outputs/runs/` including manifests, JSON, CSV, and checkpoints;
-   - `raw_dataset/README.md` and either the 31 GB raw data or a plan to
-     redownload it.
-3. Copy `dataset/prepared/` if exact current splits are required. Metadata and
-   source hashes will allow preflight verification.
+   - the complete `outputs/runs/` when checkpoints and per-seed diagnostics
+     must be retained (only curated records are committed);
+   - either the 31 GB raw data or a plan to redownload it.
+3. Verify raw files with `sha256sum -c raw_dataset/checksums.sha256` before
+   regenerating prepared data.
 4. Do not copy `.venv`; recreate it from requirements with CUDA/PyTorch/DGL
    builds appropriate for the new machine.
 5. On the new machine run:

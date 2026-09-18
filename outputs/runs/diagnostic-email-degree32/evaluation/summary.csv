@@ -1,0 +1,2 @@
+graph,setting,epsilon,subgraph_size,occurrence_bound,feature_protocol,input_dim,model,d,k,runs,influence_mean,influence_std,coverage_ratio_mean,coverage_ratio_std
+email_test_edges.txt,PrivIM+,eps_10000,n_40,Ng_4,degree32,32,GRAT3,1,50,5,422.2,4.024922359499622,97.73148148148148,0.9316949906249206
