@@ -16,7 +16,13 @@ from matplotlib import pyplot as plt
 from graph_util import get_rev_dgl, gen_erdos_graphs
 import os
 
-from sampling import sample_privim, sample_privim_star
+from sampling import (
+    PAPER_SAMPLING_PROTOCOL,
+    RELEASED_LEGACY_SAMPLING_PROTOCOL,
+    sample_privim,
+    sample_privim_star,
+    sample_released_legacy,
+)
 
 
 # ==================== PARAMETERS ====================
@@ -423,7 +429,7 @@ def transfer_dgl_to_igraph(filtered_dglgraph):
     return filtered_dglgraph, filtered_graph
 
 def random_walking_with_restart(graphs, dglgraphs, args):
-    """Build the subgraph container using the selected paper algorithm."""
+    """Build a subgraph container with the named sampling protocol."""
     if len(graphs) != 1 or len(dglgraphs) != 1:
         raise ValueError("the paper configuration expects one training graph")
 
@@ -435,10 +441,33 @@ def random_walking_with_restart(graphs, dglgraphs, args):
     setting = args.settings[0]
     q = min(1.0, args.num_subgraph / max(1, graph.vcount()))
     sampling_seed = getattr(args, "sampling_seed", args.current_seed)
-    rng = random.Random(sampling_seed)
+    # The released code seeded Python once and then let one sampling stream
+    # advance across rounds.  Strict runs instead construct a round-scoped RNG.
+    rng = getattr(args, "continuous_sampling_rng", None)
+    if rng is None:
+        rng = random.Random(sampling_seed)
+    numpy_rng = getattr(args, "continuous_sampling_numpy_rng", None)
+    if numpy_rng is None:
+        numpy_rng = np.random.RandomState(sampling_seed)
+    sampling_protocol = getattr(args, "sampling_protocol", PAPER_SAMPLING_PROTOCOL)
     started = time.time()
 
-    if setting == "PrivIM":
+    if sampling_protocol == RELEASED_LEGACY_SAMPLING_PROTOCOL:
+        sampling_graph = graph
+        target_count = int(q * graph.vcount())
+        result = sample_released_legacy(
+            graph,
+            size=args.subgraph_size,
+            boundary_divisor=args.boundary_divisor,
+            target_count=target_count,
+            restart_probability=args.restart_probability,
+            threshold=args.score_upper_bound,
+            decay=args.frequency_decay,
+            include_boundary_stage=setting in {"PrivIM+", "PrivIM*"},
+            python_rng=rng,
+            numpy_rng=numpy_rng,
+        )
+    elif sampling_protocol == PAPER_SAMPLING_PROTOCOL and setting == "PrivIM":
         sampling_graph, result = sample_privim(
             graph,
             size=args.subgraph_size,
@@ -449,7 +478,10 @@ def random_walking_with_restart(graphs, dglgraphs, args):
             walk_length=args.walk_length,
             rng=rng,
         )
-    elif setting in {"PrivIM+SCS", "PrivIM+", "PrivIM*"}:
+    elif (
+        sampling_protocol == PAPER_SAMPLING_PROTOCOL
+        and setting in {"PrivIM+SCS", "PrivIM+", "PrivIM*"}
+    ):
         sampling_graph = graph
         result = sample_privim_star(
             graph,
@@ -464,7 +496,10 @@ def random_walking_with_restart(graphs, dglgraphs, args):
             rng=rng,
         )
     else:
-        raise ValueError(f"unsupported sampling setting: {setting}")
+        raise ValueError(
+            f"unsupported sampling protocol/setting: "
+            f"{sampling_protocol}/{setting}"
+        )
 
     # Rebuild the message graph after theta projection, then induce DGL and
     # igraph subgraphs from exactly the same node sets.
@@ -484,11 +519,13 @@ def random_walking_with_restart(graphs, dglgraphs, args):
 
     sampling_elapsed = time.time() - started
     print(
-        f"Sampling {setting}: q={q:.6g}, stage1={result.stage1_count}, "
+        f"Sampling {setting} ({sampling_protocol}): q={q:.6g}, "
+        f"stage1={result.stage1_count}, "
         f"stage2={result.stage2_count}, max_frequency="
         f"{max(result.frequencies, default=0)}, elapsed={sampling_elapsed:.2f}s"
     )
     sampling_metadata = {
+        "sampling_protocol": sampling_protocol,
         "sampling_seed": sampling_seed,
         "feature_protocol": args.feature_protocol,
         "node_sets_sha256": hashlib.sha256(
@@ -497,17 +534,59 @@ def random_walking_with_restart(graphs, dglgraphs, args):
         "sampling_rate": q,
         "restart_probability": args.restart_probability,
         "walk_length": args.walk_length,
-        "sampling_hops": args.r,
-        "theta": args.theta if setting == "PrivIM" else None,
+        "walk_length_ignored": (
+            sampling_protocol == RELEASED_LEGACY_SAMPLING_PROTOCOL
+        ),
+        "legacy_max_repeated_visit_attempts": (
+            100
+            if sampling_protocol == RELEASED_LEGACY_SAMPLING_PROTOCOL
+            else None
+        ),
+        "sampling_hops": (
+            args.r if sampling_protocol == PAPER_SAMPLING_PROTOCOL else None
+        ),
+        "configured_sampling_hops": args.r,
+        "theta": (
+            args.theta
+            if sampling_protocol == PAPER_SAMPLING_PROTOCOL
+            and setting == "PrivIM"
+            else None
+        ),
         "frequency_threshold": (
-            args.score_upper_bound if setting != "PrivIM" else None
+            args.score_upper_bound
+            if sampling_protocol == RELEASED_LEGACY_SAMPLING_PROTOCOL
+            or setting != "PrivIM"
+            else None
         ),
         "frequency_decay": (
-            args.frequency_decay if setting != "PrivIM" else None
+            args.frequency_decay
+            if sampling_protocol == RELEASED_LEGACY_SAMPLING_PROTOCOL
+            or setting != "PrivIM"
+            else None
         ),
         "boundary_divisor": (
             args.boundary_divisor
             if setting in {"PrivIM+", "PrivIM*"} else None
+        ),
+        "target_subgraphs": int(q * graph.vcount()),
+        "stage2_target_subgraphs": (
+            (int(q * graph.vcount()) + 3) // 4
+            if sampling_protocol == RELEASED_LEGACY_SAMPLING_PROTOCOL
+            and setting in {"PrivIM+", "PrivIM*"}
+            else None
+        ),
+        "legacy_candidate_limit": (
+            1000
+            if sampling_protocol == RELEASED_LEGACY_SAMPLING_PROTOCOL
+            else None
+        ),
+        "neighbor_mode": (
+            "all"
+            if sampling_protocol == RELEASED_LEGACY_SAMPLING_PROTOCOL
+            else "out"
+        ),
+        "start_vertex_included": (
+            sampling_protocol != RELEASED_LEGACY_SAMPLING_PROTOCOL
         ),
         "stage1_subgraphs": result.stage1_count,
         "stage2_subgraphs": result.stage2_count,

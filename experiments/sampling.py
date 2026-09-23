@@ -13,6 +13,15 @@ import random
 from typing import Iterable, List, Optional, Sequence, Tuple
 
 import igraph
+import numpy as np
+
+
+PAPER_SAMPLING_PROTOCOL = "paper"
+RELEASED_LEGACY_SAMPLING_PROTOCOL = "released-legacy"
+SAMPLING_PROTOCOLS = (
+    PAPER_SAMPLING_PROTOCOL,
+    RELEASED_LEGACY_SAMPLING_PROTOCOL,
+)
 
 
 @dataclass
@@ -254,4 +263,180 @@ def sample_privim_star(
 
     if max(frequencies, default=0) > threshold:
         raise AssertionError("frequency sampler exceeded its privacy threshold")
+    return SamplingResult(stage1 + stage2, frequencies, len(stage1), len(stage2))
+
+
+def _released_legacy_walk_from_start(
+    graph: igraph.Graph,
+    start: int,
+    *,
+    size: int,
+    restart_probability: float,
+    max_attempts: int,
+    threshold: int,
+    decay: float,
+    frequencies: Sequence[int],
+    python_rng: random.Random,
+    numpy_rng: np.random.RandomState,
+) -> Optional[List[int]]:
+    """Reproduce revision 31166ca's frequency-weighted walk.
+
+    This intentionally differs from Algorithms 1 and 3: the starting vertex
+    is not inserted into the sampled set, directed graphs are traversed with
+    ``mode="all"``, and ``max_attempts`` counts repeated visits rather than a
+    fixed walk length.  It exists only for released-code provenance tests.
+    """
+    current = start
+    visited = set()
+    attempts = 0
+    while len(visited) < size and attempts < max_attempts:
+        if python_rng.random() < restart_probability:
+            current = start
+
+        # igraph's historical default graph.neighbors(v) uses all incident
+        # edges.  Preserve that behavior even for Email and Bitcoin.
+        neighbors = list(set(graph.neighbors(current, mode="all")))
+        candidates = [
+            node for node in neighbors if frequencies[node] < threshold
+        ]
+        if not candidates:
+            break
+
+        candidate_frequencies = np.asarray(
+            [frequencies[node] for node in candidates], dtype=float
+        )
+        if candidate_frequencies.sum() == 0:
+            probabilities = np.ones_like(candidate_frequencies)
+        else:
+            probabilities = 1.0 / np.power(candidate_frequencies + 1.0, decay)
+        probabilities /= probabilities.sum()
+        current = int(numpy_rng.choice(candidates, p=probabilities))
+        if current not in visited:
+            visited.add(current)
+            attempts = 0
+        else:
+            attempts += 1
+
+    return list(visited) if len(visited) == size else None
+
+
+def _released_legacy_frequency_stage(
+    graph: igraph.Graph,
+    *,
+    size: int,
+    target_count: int,
+    restart_probability: float,
+    max_attempts: int,
+    threshold: int,
+    decay: float,
+    frequencies: List[int],
+    python_rng: random.Random,
+    numpy_rng: np.random.RandomState,
+    candidate_limit: int = 1000,
+) -> List[List[int]]:
+    """Collect a fixed target count using the released retry semantics."""
+    node_sets: List[List[int]] = []
+    failed_starts = set()
+    while len(node_sets) < target_count:
+        candidates = []
+        for node, frequency in enumerate(frequencies):
+            if frequency != threshold and node not in failed_starts:
+                candidates.append(node)
+                if len(candidates) >= candidate_limit:
+                    break
+        if not candidates or min(frequencies, default=threshold) == threshold:
+            break
+
+        start = python_rng.choice(candidates)
+        nodes = _released_legacy_walk_from_start(
+            graph,
+            start,
+            size=size,
+            restart_probability=restart_probability,
+            max_attempts=max_attempts,
+            threshold=threshold,
+            decay=decay,
+            frequencies=frequencies,
+            python_rng=python_rng,
+            numpy_rng=numpy_rng,
+        )
+        if nodes is None:
+            failed_starts.add(start)
+            continue
+        node_sets.append(nodes)
+        for node in nodes:
+            frequencies[node] += 1
+
+    return node_sets
+
+
+def sample_released_legacy(
+    graph: igraph.Graph,
+    *,
+    size: int,
+    boundary_divisor: int,
+    target_count: int,
+    restart_probability: float,
+    threshold: int,
+    decay: float,
+    include_boundary_stage: bool,
+    python_rng: random.Random,
+    numpy_rng: np.random.RandomState,
+    max_attempts: int = 100,
+) -> SamplingResult:
+    """Reproduce the sampler shipped in revision 31166ca.
+
+    The released implementation repeatedly selected a start from the first
+    1,000 eligible vertex IDs until it collected ``q|V|`` subgraphs.  Its BES
+    stage reused the original graph and targeted one quarter as many
+    half-sized subgraphs.  These choices conflict with paper Algorithms 1/3,
+    so callers must label this as a non-strict compatibility diagnostic.
+    """
+    if size <= 0:
+        raise ValueError("size must be positive")
+    if boundary_divisor <= 0:
+        raise ValueError("boundary_divisor must be positive")
+    if target_count < 0:
+        raise ValueError("target_count must be non-negative")
+    if threshold <= 0:
+        raise ValueError("threshold must be positive")
+    if decay < 0:
+        raise ValueError("decay must be non-negative")
+    if max_attempts <= 0:
+        raise ValueError("max_attempts must be positive")
+
+    frequencies = [0] * graph.vcount()
+    stage1 = _released_legacy_frequency_stage(
+        graph,
+        size=size,
+        target_count=target_count,
+        restart_probability=restart_probability,
+        max_attempts=max_attempts,
+        threshold=threshold,
+        decay=decay,
+        frequencies=frequencies,
+        python_rng=python_rng,
+        numpy_rng=numpy_rng,
+    )
+
+    stage2: List[List[int]] = []
+    if include_boundary_stage:
+        # The historical loop used ``count < target_count / 4``.  For an
+        # integer counter this is equivalent to ceil(target_count / 4).
+        boundary_target = (target_count + 3) // 4
+        stage2 = _released_legacy_frequency_stage(
+            graph,
+            size=max(1, size // boundary_divisor),
+            target_count=boundary_target,
+            restart_probability=restart_probability,
+            max_attempts=max_attempts,
+            threshold=threshold,
+            decay=decay,
+            frequencies=frequencies,
+            python_rng=python_rng,
+            numpy_rng=numpy_rng,
+        )
+
+    if max(frequencies, default=0) > threshold:
+        raise AssertionError("released sampler exceeded its frequency threshold")
     return SamplingResult(stage1 + stage2, frequencies, len(stage1), len(stage2))

@@ -13,7 +13,10 @@ class _ProbabilisticModel(nn.Module):
         self.grat = backbone
 
     def forward(self, graph, features):
-        return torch.sigmoid(self.grat(graph, features))
+        return torch.sigmoid(self.logits(graph, features))
+
+    def logits(self, graph, features):
+        return self.grat(graph, features)
 
 
 class _GCN3(nn.Module):

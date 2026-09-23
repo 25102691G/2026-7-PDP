@@ -50,9 +50,10 @@ class GRAT2(nn.Module):
         )
 
     def forward(self, g, feature):
-        h = self.grat(g, feature)
-        h = torch.sigmoid(h)
-        return h
+        return torch.sigmoid(self.logits(g, feature))
+
+    def logits(self, g, feature):
+        return self.grat(g, feature)
 
 
 class GRAT3_(nn.Module):
@@ -81,9 +82,10 @@ class GRAT3(nn.Module):
         )  # out_feats=1
 
     def forward(self, g, feature):
-        h = self.grat(g, feature)
-        h = torch.sigmoid(h)
-        return h
+        return torch.sigmoid(self.logits(g, feature))
+
+    def logits(self, g, feature):
+        return self.grat(g, feature)
 
 
 class GRAT4_(nn.Module):
@@ -116,9 +118,10 @@ class GRAT4(nn.Module):
         )
 
     def forward(self, g, feature):
-        h = self.grat(g, feature)
-        h = torch.sigmoid(h)
-        return h
+        return torch.sigmoid(self.logits(g, feature))
+
+    def logits(self, g, feature):
+        return self.grat(g, feature)
 
 
 class GRATV2_(nn.Module):  # GRAT2 before sigmoid

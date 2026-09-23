@@ -52,15 +52,32 @@ improved Facebook from `84.55 +/- 11.65` to `91.45 +/- 6.32` and Email from
 `98.81 +/- 0.89` (paper 98.99) and LastFM `94.44 +/- 2.74` (paper 97.93).
 However, paired all-one controls reached `99.47 +/- 0.72` on Bitcoin and
 `97.48 +/- 2.13` on LastFM, outperforming degree32 on both. Degree32 is thus
-not a universal replacement for the released feature convention, and
-dataset-specific post-hoc feature selection must not be presented as one
-uniform reproduction protocol.
+not a universal replacement for the released feature convention. The final
+paired HepPh/Gowalla runs reinforce this conclusion: degree32 produced
+`79.79 +/- 15.46` and `87.59 +/- 13.93`, while all-one controls produced
+`72.45 +/- 11.06` and `99.22 +/- 1.33`, respectively. Degree32 modestly raises
+the unstable HepPh mean but severely degrades Gowalla; neither HepPh result
+approaches the paper's `98.42 +/- 0.31`. The six-dataset diagnostic is now
+complete, `ones` remains the uniform reproduction default, and dataset-specific
+post-hoc feature selection must not be presented as one uniform protocol.
 Degree normalization is computed on the complete prepared message graph
 before subgraph induction. Both degree protocols remain repository
-diagnostics, not values claimed by the paper, until cross-dataset validation
-and paired ones controls are complete. Training, evaluation, checkpoint
+diagnostics, not values claimed by the paper. Training, evaluation, checkpoint
 metadata and resume validation must use the same feature protocol and input
 dimension.
+
+### Equation (5) loss penalty
+
+The paper defines a positive trade-off coefficient `lambda` in Equation (5)
+but does not report its experimental value. Revision `31166ca` hard-codes
+`lambda=1`, retained as the uniform default. The explicit
+`--loss-penalty` diagnostic is recorded as `loss_lambda` and participates in
+resume validation. On HepPh, `lambda=0.5` raises Non-Private from
+`73.76 +/- 9.20` to `92.12 +/- 7.98` and strict epsilon 4 PrivIM* from
+`61.63 +/- 23.63` to `90.68 +/- 6.15`; epsilon 1 remains unstable at
+`48.04 +/- 31.45`. This is evidence that the unpublished coefficient is a
+material Table-II ambiguity, but post-hoc dataset-specific selection must not
+be presented as a uniform paper setting.
 
 ### Algorithm 1: base PrivIM
 
@@ -137,6 +154,141 @@ Unless a task explicitly changes the protocol, reproduction runs should use:
   `spread(method) / spread(CELF)`;
 - efficiency measured separately for preprocessing and per-epoch training.
 
+Evaluation ranks nodes by pre-sigmoid logits. This preserves the mathematical
+ordering of the probabilities specified in Section III-C while avoiding
+floating-point ties after sigmoid saturation. Equal logits use node ID as a
+deterministic secondary key, and result metadata includes the saturation
+fraction and top-k boundary ambiguity. This makes tied runs reproducible but
+does not treat genuine equal model scores as learned signal. Optional EMA
+parameter averaging is exposed only as a strict-DP post-processing diagnostic
+and is not part of the paper-default protocol. Batch size and `T` must remain explicit,
+and every tested combination must recalibrate noise using its actual optimizer
+step count.
+
+The initial controlled Email PrivIM* diagnostic at epsilon 4 and `T=200`
+reduced sample standard deviation from `35.30` for the final iterate to `27.05`
+with `B=16, EMA=0.99`, while mean coverage decreased from `56.67` to `54.44`.
+Using `B=8` with the same EMA gave `55.28 +/- 26.64` and increased
+post-average noise. EMA therefore remains a stability diagnostic, not a
+validated Table-II remedy or default.
+
+SGD momentum is likewise an explicit post-privatization diagnostic rather
+than a paper default. The controlled `epsilon=4`, `T=200`, `B=16` comparison
+with momentum `0.9` changed PrivIM* from `56.67 +/- 35.30` to
+`41.20 +/- 25.41` on Email, `91.17 +/- 3.89` to `71.75 +/- 31.62` on
+Facebook, and `98.48 +/- 1.03` to `80.01 +/- 27.16` on Gowalla. Keep the
+strict default at zero.
+
+Increasing the strict batch size from 16 to 32 at `epsilon=4`, `T=200` also
+failed as a uniform remedy. PrivIM* changed from `56.67 +/- 35.30` to
+`53.61 +/- 39.55` on Email, from `91.17 +/- 3.89` to `87.27 +/- 8.91` on
+Facebook, and from `98.48 +/- 1.03` to `98.51 +/- 1.06` on Gowalla.
+
+### Released-code privacy compatibility warning
+
+The released training loop is not a valid implementation of the paper's
+stated privacy composition. It sets `n_epoch=20` and calibrates Gaussian noise
+for 20 steps, but each epoch traverses every DataLoader batch. The actual
+number of optimizer updates is therefore
+`20 * ceil(|Gsub| / B)`, not 20. With the containers produced by the current
+paper sampler this ranges from 40 updates on Email PrivIM* to 340 updates on
+Facebook PrivIM*. Re-accounting the released noise over the actual updates
+under the released accountant's normalization raises epsilon=4 to
+approximately 6.05 and 15.70, respectively. The same code also multiplies the
+noise occurrence multiplier by 2, inherited from a bounded/replacement-style
+sensitivity implementation, whereas the paper specifies unbounded adjacency
+and Equation 7 gives `C * Ng`. If that factor is treated as additional noise
+under the paper's unbounded sensitivity, the corresponding diagnostics are
+approximately 2.53 and 6.49. Neither interpretation repairs the mismatch:
+the released loop did not compose its actual update count, and its sensitivity
+convention conflicts with Equation 7.
+
+The released base-PrivIM path also uses the manually supplied
+`score_upper_bound=10` and sampling hop `r=1`, despite the paper specifying a
+three-layer GRAT and Equation 6 defining
+`Ng = sum(theta**i, i=0..r)`. The paper-faithful values `theta=10, r=3` give
+`Ng=1111`; for the observed base containers `Ng >= |Gsub|`, so every subgraph
+may be affected and there is no privacy amplification. This produces much
+larger noise than the released path. Consequently, Table II utility cannot be
+treated as evidence that the released checkpoints satisfy the paper's stated
+epsilon without resolving these inconsistencies. The repository keeps actual
+optimizer updates, `Ng`, and achieved epsilon explicit rather than silently
+emulating the under-accounted path.
+
+The launcher exposes this training/privacy behavior only as
+`--protocol-profile released-compatibility`. It restores 20 full shuffled
+DataLoader epochs, 20 calibration steps, private-SGD momentum 0.9,
+`StepLR(step_size=5, gamma=0.99)`, base occurrence bound 10, the
+fixed-batch accountant, the released noise factor 2, fixed model/batch/noise
+streams, and a continuous sampling RNG across rounds. Metadata sets
+`strict_privacy_claim=false` and stores both actual and accounted steps plus
+both epsilon diagnostics. A one-round Email PrivIM* smoke run produced 40
+actual updates and 98.84% coverage; it is evidence about released-code
+provenance, not a valid Table II reproduction claim at strict epsilon 4.
+The profile defaults to the current tested Algorithms 1/3 samplers and
+prepared data rather than silently reviving legacy sampling code.
+In particular, it keeps sampling at `r=3`: applying the released `r=1`
+literally to Algorithm 1 with `theta=10` gives at most 11 vertices in the
+bounded one-hop neighborhood and cannot form `n=40` subgraphs. The released
+manual bound 10 remains recorded separately as the compatibility conflict.
+
+The launcher also exposes the released sampler separately as
+`--sampling-protocol released-legacy`; it is never selected implicitly and
+requires `--protocol-profile released-compatibility`. Revision `31166ca` did
+not implement Algorithms 1/3 literally: it repeatedly chose starting vertices
+until collecting approximately `q|V|` successful subgraphs, considered only
+the first 1,000 eligible vertex IDs at each retry, traversed all incident edges
+even for directed graphs, omitted the starting vertex from the sampled node
+set, and reused the original graph for a BES stage capped at
+`ceil(q|V|/4)` half-sized subgraphs. The same frequency-threshold sampler was
+used for its setting named `PrivIM`, without Algorithm 1's theta projection or
+r-hop constraint. Checkpoint metadata identifies this diagnostic with
+`sampling_protocol=released-legacy`, records the ignored configured hop count,
+neighbor mode, target counts, and candidate cap, and continues to set
+`strict_privacy_claim=false`. The default `sampling_protocol=paper` remains
+the tested implementation of paper Algorithms 1 and 3.
+
+The completed six-dataset `released-compatibility` matrix using the paper
+sampler has aggregate Table-II MAE 9.40 percentage points. Its largest gaps
+are Facebook PrivIM* (`59.80 +/- 6.89`, paper `95.55`), Facebook PrivIM
+(`64.31 +/- 33.57`, paper `82.60`), LastFM PrivIM*
+(`76.78 +/- 10.56`, paper `93.76`), and Gowalla SCS
+(`78.65 +/- 8.26`, paper `95.47`). In Facebook, the paper BES implementation
+increased the container from roughly 115 SCS subgraphs to roughly 270 total
+subgraphs. Under the released 20-epoch loop this changed approximately 150
+optimizer updates into 350 while calibration remained fixed at 20 steps.
+This motivates the isolated released-sampler diagnostic; it does not justify
+changing the paper sampler or making a strict epsilon claim.
+
+The targeted released-sampler matrix confirms that this historical behavior
+is not a uniform Table-II solution. On Facebook it changes PrivIM* from
+`59.80 +/- 6.89` to `88.69 +/- 2.62`; on LastFM and Gowalla it changes SCS
+from `79.50 +/- 7.82` and `78.65 +/- 8.26` to `93.27 +/- 3.46` and
+`94.02 +/- 3.67`. However, the same sampler collapses base PrivIM to 24.00,
+36.11, and 5.68 on Facebook, LastFM, and Gowalla because it is not paper
+Algorithm 1. BES also lowers legacy-sampler SCS from 93.27 to 80.50 on LastFM
+and from 94.02 to 83.04 on Gowalla. In those runs BES changes both the
+container and the number of full-epoch updates, so the launcher exposes
+`--compatibility-update-cap N` to isolate the latter. This cap is accepted
+only with `released-compatibility`; it truncates actual updates while keeping
+the released 20-step calibration unchanged and remains non-strict.
+
+The paired cap results are Facebook PrivIM* `85.27 +/- 4.63` at 320 updates,
+LastFM PrivIM* `90.48 +/- 5.72` at 120 updates, and Gowalla PrivIM*
+`92.53 +/- 5.57` at 320 updates. Compared with the uncapped runs, the cap
+hurts Facebook by 3.42 points but improves LastFM and Gowalla by 9.98 and 9.49
+points. Thus container-dependent update count materially changes utility, but
+dataset-specific post-hoc caps are not a valid uniform reproduction protocol.
+
+Revision `31166ca` also generated noise with direct `torch.randn_like` calls,
+whereas the corrected implementation uses a dedicated generator seeded by
+`dp_noise_seed`. The launcher exposes this isolated difference as
+`--dp-noise-stream independent|legacy-global`. The latter is compatibility
+only, does not apply the dedicated DP-noise seed, and cannot carry a strict
+privacy/reproduction claim. Algorithm 2 specifies Gaussian perturbation but
+does not prescribe an RNG implementation, so `legacy-global` is provenance
+emulation rather than a paper algorithm requirement.
+
 The paper's baseline set is PrivIM, PrivIM*, EGN, HP, HP-GRAT, Non-Private,
 and CELF. The repository does not currently implement every external baseline;
 do not relabel a local method as an unavailable competitor.
@@ -185,13 +337,17 @@ protocol fields have been reviewed explicitly.
   fraction of all graph nodes influenced.
 - The paper reports means over five randomized runs. A result with high
   between-seed variance should not be characterized using only its mean.
-- Randomness is separated into sampling, model, and batch seeds. The default
+- Randomness is separated into sampling, model, batch, and DP Gaussian-noise
+  seeds. The default
   diagnostic protocol fixes the sampling seed across five rounds and varies
-  model/batch seeds, so initialization variance is not confounded with a
-  different Algorithm 1/3 container. `per-round` sampling is retained for a
-  separate variability measurement; fixing model and batch seeds in that mode
-  isolates sampling alone. Every checkpoint records the realized seeds and
-  the SHA-256 of its ordered sampled node sets.
+  model/batch/noise seeds, so no round reuses those streams accidentally.
+  Diagnostic runs can fix any three streams and vary the fourth. `per-round`
+  sampling is retained for a separate variability measurement; fixing model,
+  batch, and DP-noise seeds in that mode isolates sampling alone. Every
+  checkpoint records the realized seeds and the SHA-256 of its ordered sampled
+  node sets. The compatibility-only `legacy-global` noise stream deliberately
+  consumes PyTorch's global device RNG and records that `dp_noise_seed` was not
+  applied.
 - Do not assume that increasing epsilon alone explains a result if the sampled
   subgraph container also changes across runs; separate sampling,
   initialization, and DP-noise randomness during diagnosis.

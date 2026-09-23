@@ -5,17 +5,94 @@ import sys
 
 import torch
 import igraph
+import pandas as pd
 from types import SimpleNamespace
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "experiments"))
 
-from experiments.evaluate_models import load_net
+from experiments.evaluate_models import (
+    load_net,
+    ranking_diagnostics,
+    ranking_scores,
+    select_topk_nodes,
+    summarize_records,
+)
 from experiments.util import get_model
 from experiments.graph_util import gen_deg_feature, gen_deg_feature_padded
 
 
 class GratVariantTests(unittest.TestCase):
+    def test_summary_retains_non_private_rows_with_null_dp_fields(self):
+        rows = []
+        for seed, coverage in enumerate((98.0, 100.0)):
+            rows.append({
+                "graph": "email_test_edges.txt",
+                "setting": "PrivIM+",
+                "epsilon": "eps_10000",
+                "subgraph_size": "n_40",
+                "occurrence_bound": "Ng_4",
+                "feature_protocol": "ones",
+                "input_dim": 32,
+                "protocol_profile": "strict",
+                "sampling_protocol": "paper",
+                "training_protocol": "fixed-iterations",
+                "dp_noise_stream": None,
+                "strict_privacy_claim": False,
+                "model": "GRAT3",
+                "d": 1,
+                "k": 50,
+                "seed": seed,
+                "ranking_score_type": "logits",
+                "actual_optimizer_steps": 500,
+                "optimizer_update_cap": None,
+                "privacy_accounting_steps": None,
+                "calibration_epsilon": None,
+                "actual_steps_epsilon_nominal": None,
+                "actual_steps_epsilon_effective_noise": None,
+                "n_covered": coverage,
+                "coverage_ratio_percent": coverage,
+                "ranking_finite_fraction": 1.0,
+                "ranking_logit_std": 1.0,
+                "ranking_sigmoid_saturation_fraction": 0.0,
+                "ranking_boundary_tie_count": 1,
+                "ranking_topk_margin": 0.1,
+            })
+        summary = summarize_records(pd.DataFrame(rows))
+        self.assertEqual(len(summary), 1)
+        self.assertEqual(int(summary.iloc[0]["runs"]), 2)
+        self.assertEqual(float(summary.iloc[0]["coverage_ratio_mean"]), 99.0)
+
+    def test_ranking_uses_logits_without_sigmoid_ties(self):
+        class SaturatedModel(torch.nn.Module):
+            def logits(self, _graph, _features):
+                return torch.tensor([[100.0], [90.0], [80.0]])
+
+            def forward(self, graph, features):
+                return torch.sigmoid(self.logits(graph, features))
+
+        model = SaturatedModel()
+        probabilities = model(None, None).reshape(-1)
+        self.assertEqual(int(torch.unique(probabilities).numel()), 1)
+        scores = ranking_scores(model, None, None).reshape(-1)
+        self.assertTrue(torch.equal(
+            torch.topk(scores, 2).indices, torch.tensor([0, 1])
+        ))
+
+    def test_ranking_diagnostics_report_boundary_ties(self):
+        diagnostics = ranking_diagnostics(
+            torch.tensor([3.0, 2.0, 2.0, 1.0]), k=2
+        )
+        self.assertEqual(diagnostics["ranking_score_type"], "logits")
+        self.assertEqual(diagnostics["ranking_boundary_tie_count"], 2)
+        self.assertEqual(diagnostics["ranking_topk_margin"], 0.0)
+
+    def test_topk_ties_use_node_id_deterministically(self):
+        selected = select_topk_nodes(
+            torch.tensor([3.0, 2.0, 2.0, 2.0, 1.0]), k=3
+        )
+        self.assertTrue(torch.equal(selected, torch.tensor([0, 1, 2])))
+
     def test_degree_feature_protocol_is_normalized_and_three_dimensional(self):
         graph = igraph.Graph(
             n=3, edges=[(0, 1), (0, 2), (1, 2)], directed=True

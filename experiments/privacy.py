@@ -15,6 +15,24 @@ FIXED_BATCH_HYPERGEOMETRIC = "fixed_batch_hypergeometric"
 ACCOUNTANTS = (PAPER_BINOMIAL, FIXED_BATCH_HYPERGEOMETRIC)
 
 
+def parameter_noise_displacement_rms(
+    parameter_count: int,
+    noise_std_after_batch_average: float,
+    learning_rates: Iterable[float],
+) -> float:
+    """Root expected squared parameter displacement from independent DP noise."""
+    if parameter_count < 0:
+        raise ValueError("parameter_count must be non-negative")
+    if noise_std_after_batch_average < 0:
+        raise ValueError("noise standard deviation must be non-negative")
+    squared_learning_rates = sum(float(rate) ** 2 for rate in learning_rates)
+    return math.sqrt(
+        parameter_count
+        * noise_std_after_batch_average ** 2
+        * squared_learning_rates
+    )
+
+
 def sensitivity_occurrences(
     accountant: str,
     max_occurrences: int,
@@ -36,6 +54,14 @@ def sensitivity_occurrences(
     return min(population, int(batch_size))
 
 
+INDEPENDENT_DP_NOISE_STREAM = "independent"
+LEGACY_GLOBAL_DP_NOISE_STREAM = "legacy-global"
+DP_NOISE_STREAMS = (
+    INDEPENDENT_DP_NOISE_STREAM,
+    LEGACY_GLOBAL_DP_NOISE_STREAM,
+)
+
+
 class PrivateSGD(torch.optim.SGD):
     """SGD with per-subgraph clipping and noise on the summed gradient."""
 
@@ -47,6 +73,8 @@ class PrivateSGD(torch.optim.SGD):
         noise_multiplier: float,
         minibatch_size: int,
         microbatch_size: int = 1,
+        noise_seed: int = 0,
+        noise_stream: str = INDEPENDENT_DP_NOISE_STREAM,
         **kwargs,
     ):
         super().__init__(params, **kwargs)
@@ -54,8 +82,16 @@ class PrivateSGD(torch.optim.SGD):
         self.noise_multiplier = noise_multiplier
         self.minibatch_size = minibatch_size
         self.microbatch_size = microbatch_size
+        self.noise_seed = int(noise_seed)
+        if noise_stream not in DP_NOISE_STREAMS:
+            raise ValueError(f"unknown DP noise stream: {noise_stream}")
+        self.noise_stream = noise_stream
+        self._noise_generators = {}
         self.last_microbatch_norms = []
         self.last_clip_fraction = 0.0
+        self.last_clipped_gradient_sum_norm = 0.0
+        self.last_noise_norm = 0.0
+        self.last_noisy_gradient_sum_norm = 0.0
         for group in self.param_groups:
             group["accum_grads"] = [
                 torch.zeros_like(parameter) if parameter.requires_grad else None
@@ -94,18 +130,47 @@ class PrivateSGD(torch.optim.SGD):
                 norm > self.l2_norm_clip for norm in self.last_microbatch_norms
             )
             self.last_clip_fraction = clipped / len(self.last_microbatch_norms)
+        clipped_sum_squared_norm = 0.0
+        noise_squared_norm = 0.0
+        noisy_sum_squared_norm = 0.0
         for group in self.param_groups:
             for parameter, accumulated in zip(group["params"], group["accum_grads"]):
                 if parameter.requires_grad:
                     noisy_sum = accumulated.clone()
+                    clipped_sum_squared_norm += (
+                        accumulated.detach().norm(2).item() ** 2
+                    )
                     if self.noise_multiplier != 0:
-                        noisy_sum.add_(
-                            torch.randn_like(noisy_sum),
-                            alpha=self.l2_norm_clip * self.noise_multiplier,
-                        )
+                        if self.noise_stream == LEGACY_GLOBAL_DP_NOISE_STREAM:
+                            # Released revision 31166ca called randn_like
+                            # directly, consuming PyTorch's global RNG for the
+                            # tensor device. In this mode noise_seed is retained
+                            # only as provenance and is intentionally not used
+                            # to reseed that global stream.
+                            noise = torch.randn_like(noisy_sum)
+                        else:
+                            device_key = str(noisy_sum.device)
+                            generator = self._noise_generators.get(device_key)
+                            if generator is None:
+                                generator = torch.Generator(device=noisy_sum.device)
+                                generator.manual_seed(self.noise_seed)
+                                self._noise_generators[device_key] = generator
+                            noise = torch.randn(
+                                noisy_sum.shape,
+                                dtype=noisy_sum.dtype,
+                                device=noisy_sum.device,
+                                generator=generator,
+                            )
+                        noise.mul_(self.l2_norm_clip * self.noise_multiplier)
+                        noise_squared_norm += noise.detach().norm(2).item() ** 2
+                        noisy_sum.add_(noise)
+                    noisy_sum_squared_norm += noisy_sum.detach().norm(2).item() ** 2
                     parameter.grad = noisy_sum.mul(
                         self.microbatch_size / self.minibatch_size
                     )
+        self.last_clipped_gradient_sum_norm = clipped_sum_squared_norm ** 0.5
+        self.last_noise_norm = noise_squared_norm ** 0.5
+        self.last_noisy_gradient_sum_norm = noisy_sum_squared_norm ** 0.5
         return super().step(closure)
 
 

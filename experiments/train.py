@@ -13,11 +13,15 @@ import numpy as np
 from torch.utils.data import DataLoader, Dataset, RandomSampler
 import os
 import json
+import math
 from pathlib import Path
 from privacy import (
     FIXED_BATCH_HYPERGEOMETRIC,
     PrivateSGD,
+    INDEPENDENT_DP_NOISE_STREAM,
+    LEGACY_GLOBAL_DP_NOISE_STREAM,
     multiterm_rdp,
+    parameter_noise_displacement_rms,
     rdp_to_dp,
     sensitivity_occurrences,
 )
@@ -404,6 +408,53 @@ def collect_model_diagnostics(net, probe_graph):
         "parameter_max_abs": max_abs,
     }
 
+
+def training_step_count(dataset_size, batch_size, configured_units,
+                        training_protocol, optimizer_update_cap=None):
+    """Return the actual optimizer updates for a named training protocol."""
+    if dataset_size < batch_size:
+        raise ValueError(
+            f"batchsize ({batch_size}) must not exceed dataset size ({dataset_size})"
+        )
+    if configured_units <= 0:
+        raise ValueError("configured training units must be positive")
+    if optimizer_update_cap is not None and optimizer_update_cap <= 0:
+        raise ValueError("optimizer update cap must be positive")
+    if training_protocol == "fixed-iterations":
+        if optimizer_update_cap is not None:
+            raise ValueError(
+                "optimizer update cap is only supported for released-epochs"
+            )
+        return int(configured_units)
+    if training_protocol == "released-epochs":
+        steps = int(configured_units) * math.ceil(dataset_size / batch_size)
+        return min(steps, optimizer_update_cap) if optimizer_update_cap else steps
+    raise ValueError(f"unsupported training protocol: {training_protocol}")
+
+
+def update_parameter_ema(ema_parameters, net, decay):
+    """Update a detached EMA of model parameters after one optimizer step."""
+    if not 0.0 <= decay < 1.0:
+        raise ValueError("EMA decay must be in [0, 1)")
+    with torch.no_grad():
+        if ema_parameters is None:
+            return {
+                name: parameter.detach().clone()
+                for name, parameter in net.named_parameters()
+            }
+        for name, parameter in net.named_parameters():
+            ema_parameters[name].mul_(decay).add_(
+                parameter.detach(), alpha=1.0 - decay
+            )
+    return ema_parameters
+
+
+def apply_parameter_ema(ema_parameters, net):
+    """Replace live parameters with a previously accumulated EMA."""
+    with torch.no_grad():
+        for name, parameter in net.named_parameters():
+            parameter.copy_(ema_parameters[name])
+
 def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
           adj_matrices=None, graphs=None, dglgraphs=None, greedy_perfs=None, closed_edges=None, closed_graphs=None,
           model_name=None, d=None, seed=None, subgraph_size=None, num_subgraph=None,
@@ -415,7 +466,21 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
           experiment_metadata=None, output_root=None,
           lr_decay=1.0, lr_decay_steps=5, model_variant=None,
           model_initialization=None, batch_seed=0, sampling_seed=None,
-          clip_non_private=False):
+          dp_noise_seed=0, dp_noise_stream=INDEPENDENT_DP_NOISE_STREAM,
+          clip_non_private=False, protocol_profile="strict",
+          training_protocol="fixed-iterations",
+          privacy_accounting_steps=None, optimizer_momentum=0.0,
+          sensitivity_noise_factor=1.0, optimizer_update_cap=None,
+          parameter_averaging="none", ema_decay=0.99):
+
+    if (
+        dp_noise_stream == LEGACY_GLOBAL_DP_NOISE_STREAM
+        and protocol_profile != "released-compatibility"
+    ):
+        raise ValueError(
+            "legacy-global DP noise requires protocol_profile="
+            "released-compatibility"
+        )
 
     if use_cuda:
         net.cuda()
@@ -428,6 +493,14 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
     )
 
     target_delta_value = cal_target_delta(dataset_name, train_node_count)
+    actual_optimizer_steps = training_step_count(
+        len(dataset), batchsize, n_iteration, training_protocol,
+        optimizer_update_cap,
+    )
+    accounting_steps = (
+        actual_optimizer_steps
+        if privacy_accounting_steps is None else int(privacy_accounting_steps)
+    )
 
     avg_train_losses = []
     avg_train_perfs = []
@@ -442,6 +515,9 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
 
     # # parmas for dp
     achieved_epsilon = None
+    calibration_epsilon = None
+    actual_steps_epsilon_nominal = None
+    actual_steps_epsilon_effective_noise = None
     best_alpha = None
     sigma = None
     sensitivity_multiplier = None
@@ -454,7 +530,7 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
         sigma = get_noise_multiplier(
             target_epsilon=target_epsilon,
             target_delta=target_delta,
-            step_num=n_iteration,
+            step_num=accounting_steps,
             orders=orders,
             num_message_passing_steps=2,
             max_node_degree=10,
@@ -468,11 +544,11 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
             W = np.random.exponential(scale=1.0)
             sigma = np.sqrt(W) * sigma
         print(f"Given target epsilon, sigma is set to:{sigma}")
-        achieved_epsilon, best_alpha = account_privacy(
+        calibration_epsilon, best_alpha = account_privacy(
             num_message_passing_steps=2,
             max_node_degree=K,
             num_hops=d,
-            step_num=n_iteration,
+            step_num=accounting_steps,
             batch_size=batchsize,
             train_num=len(dataset),
             sigma=sigma,
@@ -482,10 +558,10 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
             privacy_accountant=privacy_accountant,
         )
         print(
-            f"Accounted epsilon: {achieved_epsilon:.4f} "
+            f"Calibration epsilon: {calibration_epsilon:.4f} "
             f"(delta={target_delta:.6g}, alpha={best_alpha:g})"
         )
-        if achieved_epsilon > target_epsilon + 0.01:
+        if calibration_epsilon > target_epsilon + 0.01:
             raise AssertionError("calibrated noise exceeds the requested privacy budget")
         sens = compute_base_sensitivity(max_degree=10,
                                         num_message_passing_steps=3,
@@ -495,14 +571,56 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
                                         privacy_accountant=privacy_accountant,
                                         dp_method='DP_ipd_0617')
         sensitivity_multiplier = sens
-        print(f"All the noise: {sens * sigma}")
+        noise_occurrence_multiplier = sens * sensitivity_noise_factor
+        actual_steps_epsilon_nominal, _ = account_privacy(
+            num_message_passing_steps=2,
+            max_node_degree=K,
+            num_hops=d,
+            step_num=actual_optimizer_steps,
+            batch_size=batchsize,
+            train_num=len(dataset),
+            sigma=sigma,
+            orders=orders,
+            target_delta=target_delta,
+            upper_bound=score_upper_bound,
+            privacy_accountant=privacy_accountant,
+        )
+        # Revision 31166ca multiplied the unbounded Lemma-2 sensitivity by 2
+        # when generating noise, while its accountant still consumed ``sigma``.
+        # Treating the extra factor as additional Gaussian noise gives the
+        # corresponding unbounded-adjacency diagnostic below.
+        actual_steps_epsilon_effective_noise, _ = account_privacy(
+            num_message_passing_steps=2,
+            max_node_degree=K,
+            num_hops=d,
+            step_num=actual_optimizer_steps,
+            batch_size=batchsize,
+            train_num=len(dataset),
+            sigma=sigma * sensitivity_noise_factor,
+            orders=orders,
+            target_delta=target_delta,
+            upper_bound=score_upper_bound,
+            privacy_accountant=privacy_accountant,
+        )
+        if protocol_profile == "strict":
+            achieved_epsilon = actual_steps_epsilon_effective_noise
+        print(f"All the noise: {noise_occurrence_multiplier * sigma}")
+        if accounting_steps != actual_optimizer_steps:
+            print(
+                "WARNING: compatibility privacy accounting uses "
+                f"{accounting_steps} steps for {actual_optimizer_steps} actual "
+                "optimizer updates; this run is not a strict paper epsilon run."
+            )
         optimizer = PrivateSGD(
             l2_norm_clip=l2_norm_clip,
-            noise_multiplier=sens * sigma,
+            noise_multiplier=noise_occurrence_multiplier * sigma,
             minibatch_size=batchsize,
             microbatch_size=1,
+            noise_seed=dp_noise_seed,
+            noise_stream=dp_noise_stream,
             params=net.parameters(),
             lr=lr,
+            momentum=optimizer_momentum,
         )
     elif clip_non_private:
         # Non-Private is PrivIM* with epsilon -> infinity (Section V-A).
@@ -522,41 +640,66 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
         optimizer, step_size=lr_decay_steps, gamma=lr_decay
     )
 
-    if len(dataset) < batchsize:
-        raise ValueError(
-            f"batchsize ({batchsize}) must not exceed dataset size ({len(dataset)})"
-        )
-
-    # Algorithm 2 defines T as the total number of private optimizer
-    # iterations.  At every iteration, draw one fresh, fixed-size batch
-    # uniformly from the complete subgraph container.  This also matches the
-    # fixed batch size used by the privacy accountant.
     batch_generator = torch.Generator()
     batch_generator.manual_seed(batch_seed)
-    train_sampler = RandomSampler(
-        dataset,
-        replacement=False,
-        num_samples=batchsize,
-        generator=batch_generator,
-    )
-    train_loader = DataLoader(
-        dataset,
-        batch_size=batchsize,
-        sampler=train_sampler,
-        collate_fn=my_collate_fn,
-        generator=batch_generator,
-    )
+    if training_protocol == "fixed-iterations":
+        # Algorithm 2 defines T as the total number of private optimizer
+        # iterations, each with one fresh fixed-size uniform batch.
+        train_sampler = RandomSampler(
+            dataset,
+            replacement=False,
+            num_samples=batchsize,
+            generator=batch_generator,
+        )
+        train_loader = DataLoader(
+            dataset,
+            batch_size=batchsize,
+            sampler=train_sampler,
+            collate_fn=my_collate_fn,
+            generator=batch_generator,
+        )
+
+        def training_batches():
+            for _ in range(n_iteration):
+                yield next(iter(train_loader))
+    else:
+        # Released revision 31166ca treated n_iteration as epochs and traversed
+        # every shuffled DataLoader batch, including the partial final batch.
+        train_loader = DataLoader(
+            dataset,
+            batch_size=batchsize,
+            shuffle=True,
+            collate_fn=my_collate_fn,
+        )
+
+        def training_batches():
+            yielded = 0
+            for _ in range(n_iteration):
+                for batch_data in train_loader:
+                    if (
+                        optimizer_update_cap is not None
+                        and yielded >= optimizer_update_cap
+                    ):
+                        return
+                    yielded += 1
+                    yield batch_data
     timer_list = []
     diagnostic_records = []
+    if parameter_averaging not in {"none", "ema"}:
+        raise ValueError(f"unknown parameter averaging mode: {parameter_averaging}")
+    if parameter_averaging == "ema" and not 0.0 <= ema_decay < 1.0:
+        raise ValueError("ema_decay must be in [0, 1)")
+    ema_parameters = None
+    ema_updates = 0
     # best_model_wts = net.state_dict()
     # best_loss = float('inf')
 
-    for iteration in range(n_iteration):
+    for iteration, batch_data in enumerate(training_batches()):
         timer = time.time()
         train_perfs = []
         train_losses = []
+        step_learning_rate = float(optimizer.param_groups[0]["lr"])
 
-        batch_data = next(iter(train_loader))
         batch_idx = batch_data['idx']
 
         batch_adj = []
@@ -588,7 +731,15 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
             k_train=k_train,
             iteration=iteration,
             clip_gradients=clip_gradients,
+            average_non_private_gradients=(
+                training_protocol != "released-epochs"
+            ),
         )
+        if parameter_averaging == "ema":
+            ema_parameters = update_parameter_ema(
+                ema_parameters, net, ema_decay
+            )
+            ema_updates += 1
 
         # train_perfs.append(perf)
         train_losses.append(sum(loss_list))
@@ -606,7 +757,10 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
         # train_perf = np.average(train_perfs)
         # avg_train_perfs.append(train_perf)
 
-        if iteration == 0 or (iteration + 1) % 10 == 0 or iteration + 1 == n_iteration:
+        if (
+            iteration == 0 or (iteration + 1) % 10 == 0
+            or iteration + 1 == actual_optimizer_steps
+        ):
             print(
                 f"Train Iteration {iteration} | Loss: {avg_train_loss:.2f} | "
                 f"Elapsed Time: {time.time() - timer:.2f}"
@@ -616,6 +770,7 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
             "iteration": iteration,
             "mean_loss": float(avg_train_loss),
             "elapsed_seconds": float(timer_list[-1]),
+            "learning_rate": step_learning_rate,
         }
         if clip_gradients:
             norms = optimizer.last_microbatch_norms
@@ -627,6 +782,13 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
                     float(np.max(norms)) if norms else None
                 ),
                 "clip_fraction": float(optimizer.last_clip_fraction),
+                "clipped_gradient_sum_norm": float(
+                    optimizer.last_clipped_gradient_sum_norm
+                ),
+                "noise_norm": float(optimizer.last_noise_norm),
+                "noisy_gradient_sum_norm": float(
+                    optimizer.last_noisy_gradient_sum_norm
+                ),
             })
         diagnostic_records.append(record)
 
@@ -636,6 +798,11 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
         #     logging.info("Early stopping")
         #     break
 
+    model_diagnostics["final_iterate"] = collect_model_diagnostics(
+        net, dglgraphs[0]
+    )
+    if ema_parameters is not None:
+        apply_parameter_ema(ema_parameters, net)
     model_diagnostics["final"] = collect_model_diagnostics(net, dglgraphs[0])
 
     # 保存权重
@@ -658,6 +825,23 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
         torch.save(net.state_dict(), model_path)
     else:
         torch.save(net.state_dict(), model_path)
+    trainable_parameters = sum(
+        parameter.numel() for parameter in net.parameters()
+        if parameter.requires_grad
+    )
+    noise_std_after_batch_average = (
+        l2_norm_clip * sensitivity_multiplier * sensitivity_noise_factor
+        * sigma / batchsize
+        if with_dp else None
+    )
+    dp_noise_parameter_displacement_rms = (
+        parameter_noise_displacement_rms(
+            trainable_parameters,
+            noise_std_after_batch_average,
+            (record["learning_rate"] for record in diagnostic_records),
+        )
+        if with_dp else None
+    )
     metadata = {
         "dataset": dataset_name,
         "setting": settings,
@@ -672,6 +856,11 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
         "model_seed": seed,
         "sampling_seed": sampling_seed,
         "batch_seed": batch_seed,
+        "dp_noise_seed": dp_noise_seed if with_dp else None,
+        "dp_noise_stream": dp_noise_stream if with_dp else None,
+        "dp_noise_seed_applied": bool(
+            with_dp and dp_noise_stream == INDEPENDENT_DP_NOISE_STREAM
+        ),
         "round": round,
         "d": d,
         "train_nodes": train_node_count,
@@ -679,7 +868,20 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
         "subgraph_container_size": len(dataset),
         "occurrence_bound": score_upper_bound,
         "batch_size": batchsize,
-        "iterations": n_iteration,
+        "iterations": actual_optimizer_steps,
+        "configured_training_units": n_iteration,
+        "training_protocol": training_protocol,
+        "epochs": n_iteration if training_protocol == "released-epochs" else None,
+        "actual_optimizer_steps": actual_optimizer_steps,
+        "optimizer_update_cap": optimizer_update_cap,
+        "privacy_accounting_steps": accounting_steps if with_dp else None,
+        "privacy_step_mismatch": bool(
+            with_dp and accounting_steps != actual_optimizer_steps
+        ),
+        "protocol_profile": protocol_profile,
+        "sampling_protocol": (experiment_metadata or {}).get(
+            "sampling_protocol", "paper"
+        ),
         "learning_rate": lr,
         "learning_rate_schedule": {
             "name": "StepLR",
@@ -691,28 +893,61 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
         "with_dp": with_dp,
         "non_private_clipping": bool(clip_non_private and not with_dp),
         "gradient_reduction": (
-            "clipped_per_subgraph_mean" if clip_gradients else "batch_mean"
+            "clipped_per_subgraph_mean"
+            if clip_gradients
+            else (
+                "batch_sum"
+                if training_protocol == "released-epochs"
+                else "batch_mean"
+            )
         ),
         "target_epsilon": target_epsilon if with_dp else None,
         "target_delta": target_delta_value if with_dp else None,
         "privacy_accountant": privacy_accountant if with_dp else None,
         "achieved_epsilon": achieved_epsilon if with_dp else None,
+        "calibration_epsilon": calibration_epsilon if with_dp else None,
+        "actual_steps_epsilon_nominal": (
+            actual_steps_epsilon_nominal if with_dp else None
+        ),
+        "actual_steps_epsilon_effective_noise": (
+            actual_steps_epsilon_effective_noise if with_dp else None
+        ),
+        "strict_privacy_claim": bool(
+            with_dp and protocol_profile == "strict"
+        ),
         "best_alpha": best_alpha if with_dp else None,
         "clip_norm": l2_norm_clip if clip_gradients else None,
         "sigma": sigma if with_dp else None,
         "sensitivity_occurrences": sensitivity_multiplier if with_dp else None,
+        "sensitivity_noise_factor": (
+            sensitivity_noise_factor if with_dp else None
+        ),
+        "noise_occurrence_multiplier": (
+            sensitivity_multiplier * sensitivity_noise_factor
+            if with_dp else None
+        ),
+        "paper_gradient_sensitivity": (
+            l2_norm_clip * sensitivity_multiplier if with_dp else None
+        ),
         "gradient_sensitivity": (
             l2_norm_clip * sensitivity_multiplier if with_dp else None
         ),
         "noise_std_on_gradient_sum": (
-            l2_norm_clip * sensitivity_multiplier * sigma if with_dp else None
+            l2_norm_clip * sensitivity_multiplier * sensitivity_noise_factor
+            * sigma if with_dp else None
         ),
         "noise_std_after_batch_average": (
-            l2_norm_clip * sensitivity_multiplier * sigma / batchsize
-            if with_dp else None
+            noise_std_after_batch_average
+        ),
+        "trainable_parameters": trainable_parameters,
+        "dp_noise_parameter_displacement_rms": (
+            dp_noise_parameter_displacement_rms
         ),
         "optimizer": "SGD",
-        "momentum": 0.0,
+        "momentum": optimizer_momentum if with_dp else 0.0,
+        "parameter_averaging": parameter_averaging,
+        "ema_decay": ema_decay if parameter_averaging == "ema" else None,
+        "ema_updates": ema_updates,
         "sampling": sampler_metadata or {},
         "experiment": experiment_metadata or {},
         "training_diagnostics": diagnostic_records,
@@ -732,7 +967,7 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
 def train_single(net, optimizer, scheduler, loss_function, batch_adj_matrices,
                  batch_graphs, batch_dglgraphs, batch_greedy_perfs,
                  batch_closed_edges, batch_closed_graphs, k_train, iteration,
-                 clip_gradients=True):
+                 clip_gradients=True, average_non_private_gradients=True):
     """
     单个batch的训练
     """
@@ -772,7 +1007,8 @@ def train_single(net, optimizer, scheduler, loss_function, batch_adj_matrices,
             out = net(dglgraph, dglgraph.ndata['feat']).squeeze(1)
             loss = loss_function(out, adj_mat, k_train)
             # total_loss += loss
-            (loss / batch_count).backward()
+            reduction = batch_count if average_non_private_gradients else 1
+            (loss / reduction).backward()
             # optimizer.microbatch_step()
             loss_list.append(loss.item())
         # optimizer.step_dp()

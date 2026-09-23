@@ -48,6 +48,69 @@ KS = [10 * n for n in range(1, 11)]
 bfs = timeout(seconds=TIME_LIMIT)(bfs)
 
 
+def ranking_scores(net, graph, features):
+    """Return pre-sigmoid scores for numerically stable top-k selection."""
+    logits = getattr(net, "logits", None)
+    if logits is not None:
+        return logits(graph, features)
+    # Historical wrappers expose their pre-sigmoid backbone as ``grat``.
+    return net.grat(graph, features)
+
+
+def ranking_diagnostics(scores, k):
+    """Summarize score saturation and ambiguity at the top-k boundary."""
+    flat_scores = scores.detach().float().reshape(-1)
+    finite = torch.isfinite(flat_scores)
+    safe_scores = torch.nan_to_num(
+        flat_scores, nan=-torch.inf, neginf=-torch.inf, posinf=torch.inf
+    )
+    probabilities = torch.sigmoid(safe_scores)
+    finite_probabilities = probabilities[finite]
+    saturation_fraction = (
+        float(
+            (
+                (finite_probabilities <= 1e-4)
+                | (finite_probabilities >= 1 - 1e-4)
+            ).float().mean()
+        )
+        if finite_probabilities.numel()
+        else np.nan
+    )
+    if k <= 0 or k > safe_scores.numel():
+        raise ValueError("k must be in [1, number of scores]")
+    ordered = torch.sort(safe_scores, descending=True).values
+    boundary = ordered[k - 1]
+    boundary_tie_count = int((safe_scores == boundary).sum())
+    margin = (
+        float(boundary - ordered[k])
+        if k < ordered.numel()
+        else np.nan
+    )
+    finite_scores = safe_scores[finite]
+    return {
+        "ranking_score_type": "logits",
+        "ranking_finite_fraction": float(finite.float().mean()),
+        "ranking_logit_std": (
+            float(finite_scores.std(unbiased=False))
+            if finite_scores.numel()
+            else np.nan
+        ),
+        "ranking_sigmoid_saturation_fraction": saturation_fraction,
+        "ranking_boundary_tie_count": boundary_tie_count,
+        "ranking_topk_margin": margin,
+    }
+
+
+def select_topk_nodes(scores, k):
+    """Select top-k logits with node id as a deterministic tie-breaker."""
+    flat_scores = scores.reshape(-1)
+    safe_scores = torch.nan_to_num(
+        flat_scores, nan=-torch.inf, neginf=-torch.inf, posinf=torch.inf
+    )
+    # Stable sorting preserves the original node-id order for equal logits.
+    return torch.argsort(safe_scores, descending=True, stable=True)[:k]
+
+
 def get_modelnames(path_to_models=PATH_TO_MODELS):
     return glob(str(Path(path_to_models) / "**" / "*.pt"), recursive=True)
 
@@ -130,10 +193,11 @@ def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks,
                 for i in range(repeat):
                     # Select seeds
                     t_start = time.time()
-                    out = net.grat(dglgraph, dglgraph.ndata['feat']).squeeze(1)
-                    # 排除nan
-                    out[torch.isnan(out)] = -1e9
-                    _, nn_seeds = torch.topk(out, k)
+                    out = ranking_scores(
+                        net, dglgraph, dglgraph.ndata['feat']
+                    ).squeeze(1)
+                    score_diagnostics = ranking_diagnostics(out, k)
+                    nn_seeds = select_topk_nodes(out, k)
                     ts[i] = (time.time() - t_start)
 
                 # Evaluate time
@@ -176,6 +240,7 @@ def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks,
                     "inference_seconds_std": t_std,
                     "memory_mib": memory,
                     "gpu": dglgraph.device.type == "cuda",
+                    **score_diagnostics,
                 })
         except Exception:
             logging.exception(f"Failed to evaluate on {graph_name}!")
@@ -194,7 +259,13 @@ def evaluate_model(net, d, model_name, seed, graph_name, graph, dglgraph, ks,
                 "inference_seconds_mean": np.nan,
                 "inference_seconds_std": np.nan,
                 "memory_mib": np.nan,
-                "gpu": dglgraph.device.type == "cuda"
+                "gpu": dglgraph.device.type == "cuda",
+                "ranking_score_type": "logits",
+                "ranking_finite_fraction": np.nan,
+                "ranking_logit_std": np.nan,
+                "ranking_sigmoid_saturation_fraction": np.nan,
+                "ranking_boundary_tie_count": np.nan,
+                "ranking_topk_margin": np.nan,
             })
     return records
 
@@ -304,6 +375,39 @@ def evaluate_models(
                 df_result.insert(5, "occurrence_bound", experiment["occurrence_bound"])
                 df_result.insert(6, "feature_protocol", feature_protocol)
                 df_result.insert(7, "input_dim", input_dim)
+                df_result["protocol_profile"] = metadata.get(
+                    "protocol_profile", "strict"
+                )
+                df_result["sampling_protocol"] = metadata.get(
+                    "sampling_protocol", "paper"
+                )
+                df_result["dp_noise_stream"] = metadata.get(
+                    "dp_noise_stream", "independent"
+                )
+                df_result["training_protocol"] = metadata.get(
+                    "training_protocol", "fixed-iterations"
+                )
+                df_result["strict_privacy_claim"] = bool(
+                    metadata.get("strict_privacy_claim", False)
+                )
+                df_result["actual_optimizer_steps"] = metadata.get(
+                    "actual_optimizer_steps", metadata.get("iterations")
+                )
+                df_result["optimizer_update_cap"] = metadata.get(
+                    "optimizer_update_cap"
+                )
+                df_result["privacy_accounting_steps"] = metadata.get(
+                    "privacy_accounting_steps"
+                )
+                df_result["calibration_epsilon"] = metadata.get(
+                    "calibration_epsilon", metadata.get("achieved_epsilon")
+                )
+                df_result["actual_steps_epsilon_nominal"] = metadata.get(
+                    "actual_steps_epsilon_nominal"
+                )
+                df_result["actual_steps_epsilon_effective_noise"] = metadata.get(
+                    "actual_steps_epsilon_effective_noise"
+                )
                 output_dir = path_to_output / experiment["relative_parent"]
                 output_dir.mkdir(parents=True, exist_ok=True)
                 output_file = output_dir / f"{param_name_body}.csv"
@@ -312,25 +416,61 @@ def evaluate_models(
                 logging.info(f"Saving results of {graph_name_body} to {output_file}!")
     if all_records:
         frame = pd.DataFrame(all_records)
-        summary = (
+        summary = summarize_records(frame)
+        summary.to_csv(path_to_output / "summary.csv", index=False)
+    return
+
+
+def summarize_records(frame):
+    """Aggregate per-checkpoint evaluation rows without dropping baselines.
+
+    Non-private checkpoints intentionally have no DP-noise stream.  Pandas
+    drops groups containing a null grouping key by default, which previously
+    removed every ``eps_10000`` row from the run summary even though the
+    individual evaluation CSV files had been written successfully.
+    """
+    return (
             frame.groupby(
                 [
                     "graph", "setting", "epsilon", "subgraph_size",
                     "occurrence_bound", "feature_protocol", "input_dim",
-                    "model", "d", "k",
+                    "protocol_profile", "sampling_protocol",
+                    "training_protocol", "dp_noise_stream",
+                    "strict_privacy_claim", "model", "d", "k",
                 ],
                 as_index=False,
+                dropna=False,
             )
             .agg(
                 runs=("seed", "count"),
+                ranking_score_type=("ranking_score_type", "first"),
+                actual_optimizer_steps=("actual_optimizer_steps", "first"),
+                optimizer_update_cap=("optimizer_update_cap", "first"),
+                privacy_accounting_steps=("privacy_accounting_steps", "first"),
+                calibration_epsilon=("calibration_epsilon", "first"),
+                actual_steps_epsilon_nominal=(
+                    "actual_steps_epsilon_nominal", "first"
+                ),
+                actual_steps_epsilon_effective_noise=(
+                    "actual_steps_epsilon_effective_noise", "first"
+                ),
                 influence_mean=("n_covered", "mean"),
                 influence_std=("n_covered", "std"),
                 coverage_ratio_mean=("coverage_ratio_percent", "mean"),
                 coverage_ratio_std=("coverage_ratio_percent", "std"),
+                ranking_finite_fraction=(
+                    "ranking_finite_fraction", "mean"
+                ),
+                ranking_logit_std=("ranking_logit_std", "mean"),
+                ranking_sigmoid_saturation_fraction=(
+                    "ranking_sigmoid_saturation_fraction", "mean"
+                ),
+                ranking_boundary_tie_count_mean=(
+                    "ranking_boundary_tie_count", "mean"
+                ),
+                ranking_topk_margin_mean=("ranking_topk_margin", "mean"),
             )
         )
-        summary.to_csv(path_to_output / "summary.csv", index=False)
-    return
 
 
 if __name__ == '__main__':

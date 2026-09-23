@@ -109,16 +109,45 @@ Direct training commands write below `outputs/`. The full launcher writes each
 experiment below `outputs/runs/<run_id>/`, with a manifest that fixes its data,
 privacy and command provenance.
 
+Sampling is independently named. `--sampling-protocol paper` is the default
+and implements Algorithms 1 and 3. For provenance diagnosis only,
+`--sampling-protocol released-legacy` reproduces revision `31166ca`'s retry
+sampler, bidirectional traversal of directed graphs, and capped boundary
+stage. It is accepted only together with
+`--protocol-profile released-compatibility`; its checkpoints explicitly
+refuse a strict privacy claim. Keeping these switches independent prevents a
+released-code diagnostic from silently replacing the paper algorithm.
+For the BES/update-count isolation experiment, the launcher additionally
+accepts `--compatibility-update-cap N`. It is valid only under
+`released-compatibility`, truncates the historical full-epoch traversal after
+`N` optimizer updates, and deliberately leaves its 20-step noise calibration
+unchanged. The cap is diagnostic metadata, not a privacy repair.
+
 Random sources are explicit and separated. By default, all five rounds reuse
 one subgraph container (`--sampling-seed 0 --sampling-seed-mode fixed`), while
 model initialization and batch selection use independent per-round sequences
 from `--model-seed 0 --model-seed-mode per-round` and
-`--batch-seed 0 --batch-seed-mode per-round`. Use
+`--batch-seed 0 --batch-seed-mode per-round`. Private runs additionally use
+an independent Gaussian-noise sequence from
+`--dp-noise-seed 0 --dp-noise-seed-mode per-round`. Use
 `--sampling-seed-mode per-round` only when measuring end-to-end sampling
 variability. To isolate sampling alone, set sampling to `per-round` and both
-model/batch modes to `fixed`. Checkpoint metadata records all three realized
-seeds and a hash of the sampled node sets. Runs created before this protocol
+model/batch modes to `fixed`; also hold DP noise fixed for private runs.
+Checkpoint metadata records all four realized seeds and a hash of the sampled
+node sets. Runs created before this protocol
 require a new run ID; they are not resumed in place.
+
+For released-code provenance only, `--dp-noise-stream legacy-global`
+restores revision `31166ca`'s direct `torch.randn_like` calls. It is accepted
+only with `--protocol-profile released-compatibility`; the default
+`independent` stream remains the reproducible protocol. In legacy-global mode
+the separately supplied DP-noise seed is recorded but not applied because the
+noise consumes PyTorch's already-seeded global RNG for the tensor device.
+
+On multi-GPU hosts, pin each reproduction process to a physical GPU with
+`--gpu-id N`. The launcher sets `CUDA_VISIBLE_DEVICES=N` for all of that run's
+training and evaluation subprocesses, where the selected card is exposed as
+logical `cuda:0`. Use a distinct `--run-id` for every concurrent process.
 
 ## Evaluation
 
@@ -130,7 +159,12 @@ The paper reports one-step IC influence with edge probability 1 and `k=50`:
 
 Per-run CSV files retain their full experiment path. The command also writes
 `outputs/evaluation/summary.csv` containing the mean and sample standard
-deviation over runs.
+deviation over runs. Seed selection uses pre-sigmoid logits, which is
+mathematically order-equivalent to probabilities but avoids numerical ties
+introduced by sigmoid saturation. Equal logits use ascending node ID as a
+deterministic secondary key. Evaluation records the saturation fraction,
+top-k boundary tie count, logit dispersion, and top-k margin; a large tie count
+still indicates genuine model collapse rather than an evaluation fix.
 
 ## Full experiment launcher
 
@@ -161,6 +195,76 @@ The paper reproduction keeps the reported learning rate fixed at `0.005`
 `StepLR(step_size=5, gamma=0.99)` is available as a compatibility experiment;
 it reduced Facebook variance in a controlled run but also reduced mean
 coverage. The selected schedule is stored with every checkpoint.
+
+For strict-DP stability diagnostics, the launcher exposes batch size and
+optional exponential moving averaging of private optimizer iterates:
+
+```bash
+.venv/bin/python experiments/run_reproduction.py \
+  --dataset email --epsilon 4 --settings PrivIM+ \
+  --iterations 200 --batch-size 8 \
+  --parameter-averaging ema --ema-decay 0.99 \
+  --skip-prepare --skip-non-private \
+  --run-id diagnostic-email-t200-b8-ema
+```
+
+EMA is DP post-processing and does not change the accounted epsilon, but it is
+an explicit diagnostic rather than the paper default. It is rejected by the
+released-code compatibility profile. Use separate run IDs when comparing
+`T` and batch-size combinations.
+
+The launcher also exposes `--optimizer-momentum` as a strict-DP optimizer
+diagnostic. Momentum is applied only after private-gradient construction, so
+it does not change privacy accounting, but it is not a reported paper
+default. A controlled `epsilon=4`, `T=200`, momentum `0.9` experiment reduced
+utility and increased variance on Facebook and Gowalla; the strict default
+therefore remains `0`.
+
+The paper's Equation (5) leaves the penalty coefficient `lambda` unspecified.
+The released code uses `lambda=1`, which remains the uniform default. The
+launcher exposes it as `--loss-penalty` and stores it as `loss_lambda` in each
+checkpoint. A controlled HepPh diagnostic found that `lambda=0.5` improves
+Non-Private from `73.76 +/- 9.20` to `92.12 +/- 7.98` and strict epsilon 4
+PrivIM* from `61.63 +/- 23.63` to `90.68 +/- 6.15`. At epsilon 1 it reaches
+only `48.04 +/- 31.45`, so this is a dataset-specific diagnostic, not a new
+global reproduction default.
+
+### Released-code compatibility diagnostic
+
+To reproduce the audited behavior of released revision `31166ca` without
+changing the strict defaults, use the isolated profile:
+
+```bash
+.venv/bin/python experiments/run_reproduction.py \
+  --protocol-profile released-compatibility \
+  --dataset email facebook gowalla \
+  --epsilon 4 \
+  --settings PrivIM PrivIM+SCS PrivIM+ \
+  --device auto \
+  --skip-prepare --skip-non-private \
+  --run-id released-compatibility-eps4
+```
+
+This profile retains the current tested Algorithms 1/3 samplers and prepared
+data, but intentionally restores the released training/privacy behavior: 20
+full DataLoader epochs while privacy
+noise is calibrated for 20 steps, base `Ng=10`, private-SGD momentum
+`0.9`, `StepLR(gamma=0.99, step_size=5)`, the fixed-batch accountant, the
+released sensitivity/noise factor of 2, fixed model/batch/noise streams, and
+one Python sampling stream advancing across rounds. It is a provenance
+diagnostic, not a strict paper epsilon run. Checkpoint metadata records
+`privacy_accounting_steps`, `actual_optimizer_steps`,
+`actual_steps_epsilon_nominal`, and
+`actual_steps_epsilon_effective_noise`; `strict_privacy_claim` is always false
+for this profile. A one-round Email PrivIM* smoke run completed 40 actual
+updates from 20 configured epochs/20 calibration steps and reached 98.84%
+coverage, demonstrating
+why this distinction materially affects Table II comparisons.
+The released CLI declared `r=1`, but applying that value literally to paper
+Algorithm 1 with `theta=10` cannot produce its `n=40` subgraphs (the bounded
+one-hop neighborhood has at most 11 vertices). The compatibility profile
+therefore retains the tested paper sampler at `r=3` and records the released
+manual base bound `Ng=10` as a separate, intentionally inconsistent override.
 
 `--skip-prepare` now performs a strict preflight. Legacy prepared data that do
 not record the requested isolated-node and self-loop policies are rejected;
@@ -194,6 +298,8 @@ PYTHONPATH=. .venv/bin/python -m unittest discover -s tests -v
 The tests cover theta projection, fixed-size/r-hop RWR, the frequency bound,
 BES accounting, both isolated-node policies, DP-SGD clipping, named privacy
 accountants, explicit sensitivity selection, and accountant monotonicity.
+They also cover the released compatibility profile, epoch-to-update expansion,
+continuous sampling stream, and resume isolation between protocol profiles.
 
 ## Implemented model scope
 

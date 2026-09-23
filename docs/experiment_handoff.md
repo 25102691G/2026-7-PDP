@@ -1,6 +1,6 @@
 # PrivIM experiment and implementation handoff
 
-Last updated: 2026-09-18 (Asia/Shanghai)
+Last updated: 2026-09-21 (Asia/Shanghai)
 
 This document is the durable handoff for continuing the PrivIM reproduction
 on another machine. Read it together with `AGENTS.md`,
@@ -10,13 +10,13 @@ the primary technical specification.
 ## 1. Critical repository state
 
 - Branch: `main`
-- Source implementation commits: `9e4ec16` (`Non private对齐`) and
-  `aa338b5` (handoff/guide corrections), both based on `f4a5ea3`.
-- At the time of this handoff update, local `main` was two commits ahead of
-  `origin/main`. Push the migration commit before cloning on another machine.
+- Current source/migration commit: `2fe2645`, including implementation commit
+  `9e4ec16` (`Non private对齐`) and guide correction `aa338b5`, based on
+  `f4a5ea3`. Local `main` and `origin/main` matched before the documentation
+  updates recorded in this handoff.
 - Paper SHA-256:
   `cf7fc97430366bec111d230d1a945a79c844980dd791373c1d04374514c647ad`
-- Current test status: **31 tests passing** with
+- Current test status: **49 tests passing** with
   `.venv/bin/python -m unittest discover -s tests`.
 - The source, documentation, and tests are committed. The deterministic
   prepared splits and a curated set of run manifests/evaluation summaries are
@@ -100,6 +100,167 @@ Table II non-private targets:
 - `--clip-non-private` implements the literal zero-noise limit of Algorithm 2
   while keeping per-subgraph clipping. It is diagnostic-only.
 
+### Private reproduction audit
+
+Controlled epsilon=4 experiments separated model, sampling, batch, and DP
+noise seeds. Batch variability was negligible, sampling was generally small,
+model initialization dominated Facebook variance, and DP noise dominated
+Email variance. At T=500, Email PrivIM* remained bimodal and Facebook PrivIM*
+reached `90.33 +/- 4.37`; increasing T raises the per-update noise required by
+composition and does not remove the unstable trajectories.
+
+The first strict EMA/batch diagnostics on Email PrivIM* at epsilon 4 and
+`T=200` are complete. Re-evaluating the original `B=16`, final-iterate
+checkpoints with deterministic logit tie-breaking gives the unchanged
+`56.67 +/- 35.30`. Holding the same five seeds, accountant, container and
+`B=16` while saving an EMA with decay 0.99 gives `54.44 +/- 27.05`; changing
+the batch size to 8 within the EMA experiment gives `55.28 +/- 26.64`. Both
+runs achieve epsilon about 3.997. EMA reduces dispersion and sigmoid
+saturation but does not raise mean utility, and it compresses logits enough to
+increase top-k boundary ties. Batch 8 also raises the post-average
+per-coordinate noise from 5.55 to 6.38. Keep EMA explicit and diagnostic-only;
+do not promote it to the paper default from this result.
+
+Two further strict `epsilon=4`, `T=200` five-seed pilots are complete. Raising
+the batch size from 16 to 32 did not improve PrivIM*: Email changed from
+`56.67 +/- 35.30` to `53.61 +/- 39.55`, Facebook from `91.17 +/- 3.89` to
+`87.27 +/- 8.91`, and Gowalla from `98.48 +/- 1.03` to
+`98.51 +/- 1.06`. Applying SGD momentum `0.9` after private-gradient
+construction was substantially worse: `41.20 +/- 25.41`,
+`71.75 +/- 31.62`, and `80.01 +/- 27.16`, respectively. Keep `B=16` and
+momentum zero as strict defaults. The runs are `strict-b32-t200-pilot` and
+`strict-momentum09-t200-pilot`.
+
+Evaluation summary grouping now retains Non-Private checkpoints whose DP-only
+metadata fields are null. The six-dataset `paper-all-eps1-4-20260922` summary
+therefore contains 42 rows: 18 for epsilon 1, 18 for epsilon 4, and six
+Non-Private baselines.
+
+The HepPh Oracle/data audit is complete. The raw graph exactly matches paper
+Table I (12,008 nodes and 118,489 undirected edges), prepared local IDs are
+contiguous and disjoint, and CELF covers 1,741 test nodes at k=50. Evaluating
+the same checkpoints on the complete raw graph gives `72.55 +/- 8.41`, close
+to the prepared-test result `73.76 +/- 9.20`, so removing cross-split edges is
+not the main gap. The default models overlap CELF's Top-50 by only 20.2 nodes
+on average.
+
+Equation (5) specifies `lambda > 0` but the paper does not publish its value;
+the released code hard-codes 1. An explicit loss-penalty sweep found a strong
+HepPh-specific improvement at `lambda=0.5`: Non-Private becomes
+`92.12 +/- 7.98`, and strict epsilon 4 PrivIM* becomes
+`90.68 +/- 6.15` at accounted epsilon 3.995, versus the prior
+`61.63 +/- 23.63`. Strict epsilon 1 improves only from
+`41.07 +/- 30.50` to `48.04 +/- 31.45` and retains severe boundary ties, so
+noise remains dominant there. `lambda=16`, suggested by an unconstrained
+full-test-graph soft oracle, collapses real subgraph training to
+`5.63 +/- 0.38` because its scale does not transfer to n=60 training
+subgraphs. Keep the uniform default at 1; report 0.5 as a HepPh diagnostic
+until the authors' experimental lambda is known. Relevant runs are
+`diagnostic-hepph-lambda05`, `diagnostic-hepph-lambda05-eps4`, and
+`diagnostic-hepph-lambda05-eps1`.
+
+Parameter growth is quantitatively noise-dominated. Email PrivIM* at T=500
+has 2,340 trainable parameters and per-coordinate post-average noise standard
+deviation 8.72. With learning rate 0.005, the noise-only parameter displacement
+RMS is about `sqrt(2340*500)*0.005*8.72 = 47.1`, while observed final parameter
+norms are 46.6--47.9. New checkpoint diagnostics record clipped-gradient,
+noise, noisy-gradient norms and the expected cumulative noise displacement.
+
+The released code contains two privacy-critical compatibility conflicts:
+
+1. it calibrates for `n_epoch=20` privacy steps but performs
+   `20 * ceil(|Gsub|/16)` optimizer updates (40 for Email PrivIM* and 340 for
+   Facebook PrivIM* in the audited containers); re-accounting changes claimed
+   released-accountant epsilon=4 to about 6.05 and 15.70 respectively. The
+   released optimizer also multiplies its noise occurrence multiplier by 2;
+   interpreting that factor as extra noise under the paper's unbounded
+   Equation 7 gives separate diagnostics of about 2.53 and 6.49;
+2. base PrivIM uses `score_upper_bound=10` and sampling `r=1`, rather than the
+   paper Equation 6 value `Ng=1111` for theta 10 and the three-layer model.
+
+These discrepancies explain why strictly accounted runs add much more noise
+than the released empirical path. Do not reduce `T`, `Ng`, or the noise merely
+to recover Table II without labeling the resulting run as a non-private or
+under-accounted compatibility diagnostic.
+
+An explicit `released-compatibility` launcher profile now isolates this path.
+It restores the released 20-epoch traversal, 20-step calibration, base
+bound 10, momentum 0.9, gamma 0.99 scheduler, fixed-batch accountant, factor-2
+noise convention, fixed model/batch/noise streams, and a sampling stream that
+advances across rounds. Metadata refuses a strict epsilon claim and records
+accounted steps, actual updates, and both epsilon interpretations. The GPU
+smoke run `smoke-released-compatibility-v2` completed 40 updates for Email
+PrivIM* and obtained 98.84% coverage in one round.
+The current Algorithm 1 sampler remains at `r=3`; literal released `r=1` with
+`theta=10` cannot collect `n=40` nodes from a bounded one-hop neighborhood.
+The released manual base bound 10 is recorded independently as an intentional
+compatibility conflict.
+
+The complete compatibility matrix with the paper sampler is stored in
+`released-compat-eps4-small`, `released-compat-eps4-medium`, and
+`released-compat-eps4-gowalla`. Across all 18 configurations its Table-II MAE
+is about 9.40 percentage points and 9 configurations have sample standard
+deviation above 5. Notable failures are Facebook PrivIM*
+`59.80 +/- 6.89`, LastFM PrivIM* `76.78 +/- 10.56`, and Gowalla SCS
+`78.65 +/- 8.26`. Facebook SCS is `91.05 +/- 11.23`, but adding the paper BES
+stage expands its sampled container from about 115 to about 270 subgraphs;
+the released 20-epoch training loop consequently grows from about 150 to 350
+updates while still accounting for 20.
+
+An isolated `--sampling-protocol released-legacy` diagnostic now reproduces
+revision `31166ca`'s sampling quirks without changing the paper default. It
+retries starts until `q|V|` successful samples, scans at most the first 1,000
+eligible IDs, traverses all incident edges on directed graphs, omits the start
+from the sampled set, and caps BES at `ceil(q|V|/4)` half-sized subgraphs on
+the unreduced original graph. It requires
+`--protocol-profile released-compatibility`, is recorded in manifests,
+checkpoints, and evaluation summaries, and never carries a strict epsilon
+claim. The next bounded experiment should compare this sampler on Facebook,
+LastFM, and Gowalla; do not rerun the existing paper-sampler matrix.
+The end-to-end GPU smoke `smoke-released-legacy-email-gpu` generated 31 large
+and 2 boundary subgraphs for Email PrivIM*, performed 60 actual updates while
+accounting for 20, and obtained 92.82% coverage in one round. Its nominal
+actual-step epsilon diagnostic is 7.77 (3.21 when the released factor-two
+noise is treated as extra noise), so it is provenance evidence only.
+
+The completed targeted released-sampler runs are
+`diagnostic-released-legacy-facebook`,
+`diagnostic-released-legacy-lastfm`, and
+`diagnostic-released-legacy-gowalla`. Their key results are:
+
+| Dataset | Legacy PrivIM | Legacy SCS | Legacy PrivIM* |
+|---|---:|---:|---:|
+| Facebook | 24.00 +/- 2.65 | 79.96 +/- 13.65 | 88.69 +/- 2.62 |
+| LastFM | 36.11 +/- 7.93 | 93.27 +/- 3.46 | 80.50 +/- 9.96 |
+| Gowalla | 5.68 +/- 8.03 | 94.02 +/- 3.67 | 83.04 +/- 3.27 |
+
+The legacy sampler therefore helps selected enhanced configurations but is
+not a unified reproduction protocol. In particular, BES raises Facebook but
+lowers LastFM and Gowalla relative to their legacy SCS runs. It also raises
+actual updates from 320 to 400 on Facebook/Gowalla and from 120 to 140--160
+on LastFM. `--compatibility-update-cap N` now isolates that update-count
+effect without changing the sampled container, scheduler, momentum, or
+20-step privacy calibration. It is diagnostic-only and requires the released
+compatibility profile.
+
+The completed paired cap experiments give Facebook PrivIM* `85.27 +/- 4.63`
+at 320 updates (down from `88.69 +/- 2.62` at 400), LastFM PrivIM*
+`90.48 +/- 5.72` at 120 updates (up from `80.50 +/- 9.96` at 140--160), and
+Gowalla PrivIM* `92.53 +/- 5.57` at 320 updates (up from `83.04 +/- 3.27` at
+400). The sampled-node hashes, initial model norm, and realized seeds match
+round-by-round within each pair. Update count is therefore a causal source of
+the LastFM/Gowalla degradation, but no uniform cap reproduces Table II and the
+remaining variance is far above the paper's.
+
+An explicit `--dp-noise-stream independent|legacy-global` diagnostic now
+isolates the next historical difference. `independent` remains the default
+and uses `dp_noise_seed`; `legacy-global` exactly restores revision
+`31166ca`'s direct `torch.randn_like` noise generation and is accepted only
+under `released-compatibility`. In the latter mode the DP-noise seed is
+recorded but not applied. On CUDA, noise consumes the CUDA global RNG while
+DataLoader shuffle consumes the CPU global RNG, so these are both historical
+global-state behaviors but not literally one shared device stream.
+
 ### Seed separation
 
 Random sources are separated into:
@@ -107,9 +268,13 @@ Random sources are separated into:
 - model initialization seed;
 - subgraph sampling seed;
 - batch sampler seed.
+- DP Gaussian-noise seed.
+- DP noise stream (`independent` or compatibility-only `legacy-global`).
 
 Checkpoint metadata stores all realized seeds and a SHA-256 hash of sampled
-node sets. Controlled diagnosis showed model initialization dominates
+node sets. The DP-noise seed was separated after the first full private matrix
+showed correlated seed collapses across datasets and methods. Controlled
+non-private diagnosis showed model initialization dominates
 Facebook variance; sampling alone was highly stable.
 
 ### GRAT variants and diagnostics
@@ -165,6 +330,10 @@ deviation over five runs unless marked as smoke tests.
 | `diagnostic-bitcoin-lastfm-degree32` | LastFM | **94.44 +/- 2.74** | stable, but 3.49 below paper 97.93 |
 | `diagnostic-bitcoin-lastfm-ones-controlled` | Bitcoin | **99.47 +/- 0.72** | beats degree32 and closely matches paper 98.99 |
 | `diagnostic-bitcoin-lastfm-ones-controlled` | LastFM | **97.48 +/- 2.13** | beats degree32 and closely matches paper 97.93 |
+| `diagnostic-hepph-gowalla-degree32` | HepPh | **79.79 +/- 15.46** | unstable and 18.63 below paper; reject as a uniform feature protocol |
+| `diagnostic-hepph-gowalla-degree32` | Gowalla | **87.59 +/- 13.93** | unstable and 12.19 below paper; reject as a uniform feature protocol |
+| `diagnostic-hepph-gowalla-ones-controlled` | HepPh | **72.45 +/- 11.06** | unstable and 25.97 below paper; unresolved dataset-specific gap |
+| `diagnostic-hepph-gowalla-ones-controlled` | Gowalla | **99.22 +/- 1.33** | closely matches paper 99.78; degree32 is substantially worse |
 | `smoke-facebook-degree` | Facebook | 2.88 (1 run, 1 update) | plumbing test only |
 | `smoke-facebook-degree32` | Facebook | 20.30 (1 run, 1 update) | plumbing test only |
 
@@ -208,6 +377,25 @@ deviation from 11.65 to 6.32, still above the desired threshold of 5.
 Degree32 improved Email mean from 96.85 to 97.73 and reduced standard
 deviation from 1.58 to 0.93 without meaningful sigmoid saturation.
 
+### HepPh and Gowalla paired feature results
+
+| Seed | HepPh ones | HepPh degree32 | Gowalla ones | Gowalla degree32 |
+|---:|---:|---:|---:|---:|
+| 0 | 70.99 | 63.58 | 99.82 | 97.34 |
+| 1 | 63.70 | 63.58 | 99.81 | 96.37 |
+| 2 | 75.42 | 85.41 | 99.81 | 71.58 |
+| 3 | 62.38 | 88.74 | 96.84 | 73.22 |
+| 4 | 89.78 | 97.65 | 99.82 | 99.48 |
+
+These are controlled pairs: both protocols use 32-dimensional inputs, the
+same model seeds, fixed batch seed 0, and identical sampled-node-set hashes
+within each dataset. Degree32 improves the HepPh mean by 7.34 points but
+increases its standard deviation from 11.06 to 15.46 and remains far below
+the paper. On Gowalla, degree32 reduces the mean by 11.62 points and increases
+the standard deviation from 1.33 to 13.93. Together with the Bitcoin and
+LastFM controls, this completes the six-dataset feature diagnostic and rules
+out degree32 as a uniform replacement for the released all-one features.
+
 ## 6. Decisions already made
 
 Do not repeat these branches without a new scientific reason:
@@ -227,29 +415,31 @@ Do not repeat these branches without a new scientific reason:
    input width changed all later seeded weights.
 8. Keep `legacy_released`, `released_default`, ordinary non-private SGD,
    lr 0.005, gamma 1, and T=500 as compatibility defaults for now.
-9. Do not promote `degree32` globally. It improved Email/Facebook but reduced
-   Bitcoin by 0.65 and LastFM by 3.04 points versus paired ones controls.
-   Dataset-specific feature selection after observing results would not be a
-   uniform paper reproduction protocol.
+9. Do not promote `degree32` globally. It improved Email/Facebook and the
+   unstable HepPh mean, but reduced Bitcoin by 0.65, LastFM by 3.04, and
+   Gowalla by 11.62 points versus paired ones controls. Dataset-specific
+   feature selection after observing results would not be a uniform paper
+   reproduction protocol. The six-dataset diagnostic is complete and `ones`
+   remains the uniform reproduction default.
 
-## 7. Latest completed run and prepared-data state
+## 7. Latest completed runs and prepared-data state
 
-Run directory:
-`outputs/runs/diagnostic-bitcoin-lastfm-degree32`
+Latest run directories:
 
-State at handoff: preparation, all ten model runs, and evaluation are complete.
-The validator reports aggregate mean 96.62 versus paper mean 98.46, aggregate
-MAE 1.84, and `Validation passed`. This aggregate hides a useful distinction:
-Bitcoin is 98.81 +/- 0.89 (only 0.18 below paper), while LastFM is
-94.44 +/- 2.74 (3.49 below paper). Thus Bitcoin passes the per-dataset target;
-LastFM is stable but narrowly misses the chosen 3-point per-dataset target.
+- `outputs/runs/diagnostic-hepph-gowalla-degree32`
+- `outputs/runs/diagnostic-hepph-gowalla-ones-controlled`
 
-The paired ones control is also complete. It produced Bitcoin
-99.47 +/- 0.72 and LastFM 97.48 +/- 2.13, outperforming degree32 on both
-datasets. Degree32 is therefore not a universal missing feature convention;
-`ones` remains the global compatibility default.
+Both manifests completed all ten model runs and evaluation. The degree32
+validator reports aggregate mean 83.69 versus paper mean 99.10, aggregate MAE
+15.41, and two unstable configurations. The paired ones validator reports
+aggregate mean 85.84, aggregate MAE 13.26, and one unstable configuration.
+The aggregate again hides a dataset split: all-one features reproduce Gowalla
+well at 99.22 +/- 1.33, while HepPh remains severely low and unstable at
+72.45 +/- 11.06. The six-dataset controlled feature comparison is now
+complete; `ones` remains the global compatibility default, and the HepPh gap
+requires diagnosis independent of post-hoc feature selection.
 
-Bitcoin and LastFM prepared data are now on the current explicit protocol:
+All six prepared datasets are on the current explicit protocol:
 `active`, self-loops removed, generated split, seed 0:
 
 | Dataset | Current prepared state | Train nodes | Test nodes |
@@ -261,27 +451,22 @@ Bitcoin and LastFM prepared data are now on the current explicit protocol:
 | HepPh | active, self-loops removed | 5,249 | 5,264 |
 | Gowalla | active, self-loops removed | 79,978 | 80,392 |
 
-Revalidate with:
+Revalidate the latest paired runs with:
 
 ```bash
 .venv/bin/python experiments/validate_results.py \
-  outputs/runs/diagnostic-bitcoin-lastfm-degree32/evaluation/summary.csv
+  outputs/runs/diagnostic-hepph-gowalla-degree32/evaluation/summary.csv
+.venv/bin/python experiments/validate_results.py \
+  outputs/runs/diagnostic-hepph-gowalla-ones-controlled/evaluation/summary.csv
 ```
-
-The next cross-dataset degree32 targets are HepPh and Gowalla. Both prepared
-splits now satisfy the final `active`, self-loop-removed protocol and are
-committed for migration, so a verified clone may use `--skip-prepare`.
 
 ## 8. Work that has not been completed
 
-- Degree32 cross-dataset validation is incomplete for HepPh and Gowalla.
-- The final standard-ones non-private baseline is incomplete for HepPh and
-  Gowalla.
-- No decision has been made to promote degree32 to a default.
 - The complete private matrix (epsilon 1--6, PrivIM/PrivIM+SCS/PrivIM*) has
   not been run under the final code and seed protocol.
-- Full DP results should not be launched until the non-private representation
-  protocol is settled.
+- The non-private representation protocol is settled: retain `ones` uniformly
+  for the private matrix. HepPh remains a known non-private reproduction gap
+  and must be called out when interpreting its private results.
 - External competitors EGN, HP, and HP-GRAT are not fully reproduced locally.
 
 ## 9. Remaining scientific ambiguities
