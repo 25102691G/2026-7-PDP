@@ -1,0 +1,175 @@
+{
+  "schema": "pdp-preregistration-v1",
+  "stage": "development_revision_2_positive_head",
+  "benchmark_data_public": true,
+  "protected_mechanism_scope": "one_predeclared_training_invocation_on_prepared_training_graph",
+  "datasets": [
+    "email",
+    "bitcoin"
+  ],
+  "held_out_datasets_not_evaluated_in_this_stage": [
+    "lastfm",
+    "hepph",
+    "facebook",
+    "gowalla"
+  ],
+  "model_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "methods": [
+    "public_init",
+    "non_private",
+    "uniform_dp",
+    "uniform_full",
+    "pdp_slots"
+  ],
+  "base_epsilon": {
+    "uniform_dp": "1",
+    "uniform_full": "1"
+  },
+  "delta_0": "0.000001",
+  "node_budgets": [
+    {
+      "epsilon": "1",
+      "delta": "0.000001"
+    },
+    {
+      "epsilon": "2",
+      "delta": "0.000001"
+    },
+    {
+      "epsilon": "4",
+      "delta": "0.000001"
+    }
+  ],
+  "budget_policy_salt": "privim-pdp-policy-v1",
+  "training": {
+    "private_steps": 100,
+    "non_private_steps": 100,
+    "batch_size": 16,
+    "clip_norm": "3",
+    "grid_bits": 20,
+    "learning_rate": 0.0001,
+    "loss_penalty": 0.5,
+    "input_dim": 32,
+    "hidden_dim": 32,
+    "sampling_seed": 0,
+    "batch_seed": 0,
+    "frequency_threshold": 4,
+    "subgraph_size_by_dataset": {
+      "email": 40,
+      "bitcoin": 60
+    },
+    "expected_starts": 256,
+    "restart_probability": 0.3,
+    "walk_length": 200,
+    "frequency_decay": 1.0,
+    "boundary_divisor": 2,
+    "include_boundary": true
+  },
+  "evaluation": {
+    "split": "existing_prepared_test",
+    "diffusion_model": "IC",
+    "edge_probability": 1,
+    "diffusion_hops": 1,
+    "k": 50,
+    "denominator": "original_baselines.heuristics.greedy_on_identical_test_graph",
+    "report": "all_five_model_seeds_mean_sample_std_and_paired_differences"
+  },
+  "tuning": {
+    "test_seed_specific_tuning": false,
+    "within_protocol_parameter_search": false,
+    "dataset_specific_parameters": "only_predeclared_subgraph_sizes",
+    "development_datasets": [
+      "email",
+      "bitcoin"
+    ],
+    "new_algorithm_or_parameter_change_requires_new_preregistration": true,
+    "private_deployment_tuning_requires_public_independent_validation_or_composed_private_selection": true
+  },
+  "stopping": {
+    "privacy_contract_failure": "stop_immediately",
+    "all_zero_gradient_or_nonfinite_failure": "investigate_before_repeating",
+    "private_method_below_public_init_by_five_percentage_points": "analyze_signal_and_noise_before_expanding",
+    "two_supported_revision_rounds_without_one_percentage_point_mean_gain": "stop_futile_search_and_report_evidence",
+    "repeat_identical_unimproved_experiments": false,
+    "no_more_development_mechanism_search_after_this_round": true
+  },
+  "release_scope": {
+    "model_checkpoints_and_diagnostics": "trusted_research_directory",
+    "single_model_certificate_not_a_certificate_for_entire_experiment": true,
+    "non_private_controls": "public_benchmark_only",
+    "multiple_private_model_publication_requires_composition": true,
+    "proofs_and_source_snapshots": "trusted research archive frozen before first new Coverage"
+  },
+  "mechanism": "positive_public_encoder_stable_slot_node_pdp",
+  "stable_slots": {
+    "bins_per_round": 4,
+    "rounds": 4,
+    "microbatch_size": 1,
+    "salt": "privim-stable-slots-v1",
+    "appearance_limits_by_method": {
+      "uniform_dp": [
+        1,
+        1,
+        1
+      ],
+      "uniform_full": [
+        4,
+        4,
+        4
+      ],
+      "pdp_slots": [
+        1,
+        2,
+        4
+      ],
+      "non_private": [
+        1,
+        2,
+        4
+      ]
+    },
+    "uniform_methods": [
+      "uniform_dp",
+      "uniform_full"
+    ],
+    "trainable_mode": "positive_head",
+    "head_settings": {
+      "encoder_average_row_sum": 0.1,
+      "encoder_bias_offset": 0.1,
+      "initial_weight_sum": 0.1,
+      "initial_bias": -3.0,
+      "weight_lower": 0.0001,
+      "weight_upper": 0.03,
+      "bias_lower": -8.0,
+      "bias_upper": -1.0
+    }
+  },
+  "preregistration_rationale": {
+    "previous_runs": [
+      "integer-pdp-pilot-v1",
+      "stable-slots-pilot-v2"
+    ],
+    "prior_best_pdp_development_mean": 67.64345253804873,
+    "diagnostic_evidence": "All completed checkpoints analyzed together; centered readout feature variation largely rank one; high-dimensional perturbations destabilize graph encoding and structural direction.",
+    "change": "Freeze a completely data-independent positive encoder with uniform attention; train only the 33 readout coordinates with public post-noise box projection.",
+    "privacy": "Same fixed public stable slots, 2 M_v C sensitivity, exact discrete Gaussian, full T composition, per-node epsilon/delta; no noise reduction for lower dimension.",
+    "controls": "All new matched positive-head public_init and clipped zero-noise Non-Private T=100; both uniform participation profiles retained. Original full Non-Private T=500 only a historical upper reference.",
+    "parameter_rule": "One public configuration for all datasets and model seeds; no preview of new real-benchmark rankings or Coverage before registration.",
+    "revision_limit": "Second and final development mechanism revision; no further architecture, hyperparameter or noise-luck search after this round."
+  },
+  "confirmation_gate": {
+    "pdp_equal_weight_development_mean_minimum": 68.64345253804873,
+    "pdp_each_development_dataset_mean_minimum": 70.0,
+    "pdp_each_development_dataset_sample_std_maximum": 10.0,
+    "meaning": "Predeclared engineering gate, not a statistical significance or noninferiority test.",
+    "if_pass": "Freeze a separate four-dataset confirmation protocol before reading those Coverage results.",
+    "if_fail": "Stop further development search and report full evidence.",
+    "personalization_advantage": "Report comparisons with both uniform controls and public initialization even if no advantage; no superiority claim from the gate alone."
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "schema": "pdp-preregistration-v1",
+  "stage": "development_revision_1_stable_slots",
+  "benchmark_data_public": true,
+  "protected_mechanism_scope": "one_predeclared_training_invocation_on_prepared_training_graph",
+  "datasets": [
+    "email",
+    "bitcoin"
+  ],
+  "held_out_datasets_not_evaluated_in_this_stage": [
+    "lastfm",
+    "hepph",
+    "facebook",
+    "gowalla"
+  ],
+  "model_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "methods": [
+    "public_init",
+    "non_private",
+    "slots_zero_noise",
+    "uniform_dp",
+    "uniform_full",
+    "pdp_slots"
+  ],
+  "base_epsilon": {
+    "uniform_dp": "1",
+    "uniform_full": "1"
+  },
+  "delta_0": "0.000001",
+  "node_budgets": [
+    {
+      "epsilon": "1",
+      "delta": "0.000001"
+    },
+    {
+      "epsilon": "2",
+      "delta": "0.000001"
+    },
+    {
+      "epsilon": "4",
+      "delta": "0.000001"
+    }
+  ],
+  "budget_policy_salt": "privim-pdp-policy-v1",
+  "training": {
+    "private_steps": 100,
+    "non_private_steps": 500,
+    "batch_size": 16,
+    "clip_norm": "3",
+    "grid_bits": 20,
+    "learning_rate": 0.005,
+    "loss_penalty": 0.5,
+    "input_dim": 32,
+    "hidden_dim": 32,
+    "sampling_seed": 0,
+    "batch_seed": 0,
+    "frequency_threshold": 4,
+    "subgraph_size_by_dataset": {
+      "email": 40,
+      "bitcoin": 60
+    },
+    "expected_starts": 256,
+    "restart_probability": 0.3,
+    "walk_length": 200,
+    "frequency_decay": 1.0,
+    "boundary_divisor": 2,
+    "include_boundary": true
+  },
+  "evaluation": {
+    "split": "existing_prepared_test",
+    "diffusion_model": "IC",
+    "edge_probability": 1,
+    "diffusion_hops": 1,
+    "k": 50,
+    "denominator": "original_baselines.heuristics.greedy_on_identical_test_graph",
+    "report": "all_five_model_seeds_mean_sample_std_and_paired_differences"
+  },
+  "tuning": {
+    "test_seed_specific_tuning": false,
+    "within_protocol_parameter_search": false,
+    "dataset_specific_parameters": "only_predeclared_subgraph_sizes",
+    "development_datasets": [
+      "email",
+      "bitcoin"
+    ],
+    "new_algorithm_or_parameter_change_requires_new_preregistration": true,
+    "private_deployment_tuning_requires_public_independent_validation_or_composed_private_selection": true
+  },
+  "stopping": {
+    "privacy_contract_failure": "stop_immediately",
+    "all_zero_gradient_or_nonfinite_failure": "investigate_before_repeating",
+    "private_method_below_public_init_by_five_percentage_points": "analyze_signal_and_noise_before_expanding",
+    "two_supported_revision_rounds_without_one_percentage_point_mean_gain": "stop_futile_search_and_report_evidence",
+    "repeat_identical_unimproved_experiments": false
+  },
+  "release_scope": {
+    "model_checkpoints_and_diagnostics": "trusted_research_directory",
+    "single_model_certificate_not_a_certificate_for_entire_experiment": true,
+    "non_private_controls": "public_benchmark_only",
+    "multiple_private_model_publication_requires_composition": true,
+    "proofs_and_source_snapshots": "trusted research archive frozen before first new Coverage"
+  },
+  "mechanism": "direct_stable_slot_node_pdp",
+  "reuse_controls_from": "integer-pdp-pilot-v1",
+  "reuse_policy": "Only completed identical public_init and non_private controls; verify source dependencies, configuration, runtime, prepared hashes and artifacts; reevaluate same public target without retraining.",
+  "stable_slots": {
+    "bins_per_round": 4,
+    "rounds": 4,
+    "microbatch_size": 1,
+    "salt": "privim-stable-slots-v1",
+    "appearance_limits_by_method": {
+      "uniform_dp": [
+        1,
+        1,
+        1
+      ],
+      "uniform_full": [
+        4,
+        4,
+        4
+      ],
+      "pdp_slots": [
+        1,
+        2,
+        4
+      ],
+      "slots_zero_noise": [
+        1,
+        2,
+        4
+      ]
+    },
+    "uniform_methods": [
+      "uniform_dp",
+      "uniform_full"
+    ]
+  },
+  "preregistration_rationale": {
+    "prior_run": "integer-pdp-pilot-v1; all 60 cells retained",
+    "prior_development_pdp_base2_mean": 67.64345253804873,
+    "failure": "High-dimensional 2BC noise and node/edge loss; base4 Bitcoin 26.03 vs public_init 50.81 percent.",
+    "change": "Fixed public independent slots prove 2 M_v C query-sum sensitivity; individual appearance limits use heterogeneous budgets; no outer node retention.",
+    "unchanged": "All GNN parameters trained; same architecture, lambda, C, T, learning rate, inner subgraph sizes, prepared files, target and CELF denominator.",
+    "success_assessment": "Report all five seeds; compare personalized against both uniform controls and prior base2 development mean; no significant-benefit claim from small noisy samples.",
+    "revision_limit": "First of at most two justified revision rounds after v1; no repeated identical trials or seed-specific tuning."
+  }
+}
