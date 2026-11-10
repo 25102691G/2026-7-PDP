@@ -75,7 +75,6 @@ DATASET_DIRECTED = {
     "lastfm": False,
     "hepph": False,
     "facebook": False,
-    "gowalla": False,
 }
 
 

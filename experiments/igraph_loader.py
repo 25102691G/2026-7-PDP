@@ -15,7 +15,7 @@ BLACK_LIST = ["bitcoin_train_edges.txt"]
 PATH_TO_DIRECTED_GRAPHS = "dataset/directed/"
 PATH_TO_UNDIRECTED_GRAPHS = "dataset/undirected/"
 PREPARED_ROOT = Path(__file__).resolve().parents[1] / "dataset" / "prepared"
-PAPER_DATASETS = ("email", "bitcoin", "lastfm", "hepph", "facebook", "gowalla")
+PAPER_DATASETS = ("email", "bitcoin", "lastfm", "hepph", "facebook")
 
 # DIRECTED_GRAPHS = [  # small directed graphs
 #     "soc-sign-jazz.txt",
@@ -33,7 +33,6 @@ PAPER_DATASETS = ("email", "bitcoin", "lastfm", "hepph", "facebook", "gowalla")
 #     "soc-douban.txt",
 #     "soc-themarker.txt",
 #     "soc-sign-epinions.txt",
-#     "soc-gowalla.txt",
 #     "soc-twitter-follows.txt",
 #     "soc-twitter-follows-mun.txt",
 #     "soc-delicious.txt",

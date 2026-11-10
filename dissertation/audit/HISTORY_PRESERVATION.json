@@ -1,0 +1,16 @@
+{
+  "existing_stat_entries": 38106,
+  "existing_paths_missing": [],
+  "existing_stat_changes": [],
+  "source_and_evidence_hash_entries_checked": 578,
+  "hash_changes": [],
+  "new_files_outside_dissertation": [],
+  "git_status_unchanged_excluding_dissertation": true,
+  "real_training": 0,
+  "real_inference": 0,
+  "new_graph_coverage_evaluation": 0,
+  "new_random_experiments_or_bootstrap": 0,
+  "commit_or_push": false,
+  "scope": "All preexisting payload metadata checked; public code/reports/scalars content hashes checked; graph/checkpoint payloads not reopened. Preexisting dirty Git state preserved.",
+  "pass": true
+}

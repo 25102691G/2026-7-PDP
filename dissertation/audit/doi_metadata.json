@@ -1,0 +1,794 @@
+{
+  "10.1145/956750.956769": {
+    "title": [
+      "Maximizing the spread of influence through a social network"
+    ],
+    "author": [
+      {
+        "given": "David",
+        "family": "Kempe",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Cornell University, Ithaca NY"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Jon",
+        "family": "Kleinberg",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Cornell University, Ithaca NY"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "\u00c9va",
+        "family": "Tardos",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Cornell University, Ithaca NY"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2003,
+          8,
+          24
+        ]
+      ]
+    },
+    "container-title": [
+      "Proceedings of the ninth ACM SIGKDD international conference on Knowledge discovery and data mining"
+    ],
+    "page": "137-146",
+    "volume": null,
+    "issue": null,
+    "DOI": "10.1145/956750.956769",
+    "URL": "https://doi.org/10.1145/956750.956769"
+  },
+  "10.1145/1281192.1281239": {
+    "title": [
+      "Cost-effective outbreak detection in networks"
+    ],
+    "author": [
+      {
+        "given": "Jure",
+        "family": "Leskovec",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Carnegie Mellon University"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Andreas",
+        "family": "Krause",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Carnegie Mellon University"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Carlos",
+        "family": "Guestrin",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Carnegie Mellon University"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Christos",
+        "family": "Faloutsos",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Carnegie Mellon University"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Jeanne",
+        "family": "VanBriesen",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Carnegie Mellon University"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Natalie",
+        "family": "Glance",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Nielsen BuzzMetrics"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2007,
+          8,
+          12
+        ]
+      ]
+    },
+    "container-title": [
+      "Proceedings of the 13th ACM SIGKDD international conference on Knowledge discovery and data mining"
+    ],
+    "page": "420-429",
+    "volume": null,
+    "issue": null,
+    "DOI": "10.1145/1281192.1281239",
+    "URL": "https://doi.org/10.1145/1281192.1281239"
+  },
+  "10.1109/ICDE65448.2025.00259": {
+    "title": [
+      "PrivIM: Differentially Private Graph Neural Networks for Influence Maximization"
+    ],
+    "author": [
+      {
+        "given": "Renxuan",
+        "family": "Hou",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "The Hong Kong Polytechnic University,Department of Electrical and Electronic Engineering,Hong Kong SAR"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Qingqing",
+        "family": "Ye",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Hong Kong Polytechnic University,Department of Electrical and Electronic Engineering,Hong Kong SAR"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Xun",
+        "family": "Ran",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Hong Kong Polytechnic University,Department of Electrical and Electronic Engineering,Hong Kong SAR"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Sen",
+        "family": "Zhang",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Hong Kong Polytechnic University,Department of Electrical and Electronic Engineering,Hong Kong SAR"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Haibo",
+        "family": "Hu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Hong Kong Polytechnic University,Department of Electrical and Electronic Engineering,Hong Kong SAR"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2025,
+          5,
+          19
+        ]
+      ]
+    },
+    "container-title": [
+      "2025 IEEE 41st International Conference on Data Engineering (ICDE)"
+    ],
+    "page": "3467-3479",
+    "volume": null,
+    "issue": null,
+    "DOI": "10.1109/icde65448.2025.00259",
+    "URL": "https://doi.org/10.1109/icde65448.2025.00259"
+  },
+  "10.1561/0400000042": {
+    "title": [
+      "The Algorithmic Foundations of Differential Privacy"
+    ],
+    "author": [
+      {
+        "given": "Cynthia",
+        "family": "Dwork",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Microsoft Research ,",
+            "place": [
+              "USA"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Aaron",
+        "family": "Roth",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "University of Pennsylvania ,",
+            "place": [
+              "USA"
+            ]
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2014,
+          8,
+          11
+        ]
+      ]
+    },
+    "container-title": [
+      "Foundations and Trends\u00ae in Theoretical Computer Science"
+    ],
+    "page": "211-487",
+    "volume": "9",
+    "issue": "3-4",
+    "DOI": "10.1561/0400000042",
+    "URL": "https://doi.org/10.1561/0400000042"
+  },
+  "10.1145/2976749.2978318": {
+    "title": [
+      "Deep Learning with Differential Privacy"
+    ],
+    "author": [
+      {
+        "given": "Martin",
+        "family": "Abadi",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Google, Mountain View, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Andy",
+        "family": "Chu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Google, Mountain View, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Ian",
+        "family": "Goodfellow",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Open AI, San Francisco, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "H. Brendan",
+        "family": "McMahan",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Google, Mountain View, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Ilya",
+        "family": "Mironov",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Google, Mountain View, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Kunal",
+        "family": "Talwar",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Google, Mountain View, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Li",
+        "family": "Zhang",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Google, Mountain View, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2016,
+          10,
+          24
+        ]
+      ]
+    },
+    "container-title": [
+      "Proceedings of the 2016 ACM SIGSAC Conference on Computer and Communications Security"
+    ],
+    "page": "308-318",
+    "volume": null,
+    "issue": null,
+    "DOI": "10.1145/2976749.2978318",
+    "URL": "https://doi.org/10.1145/2976749.2978318"
+  },
+  "10.1109/CSF.2017.11": {
+    "title": [
+      "R\u00e9nyi Differential Privacy"
+    ],
+    "author": [
+      {
+        "given": "Ilya",
+        "family": "Mironov",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2017,
+          8
+        ]
+      ]
+    },
+    "container-title": [
+      "2017 IEEE 30th Computer Security Foundations Symposium (CSF)"
+    ],
+    "page": "263-275",
+    "volume": null,
+    "issue": null,
+    "DOI": "10.1109/csf.2017.11",
+    "URL": "https://doi.org/10.1109/csf.2017.11"
+  },
+  "10.1145/3589334.3645531": {
+    "title": [
+      "DPAR: Decoupled Graph Neural Networks with Node-Level Differential Privacy"
+    ],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-7054-1983",
+        "authenticated-orcid": false,
+        "given": "Qiuchen",
+        "family": "Zhang",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Emory University, Atlanta, GA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4909-9027",
+        "authenticated-orcid": false,
+        "given": "Hong kyu",
+        "family": "Lee",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Emory University, Atlanta, GA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-0019-9251",
+        "authenticated-orcid": false,
+        "given": "Jing",
+        "family": "Ma",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Emory University, Atlanta, GA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4110-2068",
+        "authenticated-orcid": false,
+        "given": "Jian",
+        "family": "Lou",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Zhejiang University, Hangzhou, China"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-9145-4531",
+        "authenticated-orcid": false,
+        "given": "Carl",
+        "family": "Yang",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Emory University, Atlanta, GA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7354-0428",
+        "authenticated-orcid": false,
+        "given": "Li",
+        "family": "Xiong",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Emory University, Atlanta, GA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2024,
+          5,
+          13
+        ]
+      ]
+    },
+    "container-title": [
+      "Proceedings of the ACM Web Conference 2024"
+    ],
+    "page": "1170-1181",
+    "volume": null,
+    "issue": null,
+    "DOI": "10.1145/3589334.3645531",
+    "URL": "https://doi.org/10.1145/3589334.3645531"
+  },
+  "10.1109/JAS.2025.125279": {
+    "title": [
+      "Personalized Differential Privacy Graph Neural Network"
+    ],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0003-4592-5333",
+        "authenticated-orcid": false,
+        "given": "Yanli",
+        "family": "Yuan",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "School of Cyberspace Science and Technology, the Beijing Institute of Technology,Beijing,China,100081"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0009-7381-7007",
+        "authenticated-orcid": false,
+        "given": "Dian",
+        "family": "Lei",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Cyberspace Science and Technology, the Beijing Institute of Technology,Beijing,China,100081"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7684-8540",
+        "authenticated-orcid": false,
+        "given": "Chuan",
+        "family": "Zhang",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Cyberspace Science and Technology, the Beijing Institute of Technology,Beijing,China,100081"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4440-941X",
+        "authenticated-orcid": false,
+        "given": "Zehui",
+        "family": "Xiong",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Pillar of Information Systems Technology and Design, Singapore University of Technology and Design,Singapore,Singapore,487372"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2543-1678",
+        "authenticated-orcid": false,
+        "given": "Chunhai",
+        "family": "Li",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Guangxi Engineering Research Center of Industrial Internet Security and Blockchain, Guilin University of Electronic Technology,Guangxi,China,541004"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-3277-3887",
+        "authenticated-orcid": false,
+        "given": "Liehuang",
+        "family": "Zhu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Cyberspace Science and Technology, the Beijing Institute of Technology,Beijing,China,100081"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2026,
+          2
+        ]
+      ]
+    },
+    "container-title": [
+      "IEEE/CAA Journal of Automatica Sinica"
+    ],
+    "page": "498-500",
+    "volume": "13",
+    "issue": "2",
+    "DOI": "10.1109/jas.2025.125279",
+    "URL": "https://doi.org/10.1109/jas.2025.125279"
+  }
+}

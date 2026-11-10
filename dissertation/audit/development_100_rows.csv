@@ -1,0 +1,101 @@
+dataset,configuration,seed,spread,coverage,celf,per_run_n,per_run_std,attempts,failures,retries,unexecuted,source
+email,Non-Private,0,393,90.97222222222221,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-nonprivate-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+email,Non-Private,1,394,91.20370370370371,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-nonprivate-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+email,Non-Private,2,394,91.20370370370371,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-nonprivate-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+email,Non-Private,3,414,95.83333333333334,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-nonprivate-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+email,Non-Private,4,394,91.20370370370371,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-nonprivate-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+email,Uniform epsilon=1,0,356,82.4074074074074,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-uniform-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+email,Uniform epsilon=1,1,426,98.61111111111111,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-uniform-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+email,Uniform epsilon=1,2,291,67.36111111111111,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-uniform-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+email,Uniform epsilon=1,3,358,82.87037037037037,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-uniform-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+email,Uniform epsilon=1,4,343,79.39814814814815,432,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/email-uniform-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+email,PDP v2,0,377,87.26851851851852,432,1,NA,1,0,0,0,outputs/research/email-v2-seed0-20261102-v1/restricted/final_evaluation.json
+email,PDP v2,1,415,96.06481481481481,432,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/email_node_pdp_v2_projected_seed1/restricted/final_evaluation.json
+email,PDP v2,2,425,98.37962962962963,432,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/email_node_pdp_v2_projected_seed2/restricted/final_evaluation.json
+email,PDP v2,3,340,78.70370370370371,432,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/email_node_pdp_v2_projected_seed3/restricted/final_evaluation.json
+email,PDP v2,4,317,73.37962962962963,432,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/email_node_pdp_v2_projected_seed4/restricted/final_evaluation.json
+bitcoin,Non-Private,0,1653,98.15914489311164,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-nonprivate-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,Non-Private,1,1675,99.46555819477435,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-nonprivate-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,Non-Private,2,1668,99.04988123515439,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-nonprivate-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,Non-Private,3,1675,99.46555819477435,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-nonprivate-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,Non-Private,4,1639,97.32779097387173,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-nonprivate-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=1,0,558,33.1353919239905,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-uniform-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=1,1,1315,78.08788598574822,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-uniform-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=1,2,1618,96.08076009501187,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-uniform-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=1,3,1558,92.51781472684085,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-uniform-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=1,4,1148,68.17102137767222,1684,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/bitcoin-uniform-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+bitcoin,PDP v2,0,1663,98.75296912114014,1684,1,NA,1,0,0,0,outputs/research/bitcoin-v2-prepared-seed0-20261102-v1/training/restricted/final_evaluation.json
+bitcoin,PDP v2,1,570,33.8479809976247,1684,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/bitcoin_node_pdp_v2_projected_seed1/restricted/final_evaluation.json
+bitcoin,PDP v2,2,1607,95.42755344418052,1684,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/bitcoin_node_pdp_v2_projected_seed2/restricted/final_evaluation.json
+bitcoin,PDP v2,3,1527,90.67695961995248,1684,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/bitcoin_node_pdp_v2_projected_seed3/restricted/final_evaluation.json
+bitcoin,PDP v2,4,1535,91.1520190023753,1684,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/bitcoin_node_pdp_v2_projected_seed4/restricted/final_evaluation.json
+lastfm,Non-Private,0,1194,94.08983451536643,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-nonprivate-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,Non-Private,1,1206,95.0354609929078,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-nonprivate-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,Non-Private,2,1211,95.42947202521671,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-nonprivate-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,Non-Private,3,1232,97.0843183609141,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-nonprivate-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,Non-Private,4,1192,93.93223010244287,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-nonprivate-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=1,0,759,59.810874704491724,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-uniform-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=1,1,1215,95.74468085106383,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-uniform-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=1,2,667,52.56107171000788,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-uniform-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=1,3,1234,97.24192277383766,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-uniform-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=1,4,1029,81.08747044917257,1269,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/lastfm-uniform-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+lastfm,PDP v2,0,1024,80.69345941686367,1269,1,NA,1,0,0,0,outputs/research/lastfm-v2-prepared-seed0-20261102-v1/training/restricted/final_evaluation.json
+lastfm,PDP v2,1,1164,91.725768321513,1269,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/lastfm_node_pdp_v2_projected_seed1/restricted/final_evaluation.json
+lastfm,PDP v2,2,250,19.70055161544523,1269,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/lastfm_node_pdp_v2_projected_seed2/restricted/final_evaluation.json
+lastfm,PDP v2,3,1183,93.22301024428684,1269,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/lastfm_node_pdp_v2_projected_seed3/restricted/final_evaluation.json
+lastfm,PDP v2,4,1237,97.478329393223,1269,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/lastfm_node_pdp_v2_projected_seed4/restricted/final_evaluation.json
+hepph,Non-Private,0,1391,79.89661114302126,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-nonprivate-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,Non-Private,1,1420,81.56232050545663,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-nonprivate-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,Non-Private,2,1416,81.3325674899483,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-nonprivate-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,Non-Private,3,1474,84.66398621481906,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-nonprivate-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,Non-Private,4,1393,80.01148765077542,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-nonprivate-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=1,0,1646,94.5433658816772,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-uniform-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=1,1,1290,74.09534750143595,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-uniform-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=1,2,1313,75.41642734060885,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-uniform-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=1,3,1488,85.46812176909822,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-uniform-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=1,4,1587,91.15450890292935,1741,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/hepph-uniform-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+hepph,PDP v2,0,1438,82.5962090752441,1741,1,NA,1,0,0,0,outputs/research/hepph-v2-prepared-seed0-20261102-v1/training/restricted/final_evaluation.json
+hepph,PDP v2,1,1607,92.30327398047099,1741,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/hepph_node_pdp_v2_projected_seed1/restricted/final_evaluation.json
+hepph,PDP v2,2,1396,80.18380241240666,1741,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/hepph_node_pdp_v2_projected_seed2/restricted/final_evaluation.json
+hepph,PDP v2,3,1005,57.72544514646755,1741,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/hepph_node_pdp_v2_projected_seed3/restricted/final_evaluation.json
+hepph,PDP v2,4,1567,90.00574382538771,1741,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/hepph_node_pdp_v2_projected_seed4/restricted/final_evaluation.json
+facebook,Non-Private,0,2871,90.94076655052264,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-nonprivate-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,Non-Private,1,2893,91.63763066202091,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-nonprivate-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,Non-Private,2,2917,92.39784605638263,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-nonprivate-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,Non-Private,3,3043,96.38897687678175,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-nonprivate-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,Non-Private,4,2871,90.94076655052264,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-nonprivate-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=1,0,2467,78.1438074121001,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-uniform-seed0-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=1,1,3018,95.59708584098829,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-uniform-seed1-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=1,2,3021,95.6921127652835,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-uniform-seed2-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=1,3,3069,97.21254355400697,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-uniform-seed3-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=1,4,2254,71.3968957871397,3157,1,NA,1,0,0,0,outputs/research/four-method-development-20261103-v1/models/facebook-uniform-seed4-20261103-stageb-v1/restricted/final_evaluation.json
+facebook,PDP v2,0,2254,71.3968957871397,3157,1,NA,1,0,0,0,outputs/research/facebook-v2-prepared-seed0-20261102-v1/training/restricted/final_evaluation.json
+facebook,PDP v2,1,3051,96.64238200823567,3157,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/facebook_node_pdp_v2_projected_seed1/restricted/final_evaluation.json
+facebook,PDP v2,2,802,25.403864428254675,3157,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/facebook_node_pdp_v2_projected_seed2/restricted/final_evaluation.json
+facebook,PDP v2,3,3040,96.29394995248653,3157,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/facebook_node_pdp_v2_projected_seed3/restricted/final_evaluation.json
+facebook,PDP v2,4,2440,77.28856509344314,3157,1,NA,1,0,0,0,outputs/research/five-dataset-three-methods-20261102-v1/models/facebook_node_pdp_v2_projected_seed4/restricted/final_evaluation.json
+email,Uniform epsilon=4,0,389,90.04629629629629,432,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-email-seed0-20261104-v1/restricted/final_evaluation.json
+email,Uniform epsilon=4,1,386,89.35185185185185,432,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-email-seed1-20261104-v1/restricted/final_evaluation.json
+email,Uniform epsilon=4,2,341,78.93518518518519,432,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-email-seed2-20261104-v1/restricted/final_evaluation.json
+email,Uniform epsilon=4,3,424,98.14814814814815,432,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-email-seed3-20261104-v1/restricted/final_evaluation.json
+email,Uniform epsilon=4,4,388,89.81481481481481,432,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-email-seed4-20261104-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=4,0,1663,98.75296912114014,1684,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-bitcoin-seed0-20261104-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=4,1,1648,97.8622327790974,1684,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-bitcoin-seed1-20261104-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=4,2,1655,98.27790973871734,1684,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-bitcoin-seed2-20261104-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=4,3,1630,96.79334916864607,1684,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-bitcoin-seed3-20261104-v1/restricted/final_evaluation.json
+bitcoin,Uniform epsilon=4,4,1653,98.15914489311164,1684,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-bitcoin-seed4-20261104-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=4,0,963,75.88652482269504,1269,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-lastfm-seed0-20261104-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=4,1,1176,92.67139479905437,1269,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-lastfm-seed1-20261104-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=4,2,1174,92.51379038613081,1269,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-lastfm-seed2-20261104-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=4,3,1234,97.24192277383766,1269,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-lastfm-seed3-20261104-v1/restricted/final_evaluation.json
+lastfm,Uniform epsilon=4,4,1240,97.71473601260836,1269,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-lastfm-seed4-20261104-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=4,0,1529,87.82309017805858,1741,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-hepph-seed0-20261104-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=4,1,1656,95.11774842044802,1741,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-hepph-seed1-20261104-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=4,2,1079,61.975875933371626,1741,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-hepph-seed2-20261104-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=4,3,1603,92.07352096496267,1741,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-hepph-seed3-20261104-v1/restricted/final_evaluation.json
+hepph,Uniform epsilon=4,4,1365,78.40321654221711,1741,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-hepph-seed4-20261104-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=4,0,2834,89.7687678175483,3157,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-facebook-seed0-20261104-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=4,1,1646,52.138105796642385,3157,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-facebook-seed1-20261104-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=4,2,1412,44.726005701615456,3157,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-facebook-seed2-20261104-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=4,3,2835,89.80044345898004,3157,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-facebook-seed3-20261104-v1/restricted/final_evaluation.json
+facebook,Uniform epsilon=4,4,3039,96.2622743110548,3157,1,NA,1,0,0,0,outputs/research/uniform-eps4-development-20261104-u3-v1/models/u3-eps4-facebook-seed4-20261104-v1/restricted/final_evaluation.json

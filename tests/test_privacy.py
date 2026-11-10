@@ -16,6 +16,14 @@ from experiments.privacy import (
 
 
 class PrivacyTests(unittest.TestCase):
+    def test_entropy_noise_is_not_replayed_by_public_model_seed(self):
+        torch.manual_seed(7)
+        first = self._noise_only_update(None)
+        torch.manual_seed(7)
+        second = self._noise_only_update(None)
+        self.assertTrue(torch.isfinite(first).all())
+        self.assertFalse(torch.equal(first, second))
+
     @staticmethod
     def _noise_only_update(noise_seed):
         parameter = torch.nn.Parameter(torch.zeros(16))

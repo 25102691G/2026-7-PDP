@@ -10,6 +10,15 @@ from experiments.run_reproduction import completed_models, subprocess_environmen
 
 
 class ReproductionTests(unittest.TestCase):
+    def test_entropy_noise_flag_forwarded_without_integer_seed(self):
+        result = subprocess.run([sys.executable, 'experiments/run_reproduction.py',
+            '--dataset','email','--epsilon','1','--settings','PrivIM+',
+            '--skip-prepare','--skip-non-private','--dry-run','--device','cpu',
+            '--dp-noise-entropy','--model-seed','3','--round','1',
+            '--run-id','test-entropy-noise-dry'],capture_output=True,text=True,check=True)
+        self.assertIn('--dp-noise-entropy', result.stdout)
+        self.assertNotIn('--dp-noise-seed ', result.stdout)
+
     def test_loss_penalty_is_forwarded(self):
         result = subprocess.run(
             [

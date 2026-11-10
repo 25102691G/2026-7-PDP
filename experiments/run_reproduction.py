@@ -272,6 +272,8 @@ def main():
         "--batch-seed-mode", choices=SEED_MODES, default="per-round"
     )
     parser.add_argument("--dp-noise-seed", type=int, default=0)
+    parser.add_argument('--dp-noise-entropy', action='store_true',
+                        help='hidden entropy for independent Gaussian generator; retain original noise formula')
     parser.add_argument(
         "--dp-noise-seed-mode", choices=SEED_MODES, default="per-round",
         help="hold Gaussian DP noise fixed or vary it independently by round",
@@ -413,6 +415,10 @@ def main():
         args.sampling_hops = 3
         args.compatibility_occurrence_hops = None
         args.base_occurrence_bound = None
+    if args.dp_noise_entropy:
+        if args.dp_noise_stream != 'independent' or args.protocol_profile != 'strict':
+            parser.error('--dp-noise-entropy requires strict profile and independent noise stream')
+        args.dp_noise_seed = None
     if args.iterations <= 0:
         parser.error("--iterations must be positive")
     if args.learning_rate <= 0:
@@ -634,6 +640,13 @@ def main():
                 "non_private_clipping": args.clip_non_private,
             })
 
+    if args.dp_noise_entropy:
+        for item in commands:
+            if item['kind']=='train':
+                command=item['command']
+                index=command.index('--dp-noise-seed')
+                del command[index:index+2]
+                command.append('--dp-noise-entropy')
     evaluation_settings = ["PrivIM+"] if args.only_non_private else args.settings
     commands.append({
         "kind": "evaluate",

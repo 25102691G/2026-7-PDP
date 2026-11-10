@@ -1,0 +1,48 @@
+{
+  "status": "W1_INITIAL_DRAFT_COMPLETE_TECHNICAL_CHECKS_PASS_HUMAN_REVIEW_PENDING",
+  "chapters": 7,
+  "pages": 57,
+  "abstract_words": 326,
+  "chapter_prose_estimate": 9968,
+  "full_pdf_lexical_words": 15345,
+  "figures": 2,
+  "tables": 8,
+  "external_references": 13,
+  "internal_archive_references": 3,
+  "pdf": "/Users/zz/Document/PolyU/EIE590/2026-7-PDP/dissertation/build/dissertation_initial_draft.pdf",
+  "checks": {
+    "scalar_final": true,
+    "scalar_development": true,
+    "privacy_public_constant_arithmetic": true,
+    "pdf_technical": true,
+    "visual": true,
+    "history_preservation": true
+  },
+  "human_pending": [
+    "specialism (not displayed until confirmed)",
+    "personal contribution and acknowledgements",
+    "proof assumptions/release review",
+    "AI disclosure confirmation",
+    "approved plagiarism check",
+    "student signature",
+    "EEE127/supervisor approval/oral/submission"
+  ],
+  "real_training": 0,
+  "real_inference": 0,
+  "new_graph_evaluation": 0,
+  "commit_or_push": false,
+  "confirmed_identity": {
+    "student_name": "WENTAO ZHAO",
+    "student_id": "25102691G",
+    "official_degree": "Master of Science in Electronic and Information Engineering",
+    "degree_display": "MSc in Electronic and Information Engineering",
+    "university": "The Hong Kong Polytechnic University",
+    "department": "Department of Electrical and Electronic Engineering",
+    "academic_supervisor": "Prof. YE Qingqing",
+    "supervisor_position": "Associate Professor",
+    "year_of_award": 2027,
+    "initial_submission": "November 2026",
+    "specialism": null
+  },
+  "identity_update": "2026-11-10 identity-only update; seven technical chapters unchanged"
+}

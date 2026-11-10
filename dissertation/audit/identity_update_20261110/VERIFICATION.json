@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "scope": "Identity-only update; no technical edits or new research computation",
+  "confirmed_identity": {
+    "student_name": "WENTAO ZHAO",
+    "student_id": "25102691G",
+    "official_degree": "Master of Science in Electronic and Information Engineering",
+    "degree_display": "MSc in Electronic and Information Engineering",
+    "university": "The Hong Kong Polytechnic University",
+    "department": "Department of Electrical and Electronic Engineering",
+    "academic_supervisor": "Prof. YE Qingqing",
+    "supervisor_position": "Associate Professor",
+    "year_of_award": 2027,
+    "initial_submission": "November 2026",
+    "specialism": null
+  },
+  "pages": 57,
+  "pdf_metadata": {
+    "format": "PDF 1.5",
+    "title": "Personalized Node-Level Differential Privacy for GNN-Based Influence Maximization: Mechanism Design, Privacy Analysis, and Empirical Evaluation",
+    "author": "WENTAO ZHAO",
+    "subject": "Master of Science in Electronic and Information Engineering; MSc dissertation initial draft for student and supervisor review",
+    "keywords": "influence maximization, personalized differential privacy, node privacy, GNN",
+    "creator": "LaTeX with hyperref",
+    "producer": "xdvipdfmx (0.1)",
+    "creationDate": "D:20261110024627-00'00'",
+    "modDate": "",
+    "trapped": "",
+    "encryption": null
+  },
+  "changed_pdf_text_pages": [
+    1,
+    2,
+    3
+  ],
+  "changed_pdf_pixel_pages": [
+    1,
+    2,
+    3
+  ],
+  "all_pages_after_front3_text_and_pixels_identical": true,
+  "protected_source_and_scalar_files_checked": 25,
+  "protected_changed": [],
+  "outside_file_metadata_checked": 38107,
+  "outside_changed": [],
+  "originality_declaration_exactly_preserved": true,
+  "signature_blank": true,
+  "signing_date_added": false,
+  "supervisor_or_studentid_added_to_cover": false,
+  "seven_technical_chapters_unchanged": true,
+  "real_training": 0,
+  "real_inference": 0,
+  "new_coverage_evaluation": 0,
+  "commit_or_push": false
+}

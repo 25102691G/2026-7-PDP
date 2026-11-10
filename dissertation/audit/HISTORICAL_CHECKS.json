@@ -1,0 +1,36 @@
+{
+  "new_matched": [
+    {
+      "dataset": "email",
+      "mean": 90.64814814814815,
+      "sample_sd": 0.4205069936246491,
+      "below50": 0
+    },
+    {
+      "dataset": "bitcoin",
+      "mean": 95.87885985748218,
+      "sample_sd": 3.794346305329422,
+      "below50": 0
+    },
+    {
+      "dataset": "lastfm",
+      "mean": 93.42789598108747,
+      "sample_sd": 0.7692806847511953,
+      "below50": 0
+    },
+    {
+      "dataset": "hepph",
+      "mean": 78.44916714531878,
+      "sample_sd": 1.6489881471869214,
+      "below50": 0
+    },
+    {
+      "dataset": "facebook",
+      "mean": 91.12448527082672,
+      "sample_sd": 1.2077104198958277,
+      "below50": 0
+    }
+  ],
+  "g3_all_five_screen_pass": false,
+  "source_summary": "outputs/research/new-matched-frozen-dev-20261103/restricted/summary.csv"
+}

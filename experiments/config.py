@@ -3,7 +3,7 @@
 import math
 
 
-DATASETS = ("email", "bitcoin", "lastfm", "hepph", "facebook", "gowalla")
+DATASETS = ("email", "bitcoin", "lastfm", "hepph", "facebook")
 EPSILONS = (1, 2, 3, 4, 5, 6)
 
 STRICT_PROTOCOL = "strict"

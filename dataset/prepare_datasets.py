@@ -85,12 +85,6 @@ DATASETS: Dict[str, DatasetSpec] = {
         directed=False,
         has_header=True,
     ),
-    "gowalla": DatasetSpec(
-        name="gowalla",
-        relative_path="undirected/loc-gowalla_edges.txt",
-        source_format="whitespace",
-        directed=False,
-    ),
     "friendster": DatasetSpec(
         name="friendster",
         relative_path="undirected/com-Friendster/com-Friendster.mtx",

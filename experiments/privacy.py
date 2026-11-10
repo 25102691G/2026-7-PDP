@@ -82,7 +82,9 @@ class PrivateSGD(torch.optim.SGD):
         self.noise_multiplier = noise_multiplier
         self.minibatch_size = minibatch_size
         self.microbatch_size = microbatch_size
-        self.noise_seed = int(noise_seed)
+        # None requests hidden entropy; explicit integer seeds retain legacy
+        # reproducibility. Never store the entropy-generated integer/state.
+        self.noise_seed = None if noise_seed is None else int(noise_seed)
         if noise_stream not in DP_NOISE_STREAMS:
             raise ValueError(f"unknown DP noise stream: {noise_stream}")
         self.noise_stream = noise_stream
@@ -153,7 +155,10 @@ class PrivateSGD(torch.optim.SGD):
                             generator = self._noise_generators.get(device_key)
                             if generator is None:
                                 generator = torch.Generator(device=noisy_sum.device)
-                                generator.manual_seed(self.noise_seed)
+                                if self.noise_seed is None:
+                                    generator.seed()  # Return value deliberately discarded.
+                                else:
+                                    generator.manual_seed(self.noise_seed)
                                 self._noise_generators[device_key] = generator
                             noise = torch.randn(
                                 noisy_sum.shape,

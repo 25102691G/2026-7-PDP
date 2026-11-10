@@ -1,0 +1,60 @@
+\documentclass[12pt,a4paper,oneside,openany]{report}
+\usepackage[a4paper,left=30mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{setspace,graphicx,booktabs,longtable,array,tabularx}
+\usepackage{algorithm,algpseudocode}
+\usepackage{microtype}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks,unicode,pdfversion=1.5]{hyperref}
+\usepackage{bookmark}
+\usepackage{xurl}
+\onehalfspacing
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{0.25em}
+\setlength{\emergencystretch}{2em}
+\setcounter{tocdepth}{2}
+\renewcommand{\bibname}{References}
+\newcommand{\disstitle}{Personalized Node-Level Differential Privacy for GNN-Based Influence Maximization: Mechanism Design, Privacy Analysis, and Empirical Evaluation}
+\newcommand{\studentname}{[STUDENT NAME TO BE CONFIRMED]}
+\newcommand{\degreefield}{[OFFICIAL DEGREE TITLE TO BE CONFIRMED]}
+\newcommand{\awardyear}{[YEAR OF AWARD TO BE CONFIRMED]}
+\newcommand{\departmentname}{Department of Electrical and Electronic Engineering}
+\newcommand{\initialsubmission}{November 2026}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\clip}{\operatorname{Clip}_{3}}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\hypersetup{pdftitle={\disstitle},pdfsubject={MSc dissertation initial draft for student and supervisor review},pdfauthor={Student identity pending confirmation},pdfkeywords={influence maximization, personalized differential privacy, node privacy, GNN}}
+\begin{document}
+\hypersetup{pageanchor=false}
+\input{frontmatter/cover}
+\input{frontmatter/title}
+\hypersetup{pageanchor=true}
+\pagenumbering{roman}
+\input{frontmatter/originality}
+\input{frontmatter/abstract}
+\input{frontmatter/acknowledgements}
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{Table of Contents}\tableofcontents
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{List of Figures}\listoffigures
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{List of Tables}\listoftables
+\input{frontmatter/abbreviations}
+\clearpage\pagenumbering{arabic}
+\clearpage\input{chapters/01_introduction}
+\clearpage\input{chapters/02_related_work}
+\clearpage\input{chapters/03_problem_formulation}
+\clearpage\input{chapters/04_methodology}
+\clearpage\input{chapters/05_experimental_design}
+\clearpage\input{chapters/06_results_discussion}
+\clearpage\input{chapters/07_conclusion}
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{References}
+\setlength{\bibsep}{0pt}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\appendix
+\clearpage\input{appendices/a_reproducibility}
+\clearpage\input{appendices/b_development}
+\end{document}

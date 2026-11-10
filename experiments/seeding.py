@@ -1,6 +1,7 @@
 """Explicit random-seed protocol for reproducible PrivIM experiments."""
 
 from dataclasses import asdict, dataclass
+from typing import Optional
 
 
 SEED_MODES = ("fixed", "per-round")
@@ -12,7 +13,7 @@ class RoundSeeds:
     model: int
     sampling: int
     batch: int
-    dp_noise: int
+    dp_noise: Optional[int]
 
     def as_dict(self):
         return asdict(self)
@@ -54,7 +55,7 @@ def resolve_round_seeds(
         model=resolved(model_seed, model_seed_mode),
         sampling=resolved(sampling_seed, sampling_seed_mode),
         batch=resolved(batch_seed, batch_seed_mode),
-        dp_noise=resolved(dp_noise_seed, dp_noise_seed_mode),
+        dp_noise=None if dp_noise_seed is None else resolved(dp_noise_seed, dp_noise_seed_mode),
     )
 
 

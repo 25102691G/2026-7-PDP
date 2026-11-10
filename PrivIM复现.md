@@ -13,12 +13,12 @@ cd /home/zhaowentao/user_workspace/PrivIM
 
 ### 1.1 私有方法：epsilon = 1 和 4
 
-该命令运行六个数据集、两个隐私预算、三种方法和五个随机种子，共
-`6 x 2 x 3 x 5 = 180` 个训练轮次组合。
+该命令运行五个数据集、两个隐私预算、三种方法和五个随机种子，共
+`5 x 2 x 3 x 5 = 150` 个训练轮次组合。
 
 ```bash
 .venv/bin/python experiments/run_reproduction.py \
-  --dataset email bitcoin lastfm hepph facebook gowalla \
+  --dataset email bitcoin lastfm hepph facebook \
   --epsilon 1 4 \
   --settings PrivIM PrivIM+SCS PrivIM+ \
   --loss-penalty 0.5 \
@@ -26,6 +26,7 @@ cd /home/zhaowentao/user_workspace/PrivIM
   --round 5 \
   --device cuda \
   --skip-non-private \
+  --skip-prepare \
   --run-id final-table2-private
 ```
 
@@ -36,7 +37,7 @@ cd /home/zhaowentao/user_workspace/PrivIM
 
 ```bash
 .venv/bin/python experiments/run_reproduction.py \
-  --dataset email bitcoin lastfm hepph facebook gowalla \
+  --dataset email bitcoin lastfm hepph facebook \
   --only-non-private \
   --loss-penalty 0.5 \
   --iterations 500 \
@@ -46,15 +47,14 @@ cd /home/zhaowentao/user_workspace/PrivIM
   --run-id final-table2-nonprivate
 ```
 
-两条命令按顺序执行。第一条会准备数据；因此第二条使用 `--skip-prepare`。
-若第一条运行前数据已经准备完成，也可以给第一条添加 `--skip-prepare`。
+当前科研实验两条命令都必须显式使用 `--skip-prepare`，直接沿用已有prepared划分，不重新准备数据。
 
 如果运行中断，保持原命令和 `run-id` 不变，并在末尾增加 `--resume`：
 
 ```bash
 # 示例：恢复私有方法实验
 .venv/bin/python experiments/run_reproduction.py \
-  --dataset email bitcoin lastfm hepph facebook gowalla \
+  --dataset email bitcoin lastfm hepph facebook \
   --epsilon 1 4 \
   --settings PrivIM PrivIM+SCS PrivIM+ \
   --loss-penalty 0.5 \
@@ -62,6 +62,7 @@ cd /home/zhaowentao/user_workspace/PrivIM
   --round 5 \
   --device cuda \
   --skip-non-private \
+  --skip-prepare \
   --run-id final-table2-private \
   --resume
 ```
@@ -73,7 +74,7 @@ cd /home/zhaowentao/user_workspace/PrivIM
 
 | 项目 | 私有方法 | Non-Private |
 |---|---:|---:|
-| 数据集 | Email、Bitcoin、LastFM、HepPh、Facebook、Gowalla | 相同 |
+| 数据集 | Email、Bitcoin、LastFM、HepPh、Facebook | 相同 |
 | 随机运行次数 | 5 | 5 |
 | loss penalty（lambda） | 0.5 | 0.5 |
 | 训练迭代数（T） | 100 | 500 |
@@ -107,10 +108,7 @@ cd /home/zhaowentao/user_workspace/PrivIM
 | LastFM | 96.15 +/- 0.94 | 97.93 +/- 0.97 |
 | HepPh | 92.12 +/- 7.98 | 98.42 +/- 0.31 |
 | Facebook | 93.94 +/- 3.49 | 97.50 +/- 0.34 |
-| Gowalla | 99.12 +/- 0.61 | 99.78 +/- 0.03 |
-| **六数据集平均** | **96.17** | **98.45** |
 
-相对论文 Table II 的六数据集平均绝对误差（MAE）为 **2.28**。
 
 ### 3.2 epsilon = 1
 
@@ -121,10 +119,6 @@ cd /home/zhaowentao/user_workspace/PrivIM
 | LastFM | 74.14 +/- 35.63 | 83.42 +/- 18.99 | 90.23 +/- 6.39 |
 | HepPh | 63.32 +/- 32.00 | 70.09 +/- 26.04 | 83.71 +/- 13.57 |
 | Facebook | 68.85 +/- 37.53 | 87.02 +/- 8.66 | 87.40 +/- 10.85 |
-| Gowalla | 76.77 +/- 42.52 | 95.69 +/- 1.88 | 97.78 +/- 1.36 |
-| **六数据集平均** | **71.60** | **85.31** | **88.48** |
-| **论文六数据集平均** | **54.06** | **82.41** | **85.16** |
-| **相对 Table II 的 MAE** | **17.99** | **6.53** | **4.34** |
 
 ### 3.3 epsilon = 4
 
@@ -135,10 +129,6 @@ cd /home/zhaowentao/user_workspace/PrivIM
 | LastFM | 78.30 +/- 34.56 | 94.55 +/- 1.76 | 96.03 +/- 1.48 |
 | HepPh | 68.41 +/- 32.49 | 79.24 +/- 26.64 | 81.83 +/- 1.77 |
 | Facebook | 74.33 +/- 37.27 | 90.00 +/- 10.22 | 93.44 +/- 1.70 |
-| Gowalla | 76.94 +/- 42.37 | 98.01 +/- 1.13 | 98.55 +/- 0.79 |
-| **六数据集平均** | **73.94** | **90.30** | **92.16** |
-| **论文六数据集平均** | **77.89** | **92.86** | **94.85** |
-| **相对 Table II 的 MAE** | **4.16** | **5.64** | **4.89** |
 
 ## 4. 结果结论与稳定性
 

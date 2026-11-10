@@ -1,0 +1,95 @@
+ M .gitignore
+ M AGENTS.md
+ M "PrivIM\345\244\215\347\216\260.md"
+ M README.md
+ M dataset/prepare_datasets.py
+ D dataset/prepared/gowalla/gowalla_test_edges.txt
+ D dataset/prepared/gowalla/gowalla_train_edges.txt
+ D dataset/prepared/gowalla/metadata.json
+ D dataset/prepared/gowalla/node_mapping.csv
+ D dataset/prepared/gowalla/test_nodes.csv
+ D dataset/prepared/gowalla/train_nodes.csv
+ M docs/experiment_handoff.md
+ M docs/paper_implementation_guide.md
+ M experiments/config.py
+ M experiments/evaluate_models.py
+ M experiments/igraph_loader.py
+ M experiments/load_graph.py
+ M experiments/privacy.py
+ M experiments/run_reproduction.py
+ M experiments/seeding.py
+ M experiments/train.py
+ M experiments/train_models.py
+ M experiments/validate_results.py
+ M raw_dataset/README.md
+ M raw_dataset/checksums.sha256
+ M tests/test_config.py
+ M tests/test_privacy.py
+ M tests/test_reproduction.py
+ M tests/test_seeding.py
+?? "Dissertation - Guidelines and Assessment.pdf"
+?? dissertation/
+?? experiments/audit_four_method_preparation.py
+?? experiments/c3_rowsum.py
+?? experiments/email_h2_repeat/
+?? experiments/five_dataset_matrix.py
+?? experiments/matched_pdp_frozen_backbone/
+?? experiments/node_dp_slots/
+?? experiments/node_pdp/
+?? experiments/node_pdp_email_once.py
+?? experiments/node_pdp_research.py
+?? experiments/node_pdp_v2_projected/
+?? experiments/node_sampling_clipping.py
+?? experiments/node_sampling_h2.py
+?? experiments/node_sampling_structure.py
+?? experiments/node_sampling_utility.py
+?? experiments/noise_only_diagnostic/
+?? experiments/pdp_g0g1_diagnostic.py
+?? experiments/pdp_g2_analysis.py
+?? experiments/pdp_g2_controlled.py
+?? experiments/pdp_g3_analysis.py
+?? experiments/pdp_g3_average.py
+?? experiments/pdp_research_evaluation.py
+?? experiments/pdp_research_observer.py
+?? experiments/rowsum_pdp/
+?? experiments/rowsum_pdp_c2r/
+?? experiments/run_matched_pdp_frozen_backbone_research.py
+?? experiments/run_pdp_g2.py
+?? experiments/run_pdp_g3.py
+?? experiments/run_pdp_research.py
+?? experiments/run_uniform_node_dp_research.py
+?? experiments/stable_slot_gradients.py
+?? experiments/stable_slot_structure.py
+?? experiments/stable_slot_training.py
+?? experiments/uniform_node_dp/
+?? experiments/uniform_node_dp_eps4/
+?? experiments/uniform_v2/
+?? tests/test_c2r_rowsum.py
+?? tests/test_c3_rowsum.py
+?? tests/test_five_dataset_matrix.py
+?? tests/test_matched_pdp_development_control.py
+?? tests/test_matched_pdp_development_reporting.py
+?? tests/test_matched_pdp_development_runner.py
+?? tests/test_matched_pdp_frozen_backbone.py
+?? tests/test_node_dp_slots.py
+?? tests/test_node_pdp.py
+?? tests/test_node_pdp_email_once.py
+?? tests/test_node_pdp_v2_projected.py
+?? tests/test_node_sampling_clipping.py
+?? tests/test_node_sampling_h2.py
+?? tests/test_node_sampling_structure.py
+?? tests/test_node_sampling_utility.py
+?? tests/test_pdp_g0g1_diagnostic.py
+?? tests/test_pdp_g2_controlled.py
+?? tests/test_pdp_g3_analysis.py
+?? tests/test_pdp_g3_average.py
+?? tests/test_pdp_research.py
+?? tests/test_pdp_research_observer.py
+?? tests/test_prepared_pdp_research.py
+?? tests/test_rowsum_c2_diagnostic.py
+?? tests/test_rowsum_pdp.py
+?? tests/test_stable_slot_gradients.py
+?? tests/test_stable_slot_structure.py
+?? tests/test_stable_slot_training.py
+?? tests/test_uniform_node_dp.py
+?? tests/test_uniform_node_dp_eps4.py

@@ -1,0 +1,160 @@
+\chapter{Proposed Personalized Node-DP Mechanism}\label{ch:method}
+\section{Frozen system and model}
+PDP v2 changes the private training organization while preserving the existing GRAT3, loss, and subgraph construction. The trained parameter vector has dimension 2340. Its three layers map 32 to 32, 32 to 32, and 32 to 1 dimensions, using all-one 32-dimensional input features. The released-code layer includes a biased linear map and a biased scalar attention map of concatenated pre-transformation features. The first two layer outputs pass through ReLU; the final score is converted by sigmoid for the loss. Test ranking uses pre-sigmoid scores.
+
+This parameter count follows directly from the released layer shapes: two layers each contribute $32\cdot32+32+64+1=1121$ coordinates, and the final layer contributes $32+1+64+1=98$, giving $2(1121)+98=2340$. The final projection acts on the 32 weights of the last feature map. Its bias and attention parameters are separate coordinates.
+
+For a sampled subgraph, let $q_i$ be its sigmoid node output and $A^+$ the original adjacency with identity added. The unchanged loss is
+\begin{equation}
+ \mathcal{L}(q,A^+)=\sum_j\prod_i(1-q_i A^+_{ij})+
+ 0.5\sum_i q_i.\label{eq:loss}
+\end{equation}
+The first term penalizes uncovered vertices in the differentiable surrogate; the second penalizes selection mass. The Top-50 training argument does not replace this penalty with a new constrained optimizer. The mathematical description follows the frozen loss implementation rather than proposing a revised objective.
+
+\section{Public Registry and one-time participation}
+The Registry fixes targets for all identities in $U$ before graph training. Its nominal public proportions are 20\%, 40\%, and 40\% for targets 1, 2, and 4, with integer quotas resolved by the existing rule. Those proportions concern the full public universe, not realized training membership or a secret retained graph.
+
+For every present identity, independently draw one Bernoulli decision with probability
+\begin{equation}
+ p_v=\min\left\{1,\frac{\exp(\epsilon^{\mathrm{tar}}_v)-1}{\exp(2)-1}\right\}.\label{eq:participation}
+\end{equation}
+The induced retained graph $H$ contains retained nodes and edges between them. Strict identities participate with probability approximately 0.26894142137, while targets 2 and 4 participate with probability one. Sampling occurs once before the complete training run, rather than once per update. The retained set is an internal input, not a released statistic.
+
+\section{Stable slots and local sampling}
+Four overlapping identity sets $U_0,\ldots,U_3$ are defined using two public hash partitions. At each of two levels, every identity enters one of two slots. Therefore every identity belongs to exactly $K=2$ slots. Slot membership depends on stable public identity and the frozen hash rule; removing a private node does not rebalance other identities.
+
+Slot $j$ accesses only $H[V(H)\cap U_j]$. It has its own deterministic sampling role stream, batch stream, node mapping, frequency state, subgraph cache, and cursor. The original RWR/SCS/BES sampler is run locally with subgraph size 40, walk length 200, restart probability 0.3, SCS threshold 4, frequency decay 1, BES divisor 2, and $Q=64$ per slot. The rate is $\min\{1,64/\max(1,|V_j|)\}$, used to construct that local cache.
+
+Every update obtains up to four positions from each slot's cache, padding missing positions with zero contribution. There is no borrowing from other slots. Four slots and four positions produce a fixed denominator $B=16$. Cache reuse across updates is allowed because the proof handles arbitrary private within-slot state rather than treating every sampled subgraph as an independent protected record.
+
+\section{Double clipping and Gaussian update}
+Let $g_{tji}\in\R^{2340}$ be the full gradient at update $t$, slot $j$, position $i$. Use the frozen clipping operation, whose real-arithmetic norm bound is 3, to form
+\begin{align}
+ a_{tji}&=\clip(g_{tji}), &
+ b_{tj}&=\clip\left(\sum_{i=1}^{4}a_{tji}\right), &
+ S_t&=\sum_{j=0}^{3}b_{tj}.\label{eq:doubleclip}
+\end{align}
+The implementation includes a $10^{-6}$ denominator offset and inward norm margin. The proof uses the resulting bound rather than claiming that its literal code is identical to an ideal radial clip at every point. Missing positions and predefined nonfinite contributions are replaced by zero. These conventions do not constitute a proof covering every floating-point execution.
+
+An independent Gaussian vector is drawn after the complete slot sum:
+\begin{align}
+ Z_t&\sim\mathcal{N}(0,260^2I_{2340}), &Y_t&=S_t+Z_t,\\
+ \theta_{t+1}&=\Pi\!\left(F\left(\theta_t-\frac{0.005}{16}Y_t\right)\right).
+ \label{eq:update}
+\end{align}
+Here $F$ denotes the specified finite-state repair in the implementation, interpreted only as a function of the noisy state, and $\Pi$ clips the final 32 weights to nonnegative values. The initial model is not projected. There is no momentum, parameter averaging, private stopping decision, or selected intermediate checkpoint. The run always has 100 updates in the ideal mechanism, including empty-input cases.
+
+The Gaussian is full-rank in all 2340 trained coordinates. It is not restricted to the projected layer. The sum-scale sensitivity and standard deviation must be paired consistently: dividing both signal and noise by 16 changes sensitivity from 12 to 0.75 and noise from 260 to 16.25. It does not change their ratio. Learning-rate multiplication is further postprocessing.
+
+\begin{algorithm}[htbp]
+\caption{Frozen PDP v2 training (ideal mathematical description)}\label{alg:pdp}
+\begin{algorithmic}[1]
+\Require Legal decoded graph $G$, fixed public $U,\mathcal R$, public initialization seed
+\State Draw one independent participation decision per present identity using \eqref{eq:participation}
+\State Let $H$ be the induced retained graph; initialize all 2340 GRAT3 coordinates
+\State Build four isolated slot caches from $H$ with the frozen RWR/SCS/BES rules
+\For{$t=0,\ldots,99$}
+ \State Obtain four padded positions per slot; initialize missing contributions to zero
+ \State Compute original full-coordinate loss gradients and individual Clip3
+ \State Clip each slot sum to norm at most 3 and sum all four slots as $S_t$
+ \State Draw fresh $Z_t\sim\mathcal N(0,260^2I_{2340})$ and set $Y_t=S_t+Z_t$
+ \State Update with fixed denominator 16 and learning rate 0.005
+ \State Apply original state handling; project only the last 32 feature-map weights
+\EndFor
+\State \Return Fixed-length final parameters and genuinely public configuration only
+\end{algorithmic}
+\end{algorithm}
+
+\section{Conditional privacy assumptions}\label{sec:conditions}
+The following theorem reconstructs the archived G0 analysis, with Uniform calibrations independently documented in U0 and U2 \cite{projectg0,projectuniform}. Its scope requires three groups of assumptions.
+
+First, $U$, Registry, graph decoder, direction, initialization, and role rules are fixed public auxiliary information. Legal adjacency preserves surviving identities and the auxiliary information. Raw preprocessing and declaring a mapping public are outside this assumption.
+
+Second, all graph-dependent sampling and gradient computations remain slot-local. No global private normalization, cross-slot frequency state, unnoised adaptive scheduler, or private persistent model buffer enters another slot or the update rule. The same noisy transcript determines the same model state on adjacent inputs.
+
+Third, the ideal mechanism uses independent exact Gaussian innovations and the stated participation probabilities; updates and projection depend only on public information and noisy history. The release is the fixed parameter vector, not timing, failure behavior, cache statistics, or unrestricted research diagnostics. Exact continuous arithmetic and distributions are mathematical assumptions rather than certified properties of the machine.
+
+\section{Locality and sensitivity}
+\begin{lemma}[Conditional slot-sum sensitivity]\label{lem:sensitivity}
+For any fixed data-independent non-Gaussian role tape and common past noisy transcript, node add/remove adjacency changes $S_t$ by at most $2CK=12$ in Euclidean norm.
+\end{lemma}
+\begin{proof}
+Fix the public initialization and the same history $h_t=(Y_0,\ldots,Y_{t-1})$ on both inputs. The current parameters are the same function of that history. If $v\notin U_j$, deleting $v$ leaves the entire induced slot graph unchanged. Stable local ordering, its independent sampling and batch streams, and the slot's cache and cursor are therefore unchanged by induction. Its bounded contribution agrees on both sides.
+
+At most two slots contain $v$. Within those slots, node deletion may change every sampled position, random consumption, walk transition, or cache entry. No finer stability is assumed. Each final slot vector lies in a radius-$C$ ball, so
+\begin{equation}
+ \|S_t(G;h_t)-S_t(G-v;h_t)\|_2
+ \leq\sum_{j:v\in U_j}\bigl(\|b_{tj}(G)\|_2+\|b_{tj}(G-v)\|_2\bigr)
+ \leq 2CK=12.
+\end{equation}
+The SCS threshold 4 is not used as a node occurrence bound. Separately, $\|S_t\|_2\leq4C=12$; this numerically identical bound follows from a different triangle inequality.
+\end{proof}
+
+\section{Gaussian RDP and adaptive composition}
+For fixed common history, the conditional distributions of $Y_t$ are Gaussians with the same covariance. At any real order $\alpha>1$, their divergence satisfies
+\begin{equation}
+ D_\alpha(\mathcal N(\mu,\sigma^2I)\|\mathcal N(\nu,\sigma^2I))
+ =\frac{\alpha\|\mu-\nu\|_2^2}{2\sigma^2}
+ \leq\frac{\alpha144}{2\sigma^2}.\label{eq:gaussrdp}
+\end{equation}
+The same bound holds in reverse. It is uniform over every common history, allowing queries to depend adaptively on previous noisy states. Write the complete transcript density as the product of conditional densities. Integrating the $\alpha$-moment of its likelihood ratio backwards, one conditional variable at a time, multiplies the per-step moment bounds. Hence the 100-step transcript satisfies
+\begin{equation}
+ \rho_T(\alpha)=\frac{100\alpha144}{2\sigma^2}.\label{eq:rdp}
+\end{equation}
+Private caches need not have identical posterior distributions conditional on history. The proof compares each complete mechanism under a fixed role tape and uses the uniform history-wise query bound.
+
+If the non-Gaussian tape is itself data-independent random information, its marginalization preserves the uniform RDP bound by joint convexity of $p^\alpha q^{1-\alpha}$. One first bounds each tape-conditioned mechanism and then averages the exponentiated divergence bound. One cannot instead assume private state remains independent after conditioning on a noisy transcript. The actual frozen sampling role streams are public and deterministic, so this extension is not required to supply additional amplification.
+
+The projected update is a function of noisy history. It changes later queries but not the uniform sensitivity argument. Consequently it is legitimate within adaptive composition. This does \emph{not} assert that projected training can be obtained by applying one function only to the final unprojected model.
+
+\section{Conversion and numerical certificates}
+The archived conversion is more specific than the simplest RDP-to-DP inequality. For $a=e^\epsilon$ and $x\geq0$,
+\begin{equation}
+ (x-a)_+\leq c_\alpha a^{1-\alpha}x^\alpha,\qquad
+ c_\alpha=\frac{(\alpha-1)^{\alpha-1}}{\alpha^\alpha}.
+\end{equation}
+The maximum ratio occurs at $x=\alpha a/(\alpha-1)$. Substituting the likelihood ratio and integrating bounds the hockey-stick divergence by $c_\alpha\exp((\alpha-1)(\rho_T-\epsilon))$. Applying both directional RDP bounds gives
+\begin{equation}
+ \epsilon_\alpha=\rho_T(\alpha)
+ -\frac{\log\delta+\log\alpha}{\alpha-1}
+ +\log\frac{\alpha-1}{\alpha}.\label{eq:conversion}
+\end{equation}
+The minimum nonnegative bound over the fixed grid $\{1.1,1.2,\ldots,99.9\}$ is valid; the grid need not attain the continuous optimum.
+
+With $\sigma=260$, $\delta_0=10^{-5}$, and order 10.3, the base bound is approximately $\epsilon_0=1.982092738991924$. The archived rational certificate verifies a strict conservative bound below 1.982093. It uses the positive series for $\log x$ with $z=(x-1)/(x+1)$ and a bounded tail:
+\begin{equation}
+ L_N=2\sum_{k=0}^{N-1}\frac{z^{2k+1}}{2k+1},\qquad
+ L_N\leq\log x\leq L_N+\frac{2z^{2N+1}}{(2N+1)(1-z^2)}.
+\end{equation}
+The stored certificates use exact rational arithmetic at the required orders. They certify inequalities about public constants; they do not certify a Gaussian sampler or prove machine-level privacy.
+
+\section{Personalized amplification}
+\begin{theorem}[Single-model conditional ideal PDP]\label{thm:pdp}
+Under Section~\ref{sec:conditions}, Algorithm~\ref{alg:pdp} satisfies the per-identity bidirectional bounds
+\begin{equation}
+ \epsilon_v=\log\bigl(1+p_v(e^{\epsilon_0}-1)\bigr),\qquad
+ \delta_v=p_v\delta_0.\label{eq:amplified}
+\end{equation}
+The approximate bounds are
+\begin{align*}
+\text{target 1:}\quad &(0.986940353797,\ 2.6894142137\times10^{-6}),\\
+\text{targets 2 and 4:}\quad &(1.982092738992,\ 10^{-5}).
+\end{align*}
+\end{theorem}
+\begin{proof}
+Fix target identity $v$ and couple the participation decisions of all other identities. Their probabilities remain the same under deletion because the Registry is fixed. Let $Q$ be the output distribution without $v$ and $R$ the distribution with $v$ retained, after integrating the common other-node participation. The uniform base guarantee gives $R(F)\leq aQ(F)+\delta_0$ and $Q(F)\leq aR(F)+\delta_0$, where $a=e^{\epsilon_0}$.
+
+With $v$ present the output law is $P=(1-p)Q+pR$, where $p=p_v$. Thus $P(F)\leq[1+p(a-1)]Q(F)+p\delta_0$. For the reverse direction let $D_*=a(1-p)+p$. From the second base inequality,
+$aP(F)\geq D_*Q(F)-p\delta_0$, giving
+$Q(F)\leq (a/D_*)P(F)+(p/D_*)\delta_0$.
+Since $D_*\geq1$ and $[1+p(a-1)]D_*-a=p(1-p)(a-1)^2\geq0$, the common pair in \eqref{eq:amplified} bounds both directions. The final parameters are a measurable function of the private transcript and public initialization, so they inherit the guarantee. Amplification is applied once to the whole training mechanism.
+\end{proof}
+
+Targets 2 and 4 have the same participation probability and base mechanism. Therefore the extra allowance above 2 is unused. This is not a proof error, nor does $1.982/4$ measure exact budget consumption. The bound is sufficient and potentially conservative.
+
+\section{Uniform controls and theoretical limitations}
+Uniform1 uses the same sensitivity construction without outer subsampling, $\sigma=486$, and the same 100 projected updates. The grid value is approximately 0.9986929644 at order 17.8; its rational certificate verifies $\epsilon<0.998694<1$. Uniform4 uses $\sigma=139$ and order 6.1, with approximate value 3.99699597485 and a strict certificate below 3.997. Both use $\delta=10^{-5}$ for the complete model. The accountant never pairs a mean-scale sensitivity with a sum-scale standard deviation.
+
+No unproved mathematical step has been filled with a claim inferred from experiments. The theorem reconstructs the archived ideal argument; applying it to an actual submitted release still requires human review of domain, Registry, randomness, and output assumptions. Raw preparation, private-test protection, all research disclosures, machine arithmetic and error channels remain outside the established theorem. These are recorded as release-scope review obligations rather than silently promoted to proven corollaries.
+
+For independently re-sampled models, basic per-node joint-release composition adds their epsilon and delta bounds. A shared outer retained graph requires composition of the base transcripts before one amplification, rather than repeated free amplification. New run IDs, public seeds, or separate processes do not reset privacy loss. None of the 2900-model research statistics is asserted to fit within one model's policy budget.

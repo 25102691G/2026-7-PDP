@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "rows": 2900,
+  "unique_run_ids": 2900,
+  "all20_cells_match": true,
+  "manifest_hashes_match": true,
+  "maximum_summary_absolute_error": 1.4210854715202004e-14,
+  "primary": {
+    "estimate_pp": 0.7845395872675084,
+    "standard_error_pp": 0.8839786949543235,
+    "degrees_of_freedom": 1656.1919277883928,
+    "p_one_sided": 0.18746672885517626,
+    "lower_one_sided_95_pp": -0.6702897322918396,
+    "ci_two_sided_95_pp": [
+      -0.9492939081282336,
+      2.5183730826632504
+    ]
+  },
+  "low_tail_totals": {
+    "nonprivate": 0,
+    "uniform1": 115,
+    "pdp_v2": 103,
+    "uniform4": 58
+  },
+  "scope": "deterministic saved-scalar verification only; no bootstrap rerun, no RNG, no graphs/models"
+}

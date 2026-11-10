@@ -4,6 +4,13 @@ from experiments.seeding import resolve_round_seeds, seed_protocol
 
 
 class SeedProtocolTests(unittest.TestCase):
+    def test_entropy_seed_stays_hidden_across_model_rounds(self):
+        seeds = resolve_round_seeds(round_index=3, model_seed=0, model_seed_mode='per-round',
+            sampling_seed=0, sampling_seed_mode='fixed', batch_seed=0, batch_seed_mode='fixed',
+            dp_noise_seed=None, dp_noise_seed_mode='per-round')
+        self.assertEqual(seeds.model, 3)
+        self.assertIsNone(seeds.dp_noise)
+
     def test_fixed_sampling_decouples_round_randomness(self):
         first = resolve_round_seeds(
             round_index=0, model_seed=10, sampling_seed=20,

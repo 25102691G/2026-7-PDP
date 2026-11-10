@@ -333,8 +333,6 @@ def cal_target_delta(dataset_name, train_nodes=None):
         target_delta_value = 1e-4
     elif dataset_name == "facebook":
         target_delta_value = 9e-5
-    elif dataset_name == "gowalla":
-        target_delta_value = 1e-5
 
     if train_nodes:
         target_delta_value = min(target_delta_value, 0.9 / train_nodes)
@@ -859,8 +857,10 @@ def train(net, dataset, loss_function, n_iteration, batchsize, lr, k_train=32,
         "dp_noise_seed": dp_noise_seed if with_dp else None,
         "dp_noise_stream": dp_noise_stream if with_dp else None,
         "dp_noise_seed_applied": bool(
-            with_dp and dp_noise_stream == INDEPENDENT_DP_NOISE_STREAM
+            with_dp and dp_noise_stream == INDEPENDENT_DP_NOISE_STREAM and dp_noise_seed is not None
         ),
+        "dp_noise_entropy_seeded": bool(with_dp and dp_noise_seed is None
+                                        and dp_noise_stream == INDEPENDENT_DP_NOISE_STREAM),
         "round": round,
         "d": d,
         "train_nodes": train_node_count,

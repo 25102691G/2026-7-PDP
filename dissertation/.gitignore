@@ -1,0 +1,16 @@
+# Local compiler, virtual environment, and caches
+/tooling/
+
+# Regenerable page previews and extracted text
+/audit/rendered/
+/audit/guideline-*.png
+/audit/dissertation_extracted.txt
+/audit/guidelines.txt
+/audit/privim.txt
+
+# Build intermediates; retain the delivered PDF and its build logs
+/build/*
+!/build/dissertation_initial_draft.pdf
+!/build/main.log
+!/build/main.blg
+!/build/compile_console.log

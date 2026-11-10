@@ -475,7 +475,7 @@ def summarize_records(frame):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", nargs="+", choices=("email", "bitcoin", "lastfm", "hepph", "facebook", "gowalla"))
+    parser.add_argument("--dataset", nargs="+", choices=("email", "bitcoin", "lastfm", "hepph", "facebook"))
     parser.add_argument("--settings", nargs="+")
     parser.add_argument("--k", nargs="+", type=int, default=[50])
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")

@@ -1,3 +1,5 @@
+> 当前论文范围：Email、Bitcoin、LastFM、HepPh、Facebook。已退出数据集不再安排训练；联合历史叙述仅供审计，不是活动任务。
+
 # PrivIM reproduction
 
 For the complete current implementation state, experiment history, rejected
@@ -32,7 +34,7 @@ checkpoint.
 
 ## Dataset preparation
 
-Place the six raw datasets in the layout documented by
+Historical preparation only (do not rerun on this checkout): place the five raw datasets in the layout documented by
 `raw_dataset/README.md`, then run:
 
 ```bash
@@ -169,11 +171,12 @@ still indicates genuine model collapse rather than an evaluation fix.
 ## Full experiment launcher
 
 The following runs dataset preparation, all six privacy budgets, five seeds,
-and the PrivIM/SCS/BES ablations for all six datasets:
+and the PrivIM/SCS/BES ablations for the five thesis datasets:
 
 ```bash
 .venv/bin/python experiments/run_reproduction.py \
   --device auto \
+  --skip-prepare \
   --run-id paper-v1
 ```
 
@@ -217,7 +220,7 @@ The launcher also exposes `--optimizer-momentum` as a strict-DP optimizer
 diagnostic. Momentum is applied only after private-gradient construction, so
 it does not change privacy accounting, but it is not a reported paper
 default. A controlled `epsilon=4`, `T=200`, momentum `0.9` experiment reduced
-utility and increased variance on Facebook and Gowalla; the strict default
+utility and increased variance on Facebook; the strict default
 therefore remains `0`.
 
 The paper's Equation (5) leaves the penalty coefficient `lambda` unspecified.
@@ -237,7 +240,7 @@ changing the strict defaults, use the isolated profile:
 ```bash
 .venv/bin/python experiments/run_reproduction.py \
   --protocol-profile released-compatibility \
-  --dataset email facebook gowalla \
+  --dataset email facebook \
   --epsilon 4 \
   --settings PrivIM PrivIM+SCS PrivIM+ \
   --device auto \

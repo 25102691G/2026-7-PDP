@@ -1,3 +1,5 @@
+> 当前论文范围：Email、Bitcoin、LastFM、HepPh、Facebook。已退出数据集不再安排训练；联合历史叙述仅供审计，不是活动任务。
+
 # PrivIM paper implementation guide
 
 This document is a durable navigation aid for implementing
@@ -132,7 +134,7 @@ Checkpoint metadata distinguishes the two interpretations with
 
 Unless a task explicitly changes the protocol, reproduction runs should use:
 
-- six datasets: Email, Bitcoin, LastFM, HepPh, Facebook, and Gowalla;
+- five thesis datasets: Email, Bitcoin, LastFM, HepPh, and Facebook;
 - random 50/50 train/test node split;
 - IC evaluation with edge influence probability `1`, one diffusion step, and
   seed-set size `k=50`;
@@ -298,15 +300,15 @@ do not relabel a local method as an unavailable competitor.
 These values are regression targets for the experimental setup, not unit-test
 constants. Coverage ratios are percentages.
 
-| epsilon | Method | Email | Bitcoin | LastFM | HepPh | Facebook | Gowalla |
-|---:|---|---:|---:|---:|---:|---:|---:|
-| infinity | Non-Private | 98.09 | 98.99 | 97.93 | 98.42 | 97.50 | 99.78 |
-| 4 | PrivIM | 76.08 | 73.48 | 79.39 | 73.54 | 82.60 | 82.26 |
-| 4 | PrivIM+SCS | 95.08 | 92.24 | 89.56 | 93.91 | 90.92 | 95.47 |
-| 4 | PrivIM* | 94.44 | 92.84 | 93.76 | 94.50 | 95.55 | 98.02 |
-| 1 | PrivIM | 62.01 | 60.13 | 31.72 | 32.24 | 70.20 | 68.05 |
-| 1 | PrivIM+SCS | 83.05 | 85.76 | 80.72 | 80.98 | 82.68 | 81.28 |
-| 1 | PrivIM* | 83.87 | 86.42 | 83.50 | 85.49 | 85.10 | 86.57 |
+| epsilon | Method | Email | Bitcoin | LastFM | HepPh | Facebook |
+| ---: | --- | ---: | ---: | ---: | ---: | ---: |
+| infinity | Non-Private | 98.09 | 98.99 | 97.93 | 98.42 | 97.50 |
+| 4 | PrivIM | 76.08 | 73.48 | 79.39 | 73.54 | 82.60 |
+| 4 | PrivIM+SCS | 95.08 | 92.24 | 89.56 | 93.91 | 90.92 |
+| 4 | PrivIM* | 94.44 | 92.84 | 93.76 | 94.50 | 95.55 |
+| 1 | PrivIM | 62.01 | 60.13 | 31.72 | 32.24 | 70.20 |
+| 1 | PrivIM+SCS | 83.05 | 85.76 | 80.72 | 80.98 | 82.68 |
+| 1 | PrivIM* | 83.87 | 86.42 | 83.50 | 85.49 | 85.10 |
 
 Large deviations from these targets require investigation of dataset version
 and orientation, split semantics, sampling, privacy calibration, training,

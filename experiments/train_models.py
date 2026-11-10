@@ -21,6 +21,7 @@ from model.layer.GRATLayer import GRAT_INITIALIZATIONS
 from model.GRAT import GRAT_VARIANTS
 from train import train
 from config import (
+    DATASETS,
     PROTOCOL_PROFILES,
     RELEASED_COMPATIBILITY_PROTOCOL,
     select_indicator_parameters,
@@ -426,6 +427,8 @@ if __name__ == '__main__':
         "--dp-noise-seed", default=0, type=int,
         help="base seed used only for Algorithm 2 Gaussian gradient noise",
     )
+    parser.add_argument('--dp-noise-entropy', action='store_true',
+                        help='hidden entropy for the independent Gaussian generator; no seed is recorded')
     parser.add_argument(
         "--dp-noise-seed-mode", choices=SEED_MODES, default="per-round",
         help="hold DP noise fixed across rounds or vary it independently",
@@ -512,7 +515,7 @@ if __name__ == '__main__':
             "released 32-D width for a controlled comparison"
         ),
     )
-    parser.add_argument("--dataset", nargs='+', default=["lastfm"],help="[email, bitcoin, lastfm, hepph, facebook, gowalla]")
+    parser.add_argument("--dataset", nargs='+', default=list(DATASETS), choices=DATASETS, help="five retained thesis datasets")
     parser.set_defaults(with_dp=True)
     parser.add_argument("--with-dp", "--with_dp", dest="with_dp", action="store_true")
     parser.add_argument("--no-dp", dest="with_dp", action="store_false")
@@ -598,6 +601,10 @@ if __name__ == '__main__':
     parser.add_argument("--baseline", default='ours')
 
     args = parser.parse_args()
+    if args.dp_noise_entropy:
+        if args.dp_noise_stream != 'independent' or args.protocol_profile != 'strict':
+            parser.error('--dp-noise-entropy requires strict profile and independent noise stream')
+        args.dp_noise_seed = None
     if args.loss_penalty <= 0:
         parser.error("--loss-penalty must be positive")
     args.sampling_seed_base = args.sampling_seed

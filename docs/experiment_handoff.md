@@ -1,3 +1,5 @@
+> 当前论文范围：Email、Bitcoin、LastFM、HepPh、Facebook。已退出数据集不再安排训练；联合历史叙述仅供审计，不是活动任务。
+
 # PrivIM experiment and implementation handoff
 
 Last updated: 2026-09-21 (Asia/Shanghai)
@@ -71,9 +73,9 @@ Current reproduction protocol:
 
 Table II non-private targets:
 
-| Email | Bitcoin | LastFM | HepPh | Facebook | Gowalla |
-|---:|---:|---:|---:|---:|---:|
-| 98.09 | 98.99 | 97.93 | 98.42 | 97.50 | 99.78 |
+| Email | Bitcoin | LastFM | HepPh | Facebook |
+| ---: | ---: | ---: | ---: | ---: |
+| 98.09 | 98.99 | 97.93 | 98.42 | 97.50 |
 
 ## 4. Major implementation work completed
 
@@ -232,7 +234,6 @@ The completed targeted released-sampler runs are
 |---|---:|---:|---:|
 | Facebook | 24.00 +/- 2.65 | 79.96 +/- 13.65 | 88.69 +/- 2.62 |
 | LastFM | 36.11 +/- 7.93 | 93.27 +/- 3.46 | 80.50 +/- 9.96 |
-| Gowalla | 5.68 +/- 8.03 | 94.02 +/- 3.67 | 83.04 +/- 3.27 |
 
 The legacy sampler therefore helps selected enhanced configurations but is
 not a unified reproduction protocol. In particular, BES raises Facebook but
@@ -331,9 +332,7 @@ deviation over five runs unless marked as smoke tests.
 | `diagnostic-bitcoin-lastfm-ones-controlled` | Bitcoin | **99.47 +/- 0.72** | beats degree32 and closely matches paper 98.99 |
 | `diagnostic-bitcoin-lastfm-ones-controlled` | LastFM | **97.48 +/- 2.13** | beats degree32 and closely matches paper 97.93 |
 | `diagnostic-hepph-gowalla-degree32` | HepPh | **79.79 +/- 15.46** | unstable and 18.63 below paper; reject as a uniform feature protocol |
-| `diagnostic-hepph-gowalla-degree32` | Gowalla | **87.59 +/- 13.93** | unstable and 12.19 below paper; reject as a uniform feature protocol |
 | `diagnostic-hepph-gowalla-ones-controlled` | HepPh | **72.45 +/- 11.06** | unstable and 25.97 below paper; unresolved dataset-specific gap |
-| `diagnostic-hepph-gowalla-ones-controlled` | Gowalla | **99.22 +/- 1.33** | closely matches paper 99.78; degree32 is substantially worse |
 | `smoke-facebook-degree` | Facebook | 2.88 (1 run, 1 update) | plumbing test only |
 | `smoke-facebook-degree32` | Facebook | 20.30 (1 run, 1 update) | plumbing test only |
 
@@ -379,13 +378,13 @@ deviation from 1.58 to 0.93 without meaningful sigmoid saturation.
 
 ### HepPh and Gowalla paired feature results
 
-| Seed | HepPh ones | HepPh degree32 | Gowalla ones | Gowalla degree32 |
-|---:|---:|---:|---:|---:|
-| 0 | 70.99 | 63.58 | 99.82 | 97.34 |
-| 1 | 63.70 | 63.58 | 99.81 | 96.37 |
-| 2 | 75.42 | 85.41 | 99.81 | 71.58 |
-| 3 | 62.38 | 88.74 | 96.84 | 73.22 |
-| 4 | 89.78 | 97.65 | 99.82 | 99.48 |
+| Seed | HepPh ones | HepPh degree32 |
+| ---: | ---: | ---: |
+| 0 | 70.99 | 63.58 |
+| 1 | 63.70 | 63.58 |
+| 2 | 75.42 | 85.41 |
+| 3 | 62.38 | 88.74 |
+| 4 | 89.78 | 97.65 |
 
 These are controlled pairs: both protocols use 32-dimensional inputs, the
 same model seeds, fixed batch seed 0, and identical sampled-node-set hashes
@@ -449,7 +448,6 @@ All six prepared datasets are on the current explicit protocol:
 | LastFM | active, self-loops removed | 3,096 | 3,196 |
 | Facebook | active, self-loops removed | 10,011 | 10,080 |
 | HepPh | active, self-loops removed | 5,249 | 5,264 |
-| Gowalla | active, self-loops removed | 79,978 | 80,392 |
 
 Revalidate the latest paired runs with:
 

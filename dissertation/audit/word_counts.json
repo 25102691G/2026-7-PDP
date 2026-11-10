@@ -1,0 +1,14 @@
+{
+  "abstract_words": 326,
+  "chapter_prose_approximation": {
+    "01_introduction.tex": 1148,
+    "02_related_work.tex": 1426,
+    "03_problem_formulation.tex": 1125,
+    "04_methodology.tex": 1723,
+    "05_experimental_design.tex": 1672,
+    "06_results_discussion.tex": 2046,
+    "07_conclusion.tex": 828
+  },
+  "chapter_total_approximation": 9968,
+  "word_rule": "ASCII letters/numerals with internal hyphens/apostrophes; abstract excludes heading; chapter estimate strips TeX/math and is approximate"
+}

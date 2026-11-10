@@ -8,3 +8,4 @@ dataset/prepared/
 raw_dataset/*
 !raw_dataset/README.md
 !raw_dataset/checksums.sha256
+docs/
