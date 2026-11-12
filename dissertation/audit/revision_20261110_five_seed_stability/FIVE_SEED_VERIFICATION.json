@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "rows": 100,
+  "cells": 20,
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "all_raw_scalar_checks_pass": true,
+  "all_attempts": 100,
+  "failures": 0,
+  "retries": 0,
+  "new_training": 0,
+  "new_inference": 0,
+  "new_random_experiments": 0,
+  "scope": "existing scalar arithmetic and static source reads only"
+}

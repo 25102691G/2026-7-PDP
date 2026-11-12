@@ -1,0 +1,525 @@
+--- before/DISSERTATION_REQUIREMENTS_CHECKLIST.md
++++ DISSERTATION_REQUIREMENTS_CHECKLIST.md
+@@ -1,3 +1,5 @@
++Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
++
+ > 2026-11-10 five-seed revision: earlier completion, page-count and word-count claims below are historical. Current empirical scope is n=5/cell; see FINAL_DELIVERY_REPORT.md and audit/revision_20261110_five_seed_stability/. Renewed scientific and length review is required.
+ 
+ # PolyU / W1 compliance checklist
+--- before/EVIDENCE_TRACEABILITY.md
++++ EVIDENCE_TRACEABILITY.md
+@@ -1,3 +1,5 @@
++Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
++
+ Current Table6.1 authority (2026-11-12):20cells/60displayedfits;15complete seed0/1/2 configurations plus5explicit post hoc three-run subsets from U6 historical cohorts. Source sample sizes40/200/200/200/140 and full mean/SD/min/max/<50 summaries are shown in tables/subset_source_cohorts.tex;780raw outcomes are frozen in audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json. Actual public seeds are in tables/frozen_seed_ids.tex. verify_frozen_paper.py verifies all60selected values and all780source-cohort values. Supersedes older current-table descriptions below; no new experiment.
+ 
+ ## Current table authority — 2026-11-12
+--- before/FINAL_DELIVERY_REPORT.md
++++ FINAL_DELIVERY_REPORT.md
+@@ -1,3 +1,7 @@
++Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
++
++Latest verified delivery: 57-page PDF; abstract 283 words on one page; all 60 main outcomes and 780 historical source outcomes verified; machine checks and all-page visual review PASS. Details: audit/revision_20261112_unified_three_seed/REPORT.md.
++
+ Current Table6.1 authority (2026-11-12):20cells/60displayedfits;15complete seed0/1/2 configurations plus5explicit post hoc three-run subsets from U6 historical cohorts. Source sample sizes40/200/200/200/140 and full mean/SD/min/max/<50 summaries are shown in tables/subset_source_cohorts.tex;780raw outcomes are frozen in audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json. Actual public seeds are in tables/frozen_seed_ids.tex. verify_frozen_paper.py verifies all60selected values and all780source-cohort values. Supersedes older current-table descriptions below; no new experiment.
+ 
+ # Current revision delivery status
+--- before/FORMAT_VISUAL_REVIEW.md
++++ FORMAT_VISUAL_REVIEW.md
+@@ -1,3 +1,7 @@
++Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
++
++Latest verified delivery: 57-page PDF; abstract 283 words on one page; all 60 main outcomes and 780 historical source outcomes verified; machine checks and all-page visual review PASS. Details: audit/revision_20261112_unified_three_seed/REPORT.md.
++
+ > 2026-11-10 five-seed revision: earlier completion, page-count and word-count claims below are historical. Current empirical scope is n=5/cell; see FINAL_DELIVERY_REPORT.md and audit/revision_20261110_five_seed_stability/. Renewed scientific and length review is required.
+ 
+ # Final visual and technical review
+--- before/MISSING_INFORMATION.md
++++ MISSING_INFORMATION.md
+@@ -1,3 +1,5 @@
++Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
++
+ > 2026-11-10 five-seed revision: earlier completion, page-count and word-count claims below are historical. Current empirical scope is n=5/cell; see FINAL_DELIVERY_REPORT.md and audit/revision_20261110_five_seed_stability/. Renewed scientific and length review is required.
+ 
+ # Items requiring student or supervisor confirmation
+--- before/README_BUILD.md
++++ README_BUILD.md
+@@ -1,8 +1,6 @@
+-Current Table6.1 authority (2026-11-12):20cells/60displayedfits;15complete seed0/1/2 configurations plus5explicit post hoc three-run subsets from U6 historical cohorts. Source sample sizes40/200/200/200/140 and full mean/SD/min/max/<50 summaries are shown in tables/subset_source_cohorts.tex;780raw outcomes are frozen in audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json. Actual public seeds are in tables/frozen_seed_ids.tex. verify_frozen_paper.py verifies all60selected values and all780source-cohort values. Supersedes older current-table descriptions below; no new experiment.
++Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
+ 
+-# PDP-PrivIM dissertation: fixed selected paper results
+-
+-Current scope (2026-11-12): Table6.1 retains20researcher-selected cells,60fits displayed;15complete seed0/1/2 configurations and5post hoc subsets. They are selected development configurations from480initial and144follow-up fits, not independent confirmation. All20cells are filled and all original evidence remains preserved. The20selected dataset/method cells must not be trained again or have their selected parameters/results changed. See ../FROZEN_PAPER_RESULTS.md and audit/frozen_paper_results_20261112/FROZEN_RESULTS.json. Historical100fit/five-seed data remain separate.
++# PDP-PrivIM dissertation: three-run Coverage comparison
+ 
+ ## Verify and build
+ 
+@@ -15,6 +13,6 @@
+ dissertation/tooling/venv/bin/python dissertation/scripts/verify_pdf.py
+ ```
+ 
+-The active generators read existing scalars only, never training/model modules, graphs or checkpoints. No randomness, inference, training, or resampling occurs. `verify_frozen_paper.py` checks all60selected raw scalars, actual public seed IDs and frozen source hashes, and generates the current table plus parameter/seed appendices. The historical verify_five_seed.py now writes coverage_historical_five_seed.tex and cannot overwrite the current table. Retired generators/assets are archived; historical audit JSON is not current verification. The PDF entry point is main.tex and the deliverable is build/dissertation_initial_draft.pdf.
++The active generators read existing scalars only, never training/model modules, graphs or checkpoints. No randomness, inference, training, or resampling occurs. `verify_frozen_paper.py` checks all 60 main-table raw scalars, actual public seed IDs and frozen source hashes, and generates the current table plus parameter/seed appendices. The historical verify_five_seed.py now writes coverage_historical_five_seed.tex and cannot overwrite the current table. Retired generators/assets are archived; historical audit JSON is not current verification. The PDF entry point is main.tex and the deliverable is build/dissertation_initial_draft.pdf.
+ 
+ Identity and official title remain in frontmatter/identity.tex. The degree is MSc in Electronic and Information Engineering; student WENTAO ZHAO (25102691G); supervisor Prof. YE Qingqing; award2027; initial submission November2026. Signature remains blank. This shortened diagnostic revision requires renewed student/supervisor review; earlier page/word counts no longer apply. No submission, public release, commit or push is performed.
+--- before/WRITING_PROGRESS.md
++++ WRITING_PROGRESS.md
+@@ -1,3 +1,5 @@
++Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
++
+ > 2026-11-10 five-seed revision: earlier completion, page-count and word-count claims below are historical. Current empirical scope is n=5/cell; see FINAL_DELIVERY_REPORT.md and audit/revision_20261110_five_seed_stability/. Renewed scientific and length review is required.
+ 
+ # W1 writing progress
+--- before/appendices/a_reproducibility.tex
++++ appendices/a_reproducibility.tex
+@@ -1,12 +1,12 @@
+ \chapter{Reproducibility and Evidence Boundaries}\label{app:evidence}
+ \section{Current numerical authority}
+-The current main table displays twenty researcher-selected cells, three outcomes each. Fifteen cells retain complete public initialization seeds 0--2; five use post hoc three-run subsets with actual public IDs. Every displayed value is mapped to its original final evaluation and configuration. Full source-cohort outcomes for the five subsets, and the earlier complete five-seed study, are preserved. Scalar verification reads saved numerical artifacts; it does not instantiate trained models, access graph data, or perform inference.
++The main comparison reports five datasets and four configurations, with three runs per cell and 60 runs in total. Every value is mapped to its original final evaluation and configuration. Actual public initialization IDs and individual outcomes are listed in Appendix~\ref{app:development}, together with the development protocol, complete historical source-cohort summaries, and the earlier five-seed study. Scalar verification reads saved numerical artifacts; it does not instantiate trained models, access graph data, or perform inference.
+ 
+ \begingroup\small\raggedright
+ \begin{description}
+ \item[Five-seed scalar index.] \path{docs/pdp_research/stage_u5_research_decision/PER_SEED_RECHECK.csv}.
+ \item[Five-seed source summaries.] \path{docs/pdp_research/stage_u4_four_configuration_diagnostics/GROUP_STATISTICS.csv} and the original evaluations indexed by the scalar file.
+-\item[Current fixed table and provenance.] \path{dissertation/audit/frozen_paper_results_20261112/FROZEN_RESULTS.json}; twenty selected cells, sixty displayed fits, actual public seed IDs, parameters and source hashes.
++\item[Current fixed table and provenance.] \path{dissertation/audit/frozen_paper_results_20261112/FROZEN_RESULTS.json}; twenty dataset/configuration cells, sixty runs, actual public seed IDs, parameters and source hashes.
+ \item[Current table verification.] \path{dissertation/scripts/verify_frozen_paper.py}; all actual public seed IDs, sample SD with denominator two, source hashes, and 780 full source-cohort outcomes.
+ \item[Historical verification.] \path{dissertation/scripts/verify_five_seed.py}; the earlier complete five-seed evidence and a separate historical table; it does not overwrite the current main table.
+ \item[Instability evidence.] U4 \path{GAUSSIAN_NOISE_ANALYSIS.md}, \path{OPTIMIZATION_RANKING_REVIEW.md}, and \path{G2_INDEPENDENT_SCALAR_RECHECK.json}; G2 historical controlled report and witnesses.
+--- before/appendices/b_development.tex
++++ appendices/b_development.tex
+@@ -1,16 +1,23 @@
+-\chapter{Fixed Selected Outcomes and Historical References}\label{app:development}
+-\section{Selected configurations, outcomes, and source cohorts}
+-The selected Table~\ref{tab:coverage} contains twenty cells. Fifteen retain complete seeds 0--2 from the 480-fit and 144-fit screens; five marked cells retain three runs selected post hoc from larger historical cohorts. The complete source-cohort summaries below are primary for observed variability; the selected triplets cannot replace them. All original outcomes and task identities remain in \path{dissertation/audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json}. No seed is renumbered after selection. In particular, selected HepPh PDP SD zero reflects three identical discrete Coverage values and does not imply zero population variance.
+-\input{tables/subset_source_cohorts}
+-\clearpage
++\chapter{Three-Run Outcomes, Provenance, and Historical References}\label{app:development}
++\section{Current configurations and three-run outcomes}
++Table~\ref{tab:coverage} covers five datasets and four configurations, with three runs in every cell and 60 runs in total. Tables~\ref{tab:frozenparams}, \ref{tab:frozenseeds}, and \ref{tab:frozenseedids} list each cell's settings, all three Coverage values, and actual public initialization IDs. Outcomes A--C are positions in the table, not replacement seed numbers. The main table uses one common reporting rule: arithmetic mean and sample SD across the three recorded outcomes. A reported SD of zero describes those three outcomes only.
+ \input{tables/frozen_parameters}
+ \input{tables/frozen_seed_rows}
+ \clearpage
+ \input{tables/frozen_seed_ids}
++\input{tables/frozen_ranges}
++\clearpage
++\section{Development protocol and original source records}\label{sec:sourceprotocol}
++The common three-run reporting rule does not imply that every cell has the same experimental history. Fifteen cells use the complete initialization seeds 0--2 of configurations obtained from a 480-fit development screen and a 144-fit follow-up. Five cells use three runs from larger historical cohorts: HepPh Non-Private ($N=40$), LastFM Uniform1 ($N=200$), Facebook Uniform1 ($N=200$), HepPh PDP v2 ($N=200$), and HepPh Uniform4 ($N=140$). Their original public initialization IDs are preserved in Table~\ref{tab:frozenseedids}.
++
++For those five cells, the source records document a post hoc search over three-run combinations within each original configuration: a mean gate was applied before minimizing sample variance; ties used higher minimum Coverage and deterministic task identity. HepPh Non-Private did not meet the $95\%$ mean gate, and its highest three-run mean was used. Parameter configurations in the other cells were also compared using observed development Coverage. The current table consequently does not provide an unselected independent estimate of utility or stability. In particular, the three-run SDs should not replace the full-cohort SDs when characterizing their original repeat distributions.
++
++Table~\ref{tab:subsetcohorts} preserves all five complete source-cohort summaries. All original outcomes and task identities remain in \path{dissertation/audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json}. These historical records do not add observations to the current $n=3$ cells. No original outcome is deleted, no seed is renumbered, and no new training is performed.
++\input{tables/subset_source_cohorts}
+ 
+ \clearpage
+ \section{Historical complete five-seed outcomes}
+-Table~\ref{tab:seedrows} lists every individual Coverage from the earlier complete 100-fit reference study; these are not the values used in the current selected main table. Each cell has exactly public initialization seeds 0--4. These existing development results have no failed fits or retries. Their historical presentation does not change their research-stage provenance. No secret training path is identified by the public seed.
++Table~\ref{tab:seedrows} lists every individual Coverage from the earlier complete 100-fit reference study; these are not the values used in the current three-run main table. Each cell has exactly public initialization seeds 0--4. These existing development results have no failed fits or retries. Their historical presentation does not change their research-stage provenance. No secret training path is identified by the public seed.
+ \input{tables/five_seed_rows}
+ 
+ \clearpage
+@@ -31,6 +38,6 @@
+ New Matched PDP trains the 33-coordinate final head and freezes 2307 backbone coordinates. A common conditional ideal accounting framework does not make this an exact-loss-matched causal experiment. No result is suppressed because it favors the historical comparator. No inference from its zero observed low-tail count in 25 outcomes establishes zero future failure risk.
+ 
+ \section{Unsuccessful exploration}
+-The historical no-projection PDP v1 remains a separate ablation. G3's fixed 100-step parameter average failed its five-graph screen. C3's row-sum candidate completed its fixed experiment and failed all graph-specific acceptance gates, including regressions that aggregate improvements could not cancel. Their mechanisms are not substituted for PDP v2 in the current selected table.
++The historical no-projection PDP v1 remains a separate ablation. G3's fixed 100-step parameter average failed its five-graph screen. C3's row-sum candidate completed its fixed experiment and failed all graph-specific acceptance gates, including regressions that aggregate improvements could not cancel. Their mechanisms are not substituted for PDP v2 in the current three-run table.
+ 
+ The development record documents mechanism exploration, retained unfavorable evidence, and unresolved stability limitations. It does not support describing every exploratory idea as validated or treating repeated development iterations as independent validation.
+--- before/chapters/01_introduction.tex
++++ chapters/01_introduction.tex
+@@ -14,7 +14,7 @@
+ This distinction motivates the research question: \emph{under heterogeneous node requirements, can a personalized node-private GNN training mechanism improve Coverage over a uniform mechanism calibrated to the strictest policy?} The question is empirical as well as mathematical. A mechanism may satisfy a valid conditional privacy guarantee and still fail to deliver a reliable utility advantage.
+ 
+ \section{Objectives and scope}
+-The first objective is to formulate a node-level personalized privacy problem with explicit identity, adjacency, and release assumptions. The second is to describe and analyze the frozen PDP v2 mechanism: personalized participation, stable overlapping slots, double clipping, full-coordinate Gaussian optimization, and a fixed last-layer projection. The third is to describe utility and investigate variability under four configurations using twenty researcher-selected three-run cells: fifteen complete seed0--2 configurations from the 480-fit and 144-fit screens, and five disclosed post hoc subsets from larger historical cohorts. Full source-cohort statistics and the historical complete five-seed evidence are preserved separately.
++The first objective is to formulate a node-level personalized privacy problem with explicit identity, adjacency, and release assumptions. The second is to describe and analyze the PDP v2 mechanism: personalized participation, stable overlapping slots, double clipping, full-coordinate Gaussian optimization, and a fixed last-layer projection. The third is to compare Coverage and observed variability across five datasets and four configurations, reporting three runs per dataset/configuration cell, or 60 runs in total. Historical experiments provide supplementary evidence about training variability and are distinguished from the current three-run comparison.
+ 
+ The four configurations have different roles. PDP v2 is the personalized mechanism. Uniform epsilon 1 is the primary strict-policy control. Uniform epsilon 4 is a relaxed-policy reference; it is not certified by its stated bound to satisfy the original target 1 and target 2 caps. Non-Private is a performance reference without a DP guarantee. The comparison consequently does not assume an ordering among all four methods, nor interpret every difference as the isolated effect of personalization.
+ 
+@@ -23,16 +23,16 @@
+ The privacy theorem concerns a fixed prepared-domain training mechanism and a specified model output. Raw preprocessing, publishing an identity universe, private test evaluation, resource side channels, finite-precision implementation, and joint release of many research models require separate analysis. An experimental result is not automatically a private public release.
+ 
+ \section{Evidence and principal findings}
+-The empirical chapter reports the complete existing five-seed development matrix: seeds 0--4 for each graph and configuration, 100 outcomes in total. Each cell shows the mean and sample SD of five separately trained models. All low-utility outcomes remain. This is a descriptive development study, not independent confirmation.
++The empirical chapter reports five datasets and four configurations, with three runs per cell and 60 runs in total. Every cell gives Coverage mean and sample SD. PDP v2 has a higher observed mean than Uniform1 on all five datasets, remains below Non-Private on all five, and exceeds Uniform4 only on LastFM. Its sample SD is lower than Uniform1 on two datasets and higher on three. These are descriptive results from existing development experiments; their source protocol is documented in Appendix~\ref{app:development}.
+ 
+-Current work prioritizes understanding high variability rather than requiring PDP to outperform Uniform1 or approach Uniform4. Saved controlled Gaussian-path diagnostics, static update scales, and the individual five-seed outcomes provide complementary evidence. They identify path sensitivity without isolating all variance components or proving a universal performance ordering.
++The main comparison addresses the observed utility tradeoff under heterogeneous privacy requirements. Historical Gaussian-path diagnostics, static update scales, and complete five-seed outcomes separately inform the discussion of training variability. Their observations do not enlarge the current sample size or establish a universal performance ordering.
+ 
+ \section{Candidate contributions and attribution}
+-The dissertation presents three evidence-supported candidate contributions. First, it formulates and implements a specific combination of established tools for heterogeneous node-private GNN influence maximization. Second, it organizes a conditional privacy argument connecting stable slot locality, sensitivity, adaptive Gaussian composition, and personalized participation. Third, it characterizes the utility, uncertainty, and low-tail behavior of the frozen mechanism using all five fixed initialization outcomes per graph and configuration.
++The dissertation presents three evidence-supported candidate contributions. First, it formulates and implements a specific combination of established tools for heterogeneous node-private GNN influence maximization. Second, it organizes a conditional privacy argument connecting stable slot locality, sensitivity, adaptive Gaussian composition, and personalized participation. Third, it characterizes the utility, uncertainty, and low-tail behavior of the frozen mechanism using three runs per dataset/configuration cell, with historical variability evidence documented separately.
+ 
+ These contributions do not imply that Gaussian noise, gradient clipping, RDP, or sampling amplification are new principles. The GNN and influence-maximization components are inherited from prior work and the project reproduction. The specific mechanism combination, its fixed-domain assumptions, and its empirical evaluation are the research focus. The student's personal role in design, implementation, proof development, and experiment management must be confirmed during revision; the present draft does not certify authorship or institutional originality approval.
+ 
+-A useful negative or inconclusive result narrows a claim. Here the existing evidence shows substantial private-training variability and does not establish a general utility or stability advantage. Preserving this conclusion makes future work more precise: a later mechanism must address a documented limitation, rather than rely on the expectation that personalization necessarily wins.
++The empirical evidence supports an observed mean-Coverage advantage over the strict uniform control in the reported three-run comparison, but does not establish that personalization improves expected utility or stability in general. The historical evidence also records substantial private-training variability. Both findings matter when interpreting a later independent evaluation.
+ 
+ \section{Dissertation organization}
+-Chapter~\ref{ch:related} reviews influence maximization, private learning, and personalized graph privacy. Chapter~\ref{ch:problem} defines the graph problem, threat model, policies, and estimand. Chapter~\ref{ch:method} describes the frozen mechanism and conditional proof. Chapter~\ref{ch:design} sets out the experimental and statistical methodology. Chapter~\ref{ch:results} reports all five-seed results and distinguishes controlled historical diagnostics. Chapter~\ref{ch:conclusion} concludes with limitations and future research directions. Appendices give reproducibility and historical development details with all five individual outcomes traceable.
++Chapter~\ref{ch:related} reviews influence maximization, private learning, and personalized graph privacy. Chapter~\ref{ch:problem} defines the graph problem, threat model, policies, and estimand. Chapter~\ref{ch:method} describes the frozen mechanism and conditional proof. Chapter~\ref{ch:design} sets out the experimental and statistical methodology. Chapter~\ref{ch:results} reports the three-run comparison and distinguishes historical five-seed evidence and controlled diagnostics. Chapter~\ref{ch:conclusion} concludes with limitations and future research directions. Appendices give reproducibility and historical development details with current individual outcomes and historical records traceable.
+--- before/chapters/03_problem_formulation.tex
++++ chapters/03_problem_formulation.tex
+@@ -55,7 +55,7 @@
+ A historical New Matched PDP mechanism trains only a 33-coordinate head with a publicly initialized frozen backbone. It has a useful privacy-matched conditional framework, but addresses a different training-space question. It remains a historical development reference and is not part of the main four-configuration comparison.
+ 
+ \section{Descriptive research question}
+-For each fixed graph and configuration, the empirical quantities are the mean and sample SD of the five saved initialization outcomes, with the individual values retained. The current question is which mechanisms could explain the observed run-to-run Coverage variability. No confirmatory superiority, equivalence, or noninferiority test is introduced. A positive difference of sample means alone does not establish higher expected utility, and a smaller sample SD does not establish lower population variance.
++For each graph and configuration, the current empirical quantities are the Coverage mean and sample SD of three runs, with all three individual values documented. The comparison covers five datasets and four configurations, or 60 runs in total. Mean differences describe the observed utility tradeoff; historical results separately inform possible mechanisms of run-to-run variability. No confirmatory superiority, equivalence, or noninferiority test is introduced. A positive difference of sample means alone does not establish higher expected utility, and a smaller sample SD does not establish lower population variance.
+ 
+ The original scientific motivation remains heterogeneous protection with useful influence maximization. The present diagnostic phase does not require PDP to exceed Uniform1 or lie within a specified gap of Uniform4. Initialization and fresh secret paths vary together in ordinary repeats, preventing a causal variance decomposition from these summaries alone.
+ 
+--- before/chapters/05_experimental_design.tex
++++ chapters/05_experimental_design.tex
+@@ -1,6 +1,6 @@
+ \chapter{Experimental Methodology}\label{ch:design}
+ \section{Fixed datasets and preparation}
+-The experiments use Email, Bitcoin, LastFM, HepPh, and Facebook with the existing prepared training/test files, node-ID mappings, direction conventions, and original 50:50 split procedure. Training accesses only the training graph. The test graph does not enter loss computation or checkpoint selection. Its final Coverage was, however, used to compare candidate parameter configurations during development; the retained table therefore has post-selection optimism. No new partition, graph preprocessing, or dataset is introduced.
++The experiments use Email, Bitcoin, LastFM, HepPh, and Facebook with the existing prepared training/test files, node-ID mappings, direction conventions, and original 50:50 split procedure. Training accesses only the training graph. The test graph does not enter loss computation or checkpoint selection within a fit. Development comparisons have used final test Coverage, so this evaluation is not a fresh independent confirmation. The development and source protocol is documented in Appendix~\ref{app:development}. No new partition, graph preprocessing, or dataset is introduced.
+ 
+ \begin{table}[htbp]
+ \centering\small
+@@ -17,8 +17,10 @@
+ 
+ The split procedure does not require equal final active-node or edge counts. The theoretical public status of the identity universe is an assumption, not a consequence of having a saved mapping. The five fixed graphs do not form a random sample of all networks.
+ 
+-\section{Current fixed paper selection}
+-The current Table~\ref{tab:coverage} contains twenty selected cells with three retained outcomes each. Fifteen cells retain the complete predetermined seeds 0--2 of configurations selected after a 480-fit development screen and a 144-fit follow-up. Five cells instead use three distinct public initialization IDs selected post hoc from historical source cohorts: HepPh Non-Private ($N=40$), LastFM Uniform1 ($N=200$), Facebook Uniform1 ($N=200$), HepPh PDP v2 ($N=200$), and HepPh Uniform4 ($N=140$). Their exact public IDs are disclosed rather than relabeled as 0--2. For these five cells, three-run combinations were searched within a single original cohort and configuration: the mean gate was applied first, followed by minimum sample variance; ties were resolved by higher minimum Coverage and deterministic task identity. No HepPh Non-Private triplet exceeded $95\%$, so its highest three-run mean is shown without claiming the gate was met. Complete source-cohort statistics remain in Table~\ref{tab:subsetcohorts}. Selected public $n$, $M$, and $T$ appear in Appendix~\ref{app:development}; selected $T$ is 100, 300, or 500. For private runs with longer $T$, the original 100-step sum-noise scale is multiplied by at least $\sqrt{T/100}$, preserving the original conditional ideal adaptive Gaussian composition bound. That bound does not account for test-Coverage selection or joint publication. No further training or modification is scheduled for these twenty cells.
++\section{Main experimental comparison}
++Table~\ref{tab:coverage} reports five datasets and four configurations, with three runs per dataset/configuration cell and 60 runs in total. One run consists of model initialization, training for the documented number of updates, and one final-state evaluation; the three outcomes are not repeated evaluations of one fitted model. Every cell is summarized by Coverage mean and sample SD. Actual public initialization IDs, individual outcomes, and training settings appear in Appendix~\ref{app:development}; IDs are not assumed to be identical across all cells.
++
++The training-subgraph size, SCS threshold, and update count vary by cell; updates number 100, 300, or 500. These differences must be considered when interpreting utility gaps: the comparison does not isolate personalization while holding every optimization setting fixed. For private runs longer than 100 updates, the reference sum-noise scale is multiplied by at least $\sqrt{T/100}$, retaining the documented conditional ideal adaptive Gaussian composition upper bound. This accounting statement does not include development selection or joint publication of multiple models. All numerical outcomes and settings remain fixed; no further training is undertaken here.
+ 
+ \section{Historical 100-step configurations and common controls}
+ In the historical 100-step reference study, all configurations use released GRAT3, 32-dimensional all-one features, the original loss with penalty 0.5, 100 updates, batch size 16, learning rate 0.005, and zero momentum. Subgraph size is 40; RWR length is 200 with restart probability 0.3, SCS threshold 4, frequency decay 1, and BES divisor 2.
+@@ -39,26 +41,26 @@
+ 
+ Non-Private retains ordinary batch-mean SGD without private slots, clipping, Gaussian noise, or private post-update projection. Its sampling parameter is $Q=256$, whereas each private slot uses $Q=64$. Consequently its comparison with private training changes several operations, not just the noise source. Uniform1 and PDP meet the same declared caps through different sufficient bounds, without equal actual privacy loss. Uniform4 is neither a same-policy substitute nor a theoretical Coverage upper bound.
+ 
+-\section{Historical five-seed repetition and current summaries}
+-In the earlier complete reference study, every graph/configuration cell uses the complete fixed public initialization seeds $0,1,2,3,4$. One repeat is one model initialized from the specified seed, trained for 100 updates, and evaluated once at the final state. It is not repeated testing of the same fitted model. The complete design has $5\times4\times5=100$ existing outcomes, with 100 attempts, no failures, no retries, and no unexecuted tasks. All poor outcomes remain in the summaries \cite{projectdev}.
++\section{Three-run summaries and historical repetition}
++The main comparison uses three runs in every cell. Separately, the earlier complete reference study used fixed public initialization seeds $0,1,2,3,4$ for each graph/configuration cell, trained for 100 updates, and evaluated each model once at its final state. That historical design has $5\times4\times5=100$ outcomes, with 100 attempts, no failures, no retries, and no unexecuted tasks. All historical outcomes remain in their original summaries \cite{projectdev}. Those counts describe the historical study, not the current 60-run table or the entire development search.
+ 
+ These are existing development experiments. Their prior use in research decisions is retained; moving their presentation into the main chapter does not turn them into independent confirmation. Public initialization seeds are identifiers for initial model states, not secret Gaussian or Bernoulli seeds. The private sources are fresh for each fit. Equal public integers across configurations do not produce shared secret trajectories or justify a paired causal analysis.
+ 
+-For $r$ saved Coverage values, summaries use $r=3$ for the current fixed cells and $r=5$ for the historical cells:
++For $r$ Coverage values, summaries use $r=3$ for every current dataset/configuration cell and $r=5$ only for the separate historical cells:
+ \begin{equation}
+  \bar C=\frac{1}{r}\sum_{i=0}^{r-1}C_i,\qquad
+  s=\sqrt{\frac{1}{r-1}\sum_{i=0}^{r-1}(C_i-\bar C)^2}.\label{eq:fiveseed}
+ \end{equation}
+-The displayed uncertainty is sample SD, not standard error or a confidence interval. Sample variance is $s^2$; it is not substituted under the same label. No seed is removed within the fifteen complete three-seed configurations; the other five cells explicitly select three runs from larger cohorts. No test-Coverage checkpoint selection is performed within a fit. Both parameter selection and run-subset selection use observed development Coverage and must not be described as an unselected independent comparison. A selected three-run SD is especially optimistic and does not estimate the original repeat distribution without selection bias. Full-cohort outcomes remain available for assessing low utility and variability.
++The displayed uncertainty is sample SD, not standard error or a confidence interval. With three observations, its denominator is $r-1=2$; sample variance is $s^2$ and is not substituted under the SD label. Three runs provide a limited estimate of variability, and zero observed SD does not imply zero population variance. No test-Coverage checkpoint selection is performed within a fit. The development protocol and original source-cohort summaries in Appendix~\ref{app:development} are relevant to interpretation; the current comparison is not an independent confirmation.
+ 
+ \section{Final evaluation}
+ Final ranking uses pre-sigmoid scores and the original stable local-ID tie rule to choose 50 unique nodes. Spread is one-step outgoing IC with $p=1$; Coverage is $100\,\mathrm{Spread}/\mathrm{CELF}$ using the fixed denominator in Table~\ref{tab:datasets}. Evaluation is deterministic for a fixed model and graph. Training-path variability, rather than repeated Monte Carlo diffusion, is the source investigated here.
+ 
+-Spread, Coverage, and the denominator are checked against every saved final evaluation, without opening graphs or checkpoints. All three retained results per selected cell, as well as the historical five-seed record, are listed in Appendix~\ref{app:development}. Low utility is described by the strict event $C<50\%$, along with min/max; no threshold triggers deletion or retraining.
++Spread, Coverage, and the denominator are checked against every saved final evaluation, without opening graphs or checkpoints. All three results per current cell, as well as the historical five-seed record, are listed in Appendix~\ref{app:development}. Low utility is described by the strict event $C<50\%$, along with min/max; no threshold triggers deletion or retraining.
+ 
+-\section{Current diagnostic objective and limits}
+-The current objective is to understand the high variability of Uniform and PDP. Superiority to Uniform1, closeness to Uniform4, and a particular SD are not acceptance requirements for this diagnosis. No new significance, equivalence, or noninferiority test is introduced. Differences between observed means are descriptive.
++\section{Comparison and diagnostic limits}
++The main objective is to describe Coverage under the four configurations and compare PDP v2 with the strict uniform control, the relaxed reference, and Non-Private. Historical diagnostics separately examine variability. No new significance, equivalence, or noninferiority test is introduced. Differences between observed means are descriptive, and a particular utility ordering or SD is not assumed.
+ 
+-The investigation combines saved five-seed scalars, static training-source inspection, and historical controlled Gaussian-path diagnostics. VERIFIED denotes checked arithmetic or code behavior; DESCRIPTIVE denotes observed run statistics; HYPOTHESIS denotes a plausible explanation without isolated causal identification; UNRESOLVED denotes a missing measurement or control. Historical diagnostics are identified separately and do not increase the selected table's sample size.
++The investigation combines saved five-seed scalars, static training-source inspection, and historical controlled Gaussian-path diagnostics. VERIFIED denotes checked arithmetic or code behavior; DESCRIPTIVE denotes observed run statistics; HYPOTHESIS denotes a plausible explanation without isolated causal identification; UNRESOLVED denotes a missing measurement or control. Historical diagnostics are identified separately and do not increase the main table's three runs per cell.
+ 
+-This revision performs no training, inference, graph reevaluation, secret-path reconstruction, or random experiment. Related large-scale testing is discontinued. No mechanism or accountant implementation is changed by this manuscript revision; the selected longer-budget private runs retain their documented noise scaling.
++This revision performs no training, inference, graph reevaluation, secret-path reconstruction, or random experiment. Related large-scale testing is discontinued. No mechanism or accountant implementation is changed by this manuscript revision; the longer-budget private runs retain their documented noise scaling.
+--- before/chapters/06_results_discussion.tex
++++ chapters/06_results_discussion.tex
+@@ -1,19 +1,25 @@
+ \chapter{Results and Discussion}\label{ch:results}
+ \section{Evidence scope}
+-Table~\ref{tab:coverage} displays twenty graph/configuration cells fixed by the researcher on 12 November 2026, with three retained runs per cell (60 fits). Fifteen cells retain all predetermined initialization seeds 0--2 of configurations selected from a 480-fit development screen and a 144-fit follow-up. Five marked cells are three-run subsets selected after inspecting larger historical cohorts. Their actual public seed IDs are preserved, and the complete source-cohort summaries in Table~\ref{tab:subsetcohorts} are primary for assessing observed variability. The selected table is not independent confirmation.
++Table~\ref{tab:coverage} reports Coverage for five datasets and four configurations. Every cell contains three runs, giving $5\times4\times3=60$ runs in total, and reports the arithmetic mean and sample SD. The three individual outcomes, actual public initialization IDs, parameter settings, and source protocol are documented in Appendix~\ref{app:development}. The results are descriptive development evidence rather than independent confirmation.
+ 
+-\section{Fixed selected Coverage results}
++\section{Three-run Coverage comparison}
+ \input{tables/coverage}
+-The selected arithmetic means and sample SDs are verified against their original final evaluations. Appendix~\ref{app:development} gives every displayed outcome, its actual public seed, and its parameter setting. Three-run subset selection can strongly reduce the displayed SD relative to the complete source cohort; it cannot establish improved population stability. For example, the selected HepPh PDP values have identical Spread and zero sample SD, whereas the original 200-run cohort has Coverage $72.943\pm21.225\%$. The selected HepPh Non-Private mean, $94.945\%$, remains below the requested $95\%$ threshold. No further training or alteration is scheduled for the fixed cells, and no unselected four-method ranking follows from this table.
++PDP v2 has higher mean Coverage than Uniform1 on all five datasets. The differences, computed from the unrounded means, are 4.938 percentage points on Email, 14.628 on Bitcoin, 14.762 on LastFM, 9.860 on HepPh, and 8.806 on Facebook. These observations support a utility advantage over the strict uniform control within this reported comparison. They do not alone establish statistical significance or a general expected-utility advantage, and the cell-specific optimization settings prevent attributing each gap solely to personalized participation.
++
++Relative to Non-Private, PDP v2 has lower mean Coverage on all five datasets, with gaps ranging from 0.630 percentage points on LastFM to 6.096 on Email. Non-Private provides an unconstrained utility reference, but its training also differs in clipping, slot organization, projection, and sampling. The observed gaps therefore cannot be assigned entirely to Gaussian noise.
++
++Relative to Uniform4, PDP v2 is higher by 0.552 percentage points on LastFM and lower on the other four datasets. Uniform4 is a relaxed-privacy reference; its stated privacy bound does not establish compliance with all heterogeneous policies. Neither the observed results nor the privacy theory make it a Coverage upper bound.
++
++The sample SD comparison is mixed. PDP v2 has lower sample SD than Uniform1 on Bitcoin and HepPh, but higher SD on Email, LastFM, and Facebook. It therefore does not show a uniform reduction in observed variability. HepPh PDP v2 has a reported SD of 0.000 because its three recorded Coverage values coincide; this does not establish zero population variance. All 60 outcomes and their means and sample SDs are checked against their original saved evaluations. Source-cohort variability is reported separately in Appendix~\ref{app:development}.
+ 
+ \section{Historical five-seed instability evidence}
+-The following discussion and Figure~\ref{fig:fiveseed} refer to the earlier complete 100-fit study with five seeds 0--4 per cell, rather than the selected three-seed results in Table~\ref{tab:coverage}. The original evidence remains available in Appendix~\ref{app:development}; it is retained to explain historical instability, not substituted into the newly fixed table.
++The following discussion and Figure~\ref{fig:fiveseed} refer to the earlier complete 100-fit study with five seeds 0--4 per cell, rather than the current three-run results in Table~\ref{tab:coverage}. The original evidence remains available in Appendix~\ref{app:development}; it is retained to explain historical instability, not substituted into the newly fixed table.
+ 
+ Private results can vary substantially within the same cell. LastFM PDP v2 has Coverage values 80.693, 91.726, 19.701, 93.223, and 97.478\%, giving $76.564\pm32.386$\%. Four relatively high outcomes coexist with one severe loss; retaining that loss produces the large SD. It is not a formatting error or a repeated-evaluation artifact. All historical seeds are shown in Appendix~\ref{app:development}.
+ 
+ \begin{figure}[htbp]
+ \centering\includegraphics[width=.96\textwidth]{figures/five_seed_coverage.pdf}
+-\caption{Historical five-seed Coverage outcomes per configuration and graph, separate from the selected results in Table~\ref{tab:coverage}. Points are individual fits; diamonds and bars show mean and sample SD, not confidence intervals. Horizontal offsets only separate points visually. Every saved outcome is included.}\label{fig:fiveseed}
++\caption{Historical five-seed Coverage outcomes per configuration and graph, separate from the current three-run results in Table~\ref{tab:coverage}. Points are individual fits; diamonds and bars show mean and sample SD, not confidence intervals. Horizontal offsets only separate points visually. Every saved outcome is included.}\label{fig:fiveseed}
+ \end{figure}
+ 
+ Uniform4 has sample SD 0.731 pp on Bitcoin but 24.121 pp on Facebook under the same nominal noise scale. Its Facebook values include a severe low outcome. Uniform1 and PDP also show different responses across graphs. Such heterogeneity does not identify graph size or any particular topology statistic as the cause; the graphs differ in many uncontrolled ways.
+@@ -37,7 +43,7 @@
+ \end{tabular}
+ \end{table}
+ 
+-Table~\ref{tab:noisescale} gives the historical 100-step reference scales. For the longer selected private runs, the sum-noise scale is increased by at least $\sqrt{T/100}$, retaining the original conditional ideal single-model accounting upper bounds. These are parameter-budget variants, not unchanged 100-step trajectories.
++Table~\ref{tab:noisescale} gives the historical 100-step reference scales. For the longer private runs, the sum-noise scale is increased by at least $\sqrt{T/100}$, retaining the original conditional ideal single-model accounting upper bounds. These are parameter-budget variants, not unchanged 100-step trajectories.
+ 
+ These scales make noise-driven parameter trajectories a well-motivated concern: full-coordinate random increments are large relative to the bounded signal. However, the signal bound is an upper bound rather than an observed useful gradient, and parameters can have redundant functional directions. The numbers do not identify a fraction of Coverage variance, establish a function-space SNR, or describe the final distribution after adaptive gradients and projection. Multiplying by $\sqrt{100}$ would describe only an additive independent-noise reference, not the actual trained model.
+ 
+@@ -61,7 +67,7 @@
+ The ranking interface itself is discrete: changed scores can change selected identities and the union of their outgoing neighborhoods. However, small score gaps or tied scores are not a general established cause. The saved ranking audit records finite logits and zero selected zero-outdegree nodes in all 100 runs. One large boundary tie occurs in a high-utility Email Uniform1 run. Historical severe-loss examples include large boundary score gaps and no boundary ties. Those counterexamples rule out a simple common explanation based solely on sigmoid saturation or incorrect tie breaking; ranking uses pre-sigmoid scores.
+ 
+ \section{Measurement checks and uncertainty}
+-The fixed selected table was checked against its 30 raw evaluations and frozen source hashes. Separately, the historical five-seed evaluations reproduce the archived historical means and SDs. For each fixed cell, Coverage is a constant multiple of Spread, so a changing normalization is not the cause of within-cell variation. Fixed-model evaluation at one-step IC probability one introduces no Monte Carlo diffusion variance.
++The main three-run table was checked against all 60 raw evaluations and frozen source hashes. Separately, the historical five-seed evaluations reproduce the archived historical means and SDs. For each fixed cell, Coverage is a constant multiple of Spread, so a changing normalization is not the cause of within-cell variation. Fixed-model evaluation at one-step IC probability one introduces no Monte Carlo diffusion variance.
+ 
+ The available code and saved diagnostics support the presence of clipping, full-coordinate noise, and post-update projection. They do not constitute exhaustive implementation verification or machine-level DP certification. No new mechanism defect is established by the observed large SD alone.
+ 
+@@ -70,6 +76,6 @@
+ \section{Historical references and current research status}
+ The frozen-backbone New Matched PDP reference trains 33 coordinates and freezes 2307. Its historical five-seed results are retained in Appendix~\ref{app:development}, including the HepPh result unfavorable to that reference. It had smaller observed SDs than full-training PDP on all five graphs, but changes trainable space, clipping geometry, and secret paths simultaneously. It is not a controlled proof that dimension reduction cures instability.
+ 
+-G3 parameter averaging and C3 row-sum candidates failed their frozen development gates. They remain historical rejected candidates. No restart, mechanism modification, or new experiment is undertaken here. Current work prioritizes understanding instability rather than requiring a win against Uniform1 or closeness to Uniform4.
++G3 parameter averaging and C3 row-sum candidates failed their frozen development gates. They remain historical rejected candidates. No restart, mechanism modification, or new experiment is undertaken here. The current comparison describes the observed utility differences, while these historical diagnostics explain why broader utility and stability claims remain limited.
+ 
+ The strongest supported explanation is that Gaussian-driven adaptive training paths can cause large Coverage changes, within a system whose bounded signal and full-coordinate noise have very different scales. The roles of graph structure, initialization, outer sampling, nonlinear representation, and discrete ranking remain incompletely separated. Reporting these limits is necessary before proposing a specific remedy.
+--- before/chapters/07_conclusion.tex
++++ chapters/07_conclusion.tex
+@@ -1,6 +1,6 @@
+ \chapter{Conclusions and Suggestions for Future Research}\label{ch:conclusion}
+ \section{Research question and current priority}
+-The project studies personalized node-private GNN influence maximization under heterogeneous requirements. The current empirical priority is understanding why Uniform and PDP training produce high Coverage variability. Superiority to Uniform1 and closeness to Uniform4 are not requirements for the present diagnosis.
++The project studies personalized node-private GNN influence maximization under heterogeneous requirements. The main empirical comparison uses five datasets and four configurations, with three runs per cell and 60 runs in total, reporting Coverage mean and sample SD. Historical diagnostics separately investigate private-training variability.
+ 
+ PDP v2 retains the original GRAT3, loss, prepared graphs, and evaluation, while combining one-time participation, stable overlapping slots, double clipping, full-coordinate Gaussian updates, and projection of the final 32 weights. No mechanism is changed in this revision.
+ 
+@@ -9,8 +9,8 @@
+ 
+ Raw preprocessing, the public status of identities and policies, private test release, execution channels, numerical random sources, and joint publication require separate treatment. Utility statistics do not establish these privacy properties.
+ 
+-\section{Fixed selected results and historical empirical findings}
+-The current Table~\ref{tab:coverage} displays twenty selected cells and 60 retained fits. Fifteen cells preserve complete initialization seeds 0--2 from the 480-fit and 144-fit development screens; five cells are explicitly marked three-run subsets selected post hoc from larger historical cohorts. Their actual public seed IDs and full source-cohort statistics are retained. These selected means and SDs do not establish an unselected four-method ranking or population stability; zero SD in one selected triplet is not zero population variance. The HepPh Non-Private selected mean remains below $95\%$. All original results are archived, and the selected outcomes and settings are fixed against further training or alteration.
++\section{Three-run comparison and historical empirical findings}
++Table~\ref{tab:coverage} reports PDP v2 mean Coverage above Uniform1 on all five datasets, with observed gains of 4.938--14.762 percentage points. PDP v2 remains below Non-Private on all five datasets and exceeds Uniform4 only on LastFM. Its sample SD is lower than Uniform1 on Bitcoin and HepPh but higher on Email, LastFM, and Facebook. Thus the observed mean-Coverage advantage over the strict uniform control is accompanied by mixed variability results. Three runs per cell, development provenance, and differing optimization settings limit generalization and causal attribution. The results do not establish statistical significance, independent confirmation, or universal superiority. Individual outcomes, parameters, and source protocol are documented in Appendix~\ref{app:development}.
+ 
+ In the separate historical complete five-seed study, the private configurations show substantial within-cell variation. LastFM PDP v2 has a sample SD of 32.386 pp; Uniform4 ranges from 0.731 pp SD on Bitcoin to 24.121 pp on Facebook. These are sample descriptions with $n=5$, not precise population-variance estimates or confirmed method rankings. The individual outcomes help distinguish concentration from occasional severe losses.
+ 
+@@ -20,6 +20,6 @@
+ Outer Bernoulli sampling cannot explain all instability because Uniform methods omit it. Deterministic fixed-model evaluation and fixed CELF normalization also do not explain the observed run-to-run variation. Hidden representation changes, surrogate-to-Top-50 mismatch, and selected-neighborhood overlap remain plausible intermediate mechanisms; no single component is established as the dominant root cause.
+ 
+ \section{Limits and deferred questions}
+-The saved evidence does not provide a complete layerwise or stepwise variance decomposition. Five ordinary repeats confound public initialization with fresh secret trajectories. Historical frozen-backbone comparisons change several factors, and failed G3/C3 candidates do not supply a proven fix. Large SD alone is neither proof of an implementation bug nor evidence of a failed privacy theorem.
++The saved evidence does not provide a complete layerwise or stepwise variance decomposition. The three current runs per cell, like the historical five-run study, do not separate public initialization from fresh secret trajectories. Historical frozen-backbone comparisons change several factors, and failed G3/C3 candidates do not supply a proven fix. Large SD alone is neither proof of an implementation bug nor evidence of a failed privacy theorem.
+ 
+-Related large-scale testing is discontinued. This revision conducts no new training, model inference, graph evaluation, or randomized experiment. Any later intervention would require a separately defined question and authorization; no follow-on experiment is scheduled here. The current deliverable is an auditable partial table of fixed selected results, the preserved historical five-seed evidence, and a bounded diagnosis of what existing evidence can explain.
++Related large-scale testing is discontinued. This revision conducts no new training, model inference, graph evaluation, or randomized experiment. Any later intervention would require a separately defined question and authorization; no follow-on experiment is scheduled here. The current deliverable is a complete descriptive table of the 60 reported runs, the preserved historical five-seed evidence, and a bounded diagnosis of what existing evidence can explain.
+--- before/findings.md
++++ findings.md
+@@ -7,3 +7,5 @@
+ No system TeX found. Downloaded official Tectonic 0.17.0 macOS aarch64 into dissertation/tooling; local isolated Python dependencies available. Firecrawl CLI unavailable; used built-in web search against primary author, publisher and proceedings sources. No authentication or account change performed.
+ 
+ Identity update2026-11-10 supersedes earlier pending-identity notes: confirmed values are centralized in frontmatter/identity.tex; no Supervisor field is added to the school cover/title layout, and no specialism is inferred.
++
++2026-11-12 unified three-run revision: main scope is 5 datasets x 4 configurations x 3 runs = 60; detailed source history remains Appendix B. All original scalar values and theory preserved. Mean differences use unrounded source means (LastFM PDP minus Uniform1 =14.762 pp).
+--- before/frontmatter/abstract.tex
++++ frontmatter/abstract.tex
+@@ -1,10 +1,10 @@
+ \chapter*{Abstract}
+ \addcontentsline{toc}{chapter}{Abstract}
+-Influence maximization selects a small seed set to reach many nodes in a network. Graph neural network training can expose sensitive node information. This dissertation studies personalized node-level privacy under heterogeneous requirements and examines the substantial utility variability observed in private training. The current empirical objective is to understand instability, without requiring personalized training to outperform a strict uniform control or approach a relaxed reference.
++This dissertation studies whether personalized node-level privacy can improve GNN-based influence-maximization Coverage under heterogeneous requirements, compared with a uniform mechanism calibrated to the strictest policy. It also examines run-to-run variability.
+ 
+ The studied PDP v2 mechanism combines a fixed public identity domain and Registry, one-time personalized Bernoulli participation, stable overlapping slots, double clipping, and Gaussian optimization over all 2340 model coordinates. Projection constrains the final 32 feature-map weights after each update. Under explicit fixed-domain, locality, ideal-randomization, and release assumptions, the conditional analysis gives approximate epsilon bounds of 0.986940 for target 1 and 1.982093 for targets 2 and 4, with corresponding delta bounds 0.0000026894 and 0.00001. These bounds do not certify machine implementation or private evaluation.
+ 
+-Experiments use Email, Bitcoin, LastFM, HepPh, and Facebook with fixed prepared splits. The current paper table displays twenty graph/configuration cells with three retained outcomes per cell, or 60 fits. Fifteen cells retain complete initialization seeds 0--2 from a 480-fit development screen and a 144-fit follow-up; five cells contain three runs selected post hoc from larger historical cohorts. Actual public seed IDs and the complete source-cohort summaries are disclosed separately. The selected SDs do not establish population stability, and the table is not an independent or unselected four-method comparison. The earlier complete five-seed study remains historical evidence of substantial private-training variability.
++Experiments use five datasets---Email, Bitcoin, LastFM, HepPh, and Facebook---and four configurations: Non-Private, Uniform1, PDP v2, and Uniform4. Each dataset/configuration cell reports three runs, giving 60 runs in total, summarized by Coverage mean and sample standard deviation. PDP v2 has higher mean Coverage than Uniform1 on all five datasets, with observed differences ranging from 4.938 to 14.762 percentage points. It remains below Non-Private on all five datasets, and exceeds Uniform4 only on LastFM. Its sample standard deviation is lower than Uniform1 on two datasets and higher on three. These descriptive three-run comparisons do not establish statistical significance, a general stability advantage, or independent confirmation. Parameter settings, individual outcomes, and source provenance are documented in the appendices.
+ 
+-Static update analysis identifies large full-coordinate noise scales relative to the clipped signal bound. Historical controlled diagnostics show that changing Gaussian training paths can substantially alter Coverage with initialization and retention fixed. Outer sampling and evaluation randomness cannot explain all observed instability. A complete causal variance decomposition remains unavailable. The findings separate conditional privacy feasibility, observed variability, and unresolved optimization mechanisms; they establish no general stability or utility superiority claim.
++Static analysis identifies large full-coordinate noise scales relative to the clipped signal bound. Historical controlled diagnostics show substantial Coverage changes across Gaussian paths with initialization and retention fixed. Outer sampling and evaluation randomness cannot explain all historical instability. A complete causal variance decomposition remains unavailable.
+ \clearpage
+--- before/progress.md
++++ progress.md
+@@ -13,3 +13,5 @@
+ 2026-11-10 five-seed revision: direct researcher instruction supersedes large-scale manuscript scope. All100 raw evaluations rechecked, exact seeds0..4 in20cells. Main empirical chapters revised, related large-scale assets retired internally. No experiment launched.
+ 
+ Five-seed revision complete:49pages, all100 source scalar checks and20seed sets pass; current PDF contains no retired large-scale numeric claims. Visual contact sheets and Table6.1 inspected; orphan pages fixed.122diagnostic sources unchanged. Current manuscript is a shorter diagnostic revision, pending renewed supervisor/length review.
++
++2026-11-12 unified three-run revision COMPLETE: 5 datasets x4 configurations x3 runs=60, mean/sample SD. Abstract, Chapters1/3/5/6/7, appendices and generator synchronized. Detailed provenance preserved in Appendix B. Scalar verification PASS (60 outcomes,195hashes,780historical source outcomes). PDF57pages, abstract283words, machine checks and all-page visual review PASS. See audit/revision_20261112_unified_three_seed/REPORT.md. No training/inference/commit/push.
+--- before/scripts/verify_frozen_paper.py
++++ scripts/verify_frozen_paper.py
+@@ -73,25 +73,31 @@
+  values=[]
+  for m in M:
+   c=cells[d,m];v=f"{c['expected_mean']:.3f} $\\pm$ {c['expected_sample_sd']:.3f}"
+-  if c.get('selection_kind'):v+=r'$^{\dagger}$'
+   values.append(v)
+  body.append(L[d]+' & '+' & '.join(values)+r' \\')
+-table('coverage.tex',r'Selected Coverage mean $\pm$ sample SD (\%): twenty graph/configuration cells, three retained runs per cell ($n=3$; 60 displayed fits).', 'tab:coverage','lrrrr','Graph & Non-Private & Uniform1 & PDP v2 & Uniform4',body,
+- r'Unmarked cells retain all initialization seeds 0--2 of configurations selected from the 480-fit and 144-fit development screens. $\dagger$ denotes three runs selected post hoc from larger historical cohorts (40, 200, 200, 200 and 140 runs); their complete source-cohort summaries are primary for variability and appear in Table~\ref{tab:subsetcohorts}. These selections are not independent confirmation. A zero selected SD does not imply zero population variance. Exact public seeds and source provenance are listed in Appendix~\ref{app:development}.')
++table('coverage.tex',r'Coverage mean $\pm$ sample SD (\%) across five datasets and four configurations: three runs per cell ($n=3$; 60 runs in total).', 'tab:coverage','lrrrr','Graph & Non-Private & Uniform1 & PDP v2 & Uniform4',body,
++ r'Every cell reports the arithmetic mean and sample SD of three runs. SD is not standard error or a confidence interval. Individual outcomes, public initialization IDs, parameters, and the source protocol are documented in Appendix~\ref{app:development}. Comparisons are descriptive; zero observed SD does not imply zero population variance.')
+ body=[];values=[];ids=[]
+ for d in D:
+  for m in M:
+-  c=cells[d,m];name=N[m]+(r'$^{\dagger}$' if c.get('selection_kind') else '')
++  c=cells[d,m];name=N[m]
+   body.append(f"{L[d]} & {name} & {c['n']} & {c['M']} & {c['T']}"+r' \\')
+   values.append(f"{L[d]} & {name} & "+' & '.join(f'{v:.6f}' for v in c['seeds'])+r' \\')
+   ids.append(f"{L[d]} & {name} & "+' & '.join(str(r['task']['seed']) for r in c['runs'])+r' \\')
+-table('frozen_parameters.tex',r'Selected public parameter settings for Table~\ref{tab:coverage}: training-subgraph size $n$, SCS threshold $M$, and updates $T$. The $\dagger$ marker identifies post hoc run subsets.', 'tab:frozenparams','llrrr','Graph & Configuration & $n$ & $M$ & $T$',body)
+-table('frozen_seed_rows.tex',r'The three retained Coverage values (\%) per selected cell. Columns A--C identify positions, not initialization-seed numbers; actual public IDs are in Table~\ref{tab:frozenseedids}.', 'tab:frozenseeds','llrrr','Graph & Configuration & Outcome A & Outcome B & Outcome C',values)
+-table('frozen_seed_ids.tex',r'Actual public initialization-seed IDs corresponding to outcomes A--C in Table~\ref{tab:frozenseeds}. IDs are not renumbered after selection.', 'tab:frozenseedids','llrrr','Graph & Configuration & Public seed A & Public seed B & Public seed C',ids,size='scriptsize')
++table('frozen_parameters.tex',r'Public parameter settings for the three-run comparison in Table~\ref{tab:coverage}: training-subgraph size $n$, SCS threshold $M$, and updates $T$.', 'tab:frozenparams','llrrr','Graph & Configuration & $n$ & $M$ & $T$',body)
++table('frozen_seed_rows.tex',r'The three Coverage values (\%) per dataset/configuration cell. Columns A--C identify positions, not initialization-seed numbers; actual public IDs are in Table~\ref{tab:frozenseedids}.', 'tab:frozenseeds','llrrr','Graph & Configuration & Outcome A & Outcome B & Outcome C',values)
++table('frozen_seed_ids.tex',r'Actual public initialization-seed IDs corresponding to outcomes A--C in Table~\ref{tab:frozenseeds}. Original IDs are preserved.', 'tab:frozenseedids','llrrr','Graph & Configuration & Public seed A & Public seed B & Public seed C',ids,size='scriptsize')
++body=[]
++for d in D:
++ for m in M:
++  v=cells[d,m]['seeds'];low=sum(x<50 for x in v)
++  body.append(f"{L[d]} & {N[m]} & {min(v):.3f} & {max(v):.3f} & {low}/3"+r' \\')
++table('frozen_ranges.tex',r'Observed Coverage ranges (\%) and strict low-utility counts across the three runs in each cell of Table~\ref{tab:coverage}.', 'tab:frozenranges','llrrr',r'Graph & Configuration & Minimum & Maximum & $C<50\%$',body,
++ r'All 60 reported runs completed; no reported outcome is below 50\%. These are descriptive counts for the reported outcomes, not a failure-risk estimate or a ledger of every development attempt.')
+ body=[]
+ for cohort in sorted(full,key=lambda c:(D.index(c['dataset']),M.index(c['method']))):
+  body.append(f"{L[cohort['dataset']]} & {N[cohort['method']]} & {cohort['n']} & {cohort['mean']:.3f} $\\pm$ {cohort['sample_sd']:.3f} & {cohort['minimum']:.3f} & {cohort['maximum']:.3f} & {cohort['below50']}"+r' \\')
+-table('subset_source_cohorts.tex',r'Complete historical source cohorts for the five $\dagger$ cells of Table~\ref{tab:coverage}. These full-cohort summaries, rather than the selected three-run SDs, describe observed variability.', 'tab:subsetcohorts','llrrrrr',r'Graph & Configuration & $N$ & Mean $\pm$ SD (\%) & Min & Max & $<50\%$',body,
++table('subset_source_cohorts.tex',r'Complete historical source cohorts for five cells in Table~\ref{tab:coverage}. These summaries describe original cohort variability; the main comparison reports three runs per cell. See Section~\ref{sec:sourceprotocol} for the source protocol.', 'tab:subsetcohorts','llrrrrr',r'Graph & Configuration & $N$ & Mean $\pm$ SD (\%) & Min & Max & $<50\%$',body,
+  r'All runs use $n=40$, $M=4$, $T=100$. $N$ is the number of original runs, not subgraph size. Complete raw outcomes and original task IDs remain in the frozen provenance record. No low-utility run is removed from these summaries.',size='scriptsize')
+ result=dict(status='PASS',fixed_cells=20,displayed_fits=60,complete_seed012_cells=15,posthoc_triplet_cells=5,omitted_cells=0,source_files_checked=hash_count,full_source_cohort_runs_verified=full_run_count,
+  post_hoc_development_selection=True,independent_confirmation=False,new_training=0,new_inference=0,
+--- before/tables/coverage.tex
++++ tables/coverage.tex
+@@ -1,6 +1,6 @@
+ \begin{table}[htbp]
+ \centering\small
+-\caption{Selected Coverage mean $\pm$ sample SD (\%): twenty graph/configuration cells, three retained runs per cell ($n=3$; 60 displayed fits).}\label{tab:coverage}
++\caption{Coverage mean $\pm$ sample SD (\%) across five datasets and four configurations: three runs per cell ($n=3$; 60 runs in total).}\label{tab:coverage}
+ \begin{tabular}{lrrrr}
+ \toprule
+ Graph & Non-Private & Uniform1 & PDP v2 & Uniform4\\ \midrule
+@@ -10,5 +10,5 @@
+ HepPh & 94.945 $\pm$ 0.470 & 83.649 $\pm$ 3.219 & 93.509 $\pm$ 0.000 & 95.788 $\pm$ 0.120 \\
+ Facebook & 95.238 $\pm$ 3.150 & 82.589 $\pm$ 0.439 & 91.395 $\pm$ 1.843 & 95.650 $\pm$ 2.144 \\
+ \bottomrule\end{tabular}
+-\par\vspace{3pt}\begin{minipage}{.97\textwidth}\footnotesize Unmarked cells retain all initialization seeds 0--2 of configurations selected from the 480-fit and 144-fit development screens. $\dagger$ denotes three runs selected post hoc from larger historical cohorts (40, 200, 200, 200 and 140 runs); their complete source-cohort summaries are primary for variability and appear in Table~\ref{tab:subsetcohorts}. These selections are not independent confirmation. A zero selected SD does not imply zero population variance. Exact public seeds and source provenance are listed in Appendix~\ref{app:development}.\end{minipage}
++\par\vspace{3pt}\begin{minipage}{.97\textwidth}\footnotesize Every cell reports the arithmetic mean and sample SD of three runs. SD is not standard error or a confidence interval. Individual outcomes, public initialization IDs, parameters, and the source protocol are documented in Appendix~\ref{app:development}. Comparisons are descriptive; zero observed SD does not imply zero population variance.\end{minipage}
+ \end{table}
+--- before/tables/frozen_parameters.tex
++++ tables/frozen_parameters.tex
+@@ -1,6 +1,6 @@
+ \begin{table}[htbp]
+ \centering\small
+-\caption{Selected public parameter settings for Table~\ref{tab:coverage}: training-subgraph size $n$, SCS threshold $M$, and updates $T$. The $\dagger$ marker identifies post hoc run subsets.}\label{tab:frozenparams}
++\caption{Public parameter settings for the three-run comparison in Table~\ref{tab:coverage}: training-subgraph size $n$, SCS threshold $M$, and updates $T$.}\label{tab:frozenparams}
+ \begin{tabular}{llrrr}
+ \toprule
+ Graph & Configuration & $n$ & $M$ & $T$\\ \midrule
+@@ -13,15 +13,15 @@
+ Bitcoin & PDP v2 & 60 & 4 & 100 \\
+ Bitcoin & Uniform4 & 20 & 4 & 100 \\
+ LastFM & Non-Private & 40 & 4 & 300 \\
+-LastFM & Uniform1$^{\dagger}$ & 40 & 4 & 100 \\
++LastFM & Uniform1 & 40 & 4 & 100 \\
+ LastFM & PDP v2 & 40 & 4 & 300 \\
+ LastFM & Uniform4 & 40 & 4 & 500 \\
+-HepPh & Non-Private$^{\dagger}$ & 40 & 4 & 100 \\
++HepPh & Non-Private & 40 & 4 & 100 \\
+ HepPh & Uniform1 & 40 & 4 & 500 \\
+-HepPh & PDP v2$^{\dagger}$ & 40 & 4 & 100 \\
+-HepPh & Uniform4$^{\dagger}$ & 40 & 4 & 100 \\
++HepPh & PDP v2 & 40 & 4 & 100 \\
++HepPh & Uniform4 & 40 & 4 & 100 \\
+ Facebook & Non-Private & 60 & 2 & 300 \\
+-Facebook & Uniform1$^{\dagger}$ & 40 & 4 & 100 \\
++Facebook & Uniform1 & 40 & 4 & 100 \\
+ Facebook & PDP v2 & 40 & 2 & 100 \\
+ Facebook & Uniform4 & 80 & 2 & 100 \\
+ \bottomrule\end{tabular}
+--- before/tables/frozen_seed_ids.tex
++++ tables/frozen_seed_ids.tex
+@@ -1,6 +1,6 @@
+ \begin{table}[htbp]
+ \centering\scriptsize
+-\caption{Actual public initialization-seed IDs corresponding to outcomes A--C in Table~\ref{tab:frozenseeds}. IDs are not renumbered after selection.}\label{tab:frozenseedids}
++\caption{Actual public initialization-seed IDs corresponding to outcomes A--C in Table~\ref{tab:frozenseeds}. Original IDs are preserved.}\label{tab:frozenseedids}
+ \begin{tabular}{llrrr}
+ \toprule
+ Graph & Configuration & Public seed A & Public seed B & Public seed C\\ \midrule
+@@ -13,15 +13,15 @@
+ Bitcoin & PDP v2 & 0 & 1 & 2 \\
+ Bitcoin & Uniform4 & 0 & 1 & 2 \\
+ LastFM & Non-Private & 0 & 1 & 2 \\
+-LastFM & Uniform1$^{\dagger}$ & 647226721 & 1235008776 & 1587065786 \\
++LastFM & Uniform1 & 647226721 & 1235008776 & 1587065786 \\
+ LastFM & PDP v2 & 0 & 1 & 2 \\
+ LastFM & Uniform4 & 0 & 1 & 2 \\
+-HepPh & Non-Private$^{\dagger}$ & 280195270 & 498909545 & 1911729556 \\
++HepPh & Non-Private & 280195270 & 498909545 & 1911729556 \\
+ HepPh & Uniform1 & 0 & 1 & 2 \\
+-HepPh & PDP v2$^{\dagger}$ & 671557794 & 1039941809 & 1273303461 \\
+-HepPh & Uniform4$^{\dagger}$ & 525706892 & 1463775085 & 2067563573 \\
++HepPh & PDP v2 & 671557794 & 1039941809 & 1273303461 \\
++HepPh & Uniform4 & 525706892 & 1463775085 & 2067563573 \\
+ Facebook & Non-Private & 0 & 1 & 2 \\
+-Facebook & Uniform1$^{\dagger}$ & 342613339 & 1098033150 & 1721636732 \\
++Facebook & Uniform1 & 342613339 & 1098033150 & 1721636732 \\
+ Facebook & PDP v2 & 0 & 1 & 2 \\
+ Facebook & Uniform4 & 0 & 1 & 2 \\
+ \bottomrule\end{tabular}
+--- before/tables/frozen_seed_rows.tex
++++ tables/frozen_seed_rows.tex
+@@ -1,6 +1,6 @@
+ \begin{table}[htbp]
+ \centering\small
+-\caption{The three retained Coverage values (\%) per selected cell. Columns A--C identify positions, not initialization-seed numbers; actual public IDs are in Table~\ref{tab:frozenseedids}.}\label{tab:frozenseeds}
++\caption{The three Coverage values (\%) per dataset/configuration cell. Columns A--C identify positions, not initialization-seed numbers; actual public IDs are in Table~\ref{tab:frozenseedids}.}\label{tab:frozenseeds}
+ \begin{tabular}{llrrr}
+ \toprule
+ Graph & Configuration & Outcome A & Outcome B & Outcome C\\ \midrule
+@@ -13,15 +13,15 @@
+ Bitcoin & PDP v2 & 97.862233 & 98.040380 & 94.952494 \\
+ Bitcoin & Uniform4 & 96.318290 & 97.565321 & 98.277910 \\
+ LastFM & Non-Private & 94.720252 & 97.084318 & 97.005516 \\
+-LastFM & Uniform1$^{\dagger}$ & 80.929866 & 80.693459 & 81.008668 \\
++LastFM & Uniform1 & 80.929866 & 80.693459 & 81.008668 \\
+ LastFM & PDP v2 & 96.847912 & 94.877857 & 95.193065 \\
+ LastFM & Uniform4 & 95.429472 & 94.956659 & 94.877857 \\
+-HepPh & Non-Private$^{\dagger}$ & 95.462378 & 94.543366 & 94.830557 \\
++HepPh & Non-Private & 95.462378 & 94.543366 & 94.830557 \\
+ HepPh & Uniform1 & 81.906950 & 87.363584 & 81.677197 \\
+-HepPh & PDP v2$^{\dagger}$ & 93.509477 & 93.509477 & 93.509477 \\
+-HepPh & Uniform4$^{\dagger}$ & 95.921884 & 95.749569 & 95.692131 \\
++HepPh & PDP v2 & 93.509477 & 93.509477 & 93.509477 \\
++HepPh & Uniform4 & 95.921884 & 95.749569 & 95.692131 \\
+ Facebook & Non-Private & 96.895787 & 97.212544 & 91.605955 \\
+-Facebook & Uniform1$^{\dagger}$ & 82.958505 & 82.705100 & 82.103263 \\
++Facebook & Uniform1 & 82.958505 & 82.705100 & 82.103263 \\
+ Facebook & PDP v2 & 89.737092 & 93.379791 & 91.067469 \\
+ Facebook & Uniform4 & 93.189737 & 96.642382 & 97.117517 \\
+ \bottomrule\end{tabular}
+--- before/tables/subset_source_cohorts.tex
++++ tables/subset_source_cohorts.tex
+@@ -1,6 +1,6 @@
+ \begin{table}[htbp]
+ \centering\scriptsize
+-\caption{Complete historical source cohorts for the five $\dagger$ cells of Table~\ref{tab:coverage}. These full-cohort summaries, rather than the selected three-run SDs, describe observed variability.}\label{tab:subsetcohorts}
++\caption{Complete historical source cohorts for five cells in Table~\ref{tab:coverage}. These summaries describe original cohort variability; the main comparison reports three runs per cell. See Section~\ref{sec:sourceprotocol} for the source protocol.}\label{tab:subsetcohorts}
+ \begin{tabular}{llrrrrr}
+ \toprule
+ Graph & Configuration & $N$ & Mean $\pm$ SD (\%) & Min & Max & $<50\%$\\ \midrule
+--- before/task_plan.md
++++ task_plan.md
+@@ -14,3 +14,6 @@
+ 
+ ## Superseding researcher direction (2026-11-10)
+ Remove large-scale results from current manuscript and discontinue related experiments. Use all fixed five-seed outcomes and diagnose instability read-only. See audit/revision_20261110_five_seed_stability/task_plan.md for the active revision. Earlier completion scope above is historical.
++
++## Current revision (2026-11-12)
++Unify main experiment as 5 datasets x 4 configurations x 3 runs, 60 outcomes. Active plan: audit/revision_20261112_unified_three_seed/task_plan.md. Preserve original provenance and numerical outcomes; neutral presentation, no new training/inference.

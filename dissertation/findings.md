@@ -7,3 +7,5 @@ U6-A saved output manifest verified, all 2900 unique rows and 20 cells checked i
 No system TeX found. Downloaded official Tectonic 0.17.0 macOS aarch64 into dissertation/tooling; local isolated Python dependencies available. Firecrawl CLI unavailable; used built-in web search against primary author, publisher and proceedings sources. No authentication or account change performed.
 
 Identity update2026-11-10 supersedes earlier pending-identity notes: confirmed values are centralized in frontmatter/identity.tex; no Supervisor field is added to the school cover/title layout, and no specialism is inferred.
+
+2026-11-12 unified three-run revision: main scope is 5 datasets x 4 configurations x 3 runs = 60; detailed source history remains Appendix B. All original scalar values and theory preserved. Mean differences use unrounded source means (LastFM PDP minus Uniform1 =14.762 pp).

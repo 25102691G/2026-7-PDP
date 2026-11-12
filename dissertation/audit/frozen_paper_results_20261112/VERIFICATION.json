@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "fixed_cells": 20,
+  "displayed_fits": 60,
+  "complete_seed012_cells": 15,
+  "posthoc_triplet_cells": 5,
+  "omitted_cells": 0,
+  "source_files_checked": 195,
+  "full_source_cohort_runs_verified": 780,
+  "post_hoc_development_selection": true,
+  "independent_confirmation": false,
+  "new_training": 0,
+  "new_inference": 0,
+  "frozen_manifest_sha256": "28014d2cdb8468a66d1c3b1d48f57f9e4ce1e4ae86e5dfc520987f622cf88da8"
+}

@@ -1,0 +1,28 @@
+\chapter{Reproducibility and Evidence Boundaries}\label{app:evidence}
+\section{Evidence hierarchy}
+The experimental claims use the final U6-A saved scalar matrix as their numerical authority. Frozen protocols define estimands and analysis units. Mechanism source and archived mathematical derivations define the privacy claim. Development reports document exploratory decisions and failed candidates, without entering the confirmatory estimate.
+
+The principal internal locators below identify project records, not public releases. They permit the researcher and supervisor to trace the draft. They do not authorize redistribution of restricted underlying data or models.
+\begingroup\small\raggedright
+\begin{description}
+\item[Final observations and analysis.] \path{docs/pdp_research/stage_u6a_posttraining_analysis/runtime/outputs/observations.json} and \path{analysis.json} in the same directory, with the output manifest and report.
+\item[Frozen statistical plan.] \path{docs/pdp_research/stage_u6_independent_confirmation/FROZEN_STATISTICAL_ANALYSIS_PLAN.md}, preserved in the U6-A stage.
+\item[Conditional theory.] \path{docs/pdp_research/G0_THEORY_BOUNDARY_REVIEW.md}; U0 and U2 \path{PRIVACY_PROOF.md} and accounting certificates.
+\item[Stable-slot query.] \path{experiments/node_dp_slots/config.py}, \path{adapter.py}, \path{aggregation.py}, \path{mechanism.py}, and \path{training.py}.
+\item[Personalization and projection.] \path{experiments/node_pdp/registry.py}, \path{sampling.py}, \path{accounting.py}; \path{experiments/node_pdp_v2_projected/policy.py}.
+\item[Original scoring and evaluation.] \path{model/GRAT.py}, \path{model/layer/GRATLayer.py}, \path{model/functional/MaxCoverLoss.py}, and \path{experiments/pdp_research_evaluation.py}.
+\item[Recovery.] U6-R and U6-R2 approved amendments, original and continuation manifests, U6-R2 post-training diagnosis, and U6-A evidence lineage.
+\end{description}
+\endgroup
+
+\section{Statistical replication}
+The editable draft includes a deterministic scalar-verification script. It checks the sealed output hashes, unique run identities, exact cell counts, Spread-to-Coverage arithmetic, mean, sample SD, range, strict-low-tail counts and intervals, and primary and secondary Welch contrasts. It never loads graph files or checkpoints and does not re-run the bootstrap.
+
+The accompanying CSV retains all 2900 saved scalar rows with public initialization and provenance. Those rows remain an internal audit artifact, separate from the submission manuscript. This separation keeps engineering evidence accessible without inserting thousands of run identifiers into the dissertation body.
+
+A repeated future study would reproduce the public protocol and the intended output distribution. It could not reproduce each secret path from a stored Gaussian seed, because that material is deliberately not recorded. Equal public initialization does not imply equal private randomness, and a hash confirms byte identity rather than a privacy theorem.
+
+\section{Proof-review obligations}
+The ideal proof has a complete archived chain for slot locality, sensitivity, adaptive Gaussian RDP, the stated conversion, and bidirectional one-time amplification. Before relying on it for a particular release, the student and supervisor should verify that all public auxiliary information is legitimately fixed, the decoded adjacency is applicable, slot isolation remains true, and the intended output is within the theorem.
+
+End-to-end raw preprocessing, private-test release, unrestricted private seed identities, finite-precision randomization, timing/failure channels, and joint release of the research collection have no completed certificate in this dissertation. Any claim extending to those objects is \texttt{PROOF\_REVIEW\_REQUIRED}. The draft supplies no invented proof to close those gaps.

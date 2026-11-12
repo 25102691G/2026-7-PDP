@@ -1,0 +1,70 @@
+\chapter{Problem Formulation}\label{ch:problem}
+\section{Graphs, identities, and partitions}
+Let $U$ be a fixed finite public universe of stable identities. A legal training graph is $G=(V,E)$, where $V\subseteq U$ and $E\subseteq V\times V$. The fixed mechanism domain excludes self-loops and duplicate edges. Isolated surviving nodes remain valid. For directed inputs, $(u,v)$ is an outgoing edge from $u$ to $v$; undirected inputs require the corresponding frozen representation rather than an implicit change in direction.
+
+The prepared experimental data have disjoint training and test identities. A decoder maps file-local IDs to stable identities. The theoretical adjacency below acts on decoded graphs; arbitrarily deleting a line from an edge file need not create the required adjacent input because file membership, isolated nodes, and decoding can change. The existing mappings and graph structures are preserved throughout the experiments.
+
+The 50:50 preparation rule is the original split procedure, not a statement that the final active-node totals or edge counts are identical between partitions. Filtering and removal of cross-partition edges can produce unequal counts. In particular, the fixed public Email universe contains 1005 identities, while the saved prepared training and test graphs contain 462 and 458 active nodes. The public identity universe must not be reconstructed from the current private vertex set.
+
+\section{Seed selection and Coverage}
+For a test graph $G^{\mathrm{test}}$, a scoring model $f_\theta$ gives a real-valued score to each candidate. The selected set $S_\theta$ contains the 50 highest pre-sigmoid scores, using the original stable local-ID rule for ties. Let $N^+(v)$ denote outgoing neighbors. Under the actual one-step probability-one evaluation,
+\begin{equation}
+ \operatorname{Spread}(S;G^{\mathrm{test}})
+ =\left|S\cup\bigcup_{v\in S}N^+(v)\right|.\label{eq:spread}
+\end{equation}
+The generic IM objective is to maximize expected spread subject to $|S|\leq k$. Equation~\eqref{eq:spread} specializes the generic objective to the implemented evaluation. It is not the size of all nodes reachable over arbitrarily many steps.
+
+For graph $d$, let $c_d$ be the frozen CELF reference spread. The reported outcome is
+\begin{equation}
+ Y_{dmi}=100\frac{\operatorname{Spread}_{dmi}}{c_d},\label{eq:coverage}
+\end{equation}
+where $m$ denotes configuration and $i$ a complete repeat. Coverage is measured as a percentage of the reference, while a difference in Coverage is measured in percentage points. Coverage is not the percentage of all test nodes. Since the reference need not be a global optimum, $Y$ is not assumed to be bounded by 100; the public conservative bound is $0\leq Y\leq100|U_d|/c_d$.
+
+\section{Node adjacency and personalized protection}
+\begin{definition}[Fixed-domain node add/remove adjacency]
+For $v\in V$, $G-v$ removes $v$ and every incident edge, preserves all surviving stable identities and their edges, and retains surviving isolated nodes. The graphs $G$ and $G-v$ are adjacent with respect to identity $v$. The public $U$, Registry, and all truly public auxiliary information remain unchanged.
+\end{definition}
+
+This is a node-membership and incident-structure relation, not edge adjacency. It does not protect uncertainty about whether an identity is in the public universe; that universe is conditioned upon. Within the actual training domain, test identities are excluded from training inputs. A target label assigned to a held-out identity does not thereby establish privacy of its test graph.
+
+Let $\mathcal{R}$ be the fixed public Registry, containing the target pair $(\epsilon^{\mathrm{tar}}_v,\delta^{\mathrm{tar}}_v)$ for every $v\in U$. In this study $\epsilon^{\mathrm{tar}}_v\in\{1,2,4\}$ and $\delta^{\mathrm{tar}}_v=10^{-5}$. Policy labels themselves are public assumptions, not secretly learned preferences protected by the model theorem.
+
+\begin{definition}[Conditional personalized Node-DP]
+A mechanism $M$, conditional on fixed public auxiliary information, satisfies per-identity bounds $(\epsilon_v,\delta_v)$ if, for every legal node-adjacent pair and every measurable output event $F$,
+\begin{align}
+ \Pr[M(G)\in F]&\leq e^{\epsilon_v}\Pr[M(G-v)\in F]+\delta_v,\\
+ \Pr[M(G-v)\in F]&\leq e^{\epsilon_v}\Pr[M(G)\in F]+\delta_v.
+\end{align}
+Meeting the target policy requires $\epsilon_v\leq\epsilon^{\mathrm{tar}}_v$ and $\delta_v\leq\delta^{\mathrm{tar}}_v$.
+\end{definition}
+
+The numbers supplied by the accountant are sufficient upper bounds. They are not a measurement of exact realized privacy loss and are not asserted to be the smallest possible guarantees. Sharing the same policy caps does not mean two mechanisms have equal actual privacy losses.
+
+\section{Public and private information}
+Public auxiliary information includes the fixed identity domain, Registry, architecture, initialization seed, hyperparameters, deterministic slot construction, and fixed sampling and batch role streams. The graph's actual membership and edges remain the changing protected input. The outer Bernoulli decisions and Gaussian innovations are secret training randomness. They are independent of the graph under the ideal model and are not included in the released output.
+
+The theorem's output is a fixed-length model parameter vector and genuinely public configuration. It excludes raw gradients, private losses, cached subgraphs, retained-node counts, random masks, noise vectors, and arbitrary execution diagnostics. Scientific logs may contain material useful for auditing, but that usefulness does not place them inside the parameter-release theorem.
+
+An observer may know all public auxiliary information and inspect the stated model output. The training curator is trusted to access the training graph and perform the mechanism. This is a central privacy setting. The study does not claim local differential privacy against the curator, secure computation, protection from a compromised training process, or a certified implementation of continuous Gaussian randomness.
+
+\section{Comparison policies}
+Uniform1 applies participation probability one to every identity and calibrates the Gaussian mechanism to the strictest target. It is the main fair policy control because its conditional bound satisfies all original caps. PDP v2 uses differentiated participation and a smaller base noise scale. Their comparison changes both participation and noise, so it is not a pure Gaussian-scale ablation.
+
+Uniform4 also retains all identities, but calibrates to the relaxed target 4. Its upper bound does not certify the target 1 and target 2 requirements. This does not prove that its exact privacy loss necessarily exceeds those caps; it means the available guarantee cannot establish compliance. Non-Private uses ordinary training without a privacy constraint. Both references characterize utility gaps rather than replacing the strict-policy comparison.
+
+A historical New Matched PDP mechanism trains only a 33-coordinate head with a publicly initialized frozen backbone. It has a useful privacy-matched conditional framework, but addresses a different training-space question. It remains a historical development reference and is not part of the final four-configuration estimator.
+
+\section{Statistical research question}
+Let $\mu_{dm}$ denote expected Coverage on fixed graph $d$ under the approved independent initialization and fresh secret-training-randomness law. For Non-Private, secret private-training noise is absent. The primary graph-specific effect and five-graph effect are
+\begin{equation}
+ D_d=\mu_{d,\mathrm{PDP}}-\mu_{d,\mathrm{U1}},\qquad
+ D=\frac15\sum_{d=1}^{5}D_d.\label{eq:estimand}
+\end{equation}
+The hypothesis is $H_0:D\leq0$ against $H_1:D>0$. It concerns the fixed five graphs and the specified repeat-generation protocol, not a graph population. Each graph receives the same weight, so the result describes average graph-level relative Coverage rather than total additional influenced people.
+
+The planned practically important improvement is 3 pp. That planning target is distinct from the primary null boundary at zero. A positive point estimate alone establishes neither statistical positivity nor practical importance. Conversely, an interval containing zero does not establish equivalence, which would need a justified equivalence margin and a suitable design.
+
+\section{Release and inference boundaries}
+If a target graph is fixed under training adjacency, evaluating a private model on it can be postprocessing for training privacy. The same argument does not protect the target graph itself. If that graph changes under the protected adjacency, the evaluation is an additional data-dependent operation requiring a separate guarantee or authorized nonprivate handling.
+
+Seed identities are especially sensitive. If selection must output only actual private members, an identity that can be selected before deletion becomes impossible afterwards. The DP inequality then imposes a restrictive bound on its selection probability. Private training alone does not resolve this support change. The final research matrix is retained for internal analysis; writing this dissertation does not authorize public release of checkpoints, private rankings, or unprotected evaluation data.

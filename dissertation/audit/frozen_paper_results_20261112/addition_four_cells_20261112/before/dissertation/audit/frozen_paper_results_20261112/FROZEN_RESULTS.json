@@ -1,0 +1,836 @@
+{
+  "version": "paper-results-freeze-20261112-v1",
+  "researcher_frozen": true,
+  "freeze_scope": "dataset/method cell: no further training or result/configuration modification",
+  "source_screen_runs": 480,
+  "selected_cells": 10,
+  "selected_runs": 30,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "selection_status": "post hoc development configuration selection; not independent confirmation",
+  "cells": [
+    {
+      "dataset": "email",
+      "method": "nonprivate",
+      "candidate": "steps500",
+      "n": 40,
+      "M": 4,
+      "T": 500,
+      "expected_mean": 96.45061728395062,
+      "expected_sample_sd": 2.1004101217308984,
+      "seeds": [
+        94.9074074074074,
+        95.60185185185185,
+        98.8425925925926
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 4,
+            "T": 500,
+            "candidate": "steps500",
+            "dataset": "email",
+            "id": "email-nonprivate-steps500-seed0",
+            "method": "nonprivate",
+            "n": 40,
+            "seed": 0
+          },
+          "coverage": 94.9074074074074,
+          "spread": 410,
+          "celf": 432,
+          "training_seconds": 39.08294362499146,
+          "evaluation_seconds": 0.018969832992297597,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 500,
+            "candidate": "steps500",
+            "dataset": "email",
+            "id": "email-nonprivate-steps500-seed1",
+            "method": "nonprivate",
+            "n": 40,
+            "seed": 1
+          },
+          "coverage": 95.60185185185185,
+          "spread": 413,
+          "celf": 432,
+          "training_seconds": 39.359177542006364,
+          "evaluation_seconds": 0.01932150000357069,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 500,
+            "candidate": "steps500",
+            "dataset": "email",
+            "id": "email-nonprivate-steps500-seed2",
+            "method": "nonprivate",
+            "n": 40,
+            "seed": 2
+          },
+          "coverage": 98.8425925925926,
+          "spread": 427,
+          "celf": 432,
+          "training_seconds": 37.526988374986104,
+          "evaluation_seconds": 0.01864312498946674,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed0/final_evaluation.json": "94a2c9d6046d406a35cefae9a7c4fc8838297958cda207279e7bb1dff4a94720",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed0/configuration.json": "b3c2b4a37183af1f5b5075f41f8c9975e9009b164ed65ad0014f44466f2060d7",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed0/completion.json": "0d308c1c0112d933818aabfdf2d29c517a87f4da9c1af245ff0018b5cdd76363",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed1/final_evaluation.json": "7bb3844c9103f2248853cb451249ed1011c9d3c8c8d19efbe45273936161fa1b",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed1/configuration.json": "a63af9d16710d73deeb426528e2c5bb611969378aef9c2906545ee7430b01db8",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed1/completion.json": "706564531e9daa8f556bf091b3db2ec6c646388f2220e599056c175672e212cc",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed2/final_evaluation.json": "f310098527f93dcfe312c832d6f766ebc9bb841fea1d35e98282fe689825511a",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed2/configuration.json": "3fc77ddcc5c6396a337ebee3f32aca1dc8d42c7fd674f8b9a433354b5e5f546c",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-nonprivate-steps500-seed2/completion.json": "44095d1cdfde8d5572dda3b8ac2113a0c82bdac12d830a695fad29ee430d5e01"
+      }
+    },
+    {
+      "dataset": "email",
+      "method": "uniform4",
+      "candidate": "size_a",
+      "n": 20,
+      "M": 4,
+      "T": 100,
+      "expected_mean": 97.60802469135803,
+      "expected_sample_sd": 1.5412796570554117,
+      "seeds": [
+        98.61111111111111,
+        95.83333333333334,
+        98.37962962962963
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 4,
+            "T": 100,
+            "candidate": "size_a",
+            "dataset": "email",
+            "id": "email-uniform4-size_a-seed0",
+            "method": "uniform4",
+            "n": 20,
+            "seed": 0
+          },
+          "coverage": 98.61111111111111,
+          "spread": 426,
+          "celf": 432,
+          "training_seconds": 6.149013250003918,
+          "evaluation_seconds": 0.018309084000065923,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 100,
+            "candidate": "size_a",
+            "dataset": "email",
+            "id": "email-uniform4-size_a-seed1",
+            "method": "uniform4",
+            "n": 20,
+            "seed": 1
+          },
+          "coverage": 95.83333333333334,
+          "spread": 414,
+          "celf": 432,
+          "training_seconds": 5.951577125000767,
+          "evaluation_seconds": 0.01880074999644421,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 100,
+            "candidate": "size_a",
+            "dataset": "email",
+            "id": "email-uniform4-size_a-seed2",
+            "method": "uniform4",
+            "n": 20,
+            "seed": 2
+          },
+          "coverage": 98.37962962962963,
+          "spread": 425,
+          "celf": 432,
+          "training_seconds": 5.970471833003103,
+          "evaluation_seconds": 0.018262291996506974,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed0/final_evaluation.json": "9567e49f4595f3663573972ba7ce9356bc41ad8c7b26a3c818ec969fd37413e3",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed0/configuration.json": "a992ee62a6005589227bebedfba95a82fc9f50d0c3fa0411b213da571ee5768d",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed0/completion.json": "01461f176f0b0b9e26bddf73d0259537af449836642c565844eaa136b3fc6f42",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed1/final_evaluation.json": "3b9c569479d99e6bc8ef433f8841a79ee0bfabf3efb445281be6afec3148ed46",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed1/configuration.json": "acd7ae5c64be9a826cf5b4b029599a46378ab385ed93a0b979c7bc53da9b2977",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed1/completion.json": "1cb1b536c92477e4506c21ac4b81cc48d00bc0f7e240b24d98cea63638aefa8c",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed2/final_evaluation.json": "252039c8ef1b8feb2cc7752ca0dcf8dea90f2cee588c919d6a2db79d31731777",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed2/configuration.json": "e17820a3fda521969971521bc8bdd21784e01a96c59bfa5387076c941ec3bc5e",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/email-uniform4-size_a-seed2/completion.json": "f8614ede4f6bdc8cfdd8734d68908a0c74bcc1c21cb50faa1da8cb12c5057bca"
+      }
+    },
+    {
+      "dataset": "bitcoin",
+      "method": "nonprivate",
+      "candidate": "frequency_a",
+      "n": 40,
+      "M": 2,
+      "T": 100,
+      "expected_mean": 99.06967537608868,
+      "expected_sample_sd": 0.38636621725936854,
+      "seeds": [
+        99.04988123515439,
+        99.46555819477435,
+        98.69358669833728
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 2,
+            "T": 100,
+            "candidate": "frequency_a",
+            "dataset": "bitcoin",
+            "id": "bitcoin-nonprivate-frequency_a-seed0",
+            "method": "nonprivate",
+            "n": 40,
+            "seed": 0
+          },
+          "coverage": 99.04988123515439,
+          "spread": 1668,
+          "celf": 1684,
+          "training_seconds": 5.679067417004262,
+          "evaluation_seconds": 0.023506957993959077,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 2,
+            "T": 100,
+            "candidate": "frequency_a",
+            "dataset": "bitcoin",
+            "id": "bitcoin-nonprivate-frequency_a-seed1",
+            "method": "nonprivate",
+            "n": 40,
+            "seed": 1
+          },
+          "coverage": 99.46555819477435,
+          "spread": 1675,
+          "celf": 1684,
+          "training_seconds": 5.691783583009965,
+          "evaluation_seconds": 0.02489229200000409,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 2,
+            "T": 100,
+            "candidate": "frequency_a",
+            "dataset": "bitcoin",
+            "id": "bitcoin-nonprivate-frequency_a-seed2",
+            "method": "nonprivate",
+            "n": 40,
+            "seed": 2
+          },
+          "coverage": 98.69358669833728,
+          "spread": 1662,
+          "celf": 1684,
+          "training_seconds": 5.586356332991272,
+          "evaluation_seconds": 0.024416874992311932,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed0/final_evaluation.json": "5e3d963b95427f5058c5414f87dacaf534e3e5d6feebecda5efc60bd993c0eaa",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed0/configuration.json": "d4f338f00d248557b333986bc373c847be44c2c366c3a76de96ff95ec3b236be",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed0/completion.json": "32210989e8e9273cc34b16945390ef808f5d2bc23866c967b5570a6eab9baf0a",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed1/final_evaluation.json": "af6bfbabe923ebcec6c656a61806d175d8cd6a97f35d4b00cb70b0754b621c34",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed1/configuration.json": "f90e17398633ebf6f00d0a221fa225bb4d36b76621173304ccd193bf560dcec5",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed1/completion.json": "09f3551744a385101d3a45f4f36122e2f8bb4d997d30eaee1d6abfd125bef267",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed2/final_evaluation.json": "d2f74b6916f131990c069e4f5192832bda271219ce2f457e4699cd596b77e1b0",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed2/configuration.json": "fdb6a60954c548ae7d021b25ed18e49642ea2ade947df0e3fe09b0c27bb0d023",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-nonprivate-frequency_a-seed2/completion.json": "69b88f39a6f358762bbf9f56dfb987c2cbcd04a4d51e6082455700ea441a0b4b"
+      }
+    },
+    {
+      "dataset": "bitcoin",
+      "method": "pdp_v2",
+      "candidate": "size_b",
+      "n": 60,
+      "M": 4,
+      "T": 100,
+      "expected_mean": 96.95170229612035,
+      "expected_sample_sd": 1.733654892291966,
+      "seeds": [
+        97.8622327790974,
+        98.04038004750593,
+        94.95249406175772
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 4,
+            "T": 100,
+            "candidate": "size_b",
+            "dataset": "bitcoin",
+            "id": "bitcoin-pdp_v2-size_b-seed0",
+            "method": "pdp_v2",
+            "n": 60,
+            "seed": 0
+          },
+          "coverage": 97.8622327790974,
+          "spread": 1648,
+          "celf": 1684,
+          "training_seconds": 7.016300500006764,
+          "evaluation_seconds": 0.023871416997280903,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 100,
+            "candidate": "size_b",
+            "dataset": "bitcoin",
+            "id": "bitcoin-pdp_v2-size_b-seed1",
+            "method": "pdp_v2",
+            "n": 60,
+            "seed": 1
+          },
+          "coverage": 98.04038004750593,
+          "spread": 1651,
+          "celf": 1684,
+          "training_seconds": 7.284758499998134,
+          "evaluation_seconds": 0.024277249991428107,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 100,
+            "candidate": "size_b",
+            "dataset": "bitcoin",
+            "id": "bitcoin-pdp_v2-size_b-seed2",
+            "method": "pdp_v2",
+            "n": 60,
+            "seed": 2
+          },
+          "coverage": 94.95249406175772,
+          "spread": 1599,
+          "celf": 1684,
+          "training_seconds": 9.475229082992882,
+          "evaluation_seconds": 0.03169579099630937,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed0/final_evaluation.json": "262379fa804eaabde79631eec78affb1d63f4811de9c50063905905d513af1be",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed0/configuration.json": "67aecaffebb69c77ef45e4a23b1aa6e86c54abe2081f170364a5a390d5db51b9",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed0/completion.json": "aadf1da601d83e8eefe401b328100d607e2b3c8d359680ecb342c9d3e961e81a",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed1/final_evaluation.json": "5c3c49d5ac6edb2d0ae10870c1c97b3c4bea993498bf5bcde3f71690af10d710",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed1/configuration.json": "02f1646d41ef403963d44c17ecfad1915284df0c0a9ec68848dbbe535f7dff0c",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed1/completion.json": "171ea707851507b0dcc01ec2da4098021e51a5cdfdce0289d9366952b71a279c",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed2/final_evaluation.json": "66134006aad2d5a813e44fc6c909a23cb6650e05aea7f4356580f8ba22407e92",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed2/configuration.json": "3ae965a7d5a59bb3e3d07e7d5c3320fcc08db9f62dd451834122d0a1e7e6d8e8",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-pdp_v2-size_b-seed2/completion.json": "c78d4f0096f6351b882a1eb2e3e4af8045f2e93e722171ebabe26813ccfe4edd"
+      }
+    },
+    {
+      "dataset": "bitcoin",
+      "method": "uniform4",
+      "candidate": "size_a",
+      "n": 20,
+      "M": 4,
+      "T": 100,
+      "expected_mean": 97.3871733966746,
+      "expected_sample_sd": 0.9918820123806473,
+      "seeds": [
+        96.31828978622327,
+        97.56532066508314,
+        98.27790973871734
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 4,
+            "T": 100,
+            "candidate": "size_a",
+            "dataset": "bitcoin",
+            "id": "bitcoin-uniform4-size_a-seed0",
+            "method": "uniform4",
+            "n": 20,
+            "seed": 0
+          },
+          "coverage": 96.31828978622327,
+          "spread": 1622,
+          "celf": 1684,
+          "training_seconds": 5.253808125009527,
+          "evaluation_seconds": 0.02337650000117719,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 100,
+            "candidate": "size_a",
+            "dataset": "bitcoin",
+            "id": "bitcoin-uniform4-size_a-seed1",
+            "method": "uniform4",
+            "n": 20,
+            "seed": 1
+          },
+          "coverage": 97.56532066508314,
+          "spread": 1643,
+          "celf": 1684,
+          "training_seconds": 5.392636249991483,
+          "evaluation_seconds": 0.023880417007603683,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 100,
+            "candidate": "size_a",
+            "dataset": "bitcoin",
+            "id": "bitcoin-uniform4-size_a-seed2",
+            "method": "uniform4",
+            "n": 20,
+            "seed": 2
+          },
+          "coverage": 98.27790973871734,
+          "spread": 1655,
+          "celf": 1684,
+          "training_seconds": 5.342168250004761,
+          "evaluation_seconds": 0.02388408299884759,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed0/final_evaluation.json": "e2740261295e9c669b685c3d5f1f21fd5d68ea6d8ec9f70ea79f1b1e60d4b422",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed0/configuration.json": "c7d06a3303fffc2eed578c01a860b15baa1ded323ee5cb4734fba10faac3a1dd",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed0/completion.json": "97997db44413ac0d3a2e40fc7c4e90842a40ce395e845509484b605503d4f315",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed1/final_evaluation.json": "91089338db06f319e810b677b51998822a1e2d96d09fa0dc7f72dea5c8244433",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed1/configuration.json": "2b40cb5a0698bab23b1408fa5f01d1f821fdd47251db0af5f450d18cc4bada32",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed1/completion.json": "1c3016980822edcdd3632f614125ca820b115bf796668754f6aa121e830c20e1",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed2/final_evaluation.json": "7ef4d9a8ec929df5cea0ffcf83971c6f2b2c4b9921e7c6bcab8bc15fa7f0cb57",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed2/configuration.json": "4ec55fd0ced5b8632805cb6df8ba543b020401924b03852d70292d7ea26fb65c",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/bitcoin-uniform4-size_a-seed2/completion.json": "b1a32c685547ca4658fefa7f02bfce79dfb21e2adcbaba5714c390c16e7694db"
+      }
+    },
+    {
+      "dataset": "lastfm",
+      "method": "nonprivate",
+      "candidate": "steps300",
+      "n": 40,
+      "M": 4,
+      "T": 300,
+      "expected_mean": 96.27002889414236,
+      "expected_sample_sd": 1.3427242363154213,
+      "seeds": [
+        94.72025216706068,
+        97.0843183609141,
+        97.00551615445232
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 4,
+            "T": 300,
+            "candidate": "steps300",
+            "dataset": "lastfm",
+            "id": "lastfm-nonprivate-steps300-seed0",
+            "method": "nonprivate",
+            "n": 40,
+            "seed": 0
+          },
+          "coverage": 94.72025216706068,
+          "spread": 1202,
+          "celf": 1269,
+          "training_seconds": 17.088140541003668,
+          "evaluation_seconds": 0.026521833991864696,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 300,
+            "candidate": "steps300",
+            "dataset": "lastfm",
+            "id": "lastfm-nonprivate-steps300-seed1",
+            "method": "nonprivate",
+            "n": 40,
+            "seed": 1
+          },
+          "coverage": 97.0843183609141,
+          "spread": 1232,
+          "celf": 1269,
+          "training_seconds": 17.005532125011086,
+          "evaluation_seconds": 0.025866084004519507,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 300,
+            "candidate": "steps300",
+            "dataset": "lastfm",
+            "id": "lastfm-nonprivate-steps300-seed2",
+            "method": "nonprivate",
+            "n": 40,
+            "seed": 2
+          },
+          "coverage": 97.00551615445232,
+          "spread": 1231,
+          "celf": 1269,
+          "training_seconds": 16.679327582998667,
+          "evaluation_seconds": 0.028207999988808297,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed0/final_evaluation.json": "78c221b8da812b4162c11d1d39a06ce0b641e99f7641d2c6ae715b1ce398a325",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed0/configuration.json": "ba438f5f65f003ba9cc0e875b5971a30b63cb644046211f3fb4a59c31d7a3f79",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed0/completion.json": "ac908c5f493cae3736c59a19d8eca637f89ac5a13b7e0e679a662e871aea949b",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed1/final_evaluation.json": "cc5c65c4fc0b0ed258d51b13ec31ada6192f1b0137f4e5712c3d6ffb356b9d17",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed1/configuration.json": "57fb53d7a1e3285687fa97c227046e4da3dd0ed76c1efe007b85121307533989",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed1/completion.json": "5cf91245c79cfb898f7eadf8d847b9a7dde39d15b6bad102de1e95c07a2c6eab",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed2/final_evaluation.json": "e2ee12da0aee78bb43593145045264167a8a38d9d899ff7474694bb90e35264e",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed2/configuration.json": "b1a3468884972fbd60c925cae0c341303b8a6b08c03d37f23af9b0d18a24a328",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-nonprivate-steps300-seed2/completion.json": "0f55cf9e77f8c3a2436240a126c56e7be7b21db4ee8c210bd0b70d78fadd3ab7"
+      }
+    },
+    {
+      "dataset": "lastfm",
+      "method": "pdp_v2",
+      "candidate": "steps300",
+      "n": 40,
+      "M": 4,
+      "T": 300,
+      "expected_mean": 95.63961124244811,
+      "expected_sample_sd": 1.058221018044848,
+      "seeds": [
+        96.84791174152876,
+        94.87785657998424,
+        95.19306540583136
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 4,
+            "T": 300,
+            "candidate": "steps300",
+            "dataset": "lastfm",
+            "id": "lastfm-pdp_v2-steps300-seed0",
+            "method": "pdp_v2",
+            "n": 40,
+            "seed": 0
+          },
+          "coverage": 96.84791174152876,
+          "spread": 1229,
+          "celf": 1269,
+          "training_seconds": 18.369222749999608,
+          "evaluation_seconds": 0.024957040994195268,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 300,
+            "candidate": "steps300",
+            "dataset": "lastfm",
+            "id": "lastfm-pdp_v2-steps300-seed1",
+            "method": "pdp_v2",
+            "n": 40,
+            "seed": 1
+          },
+          "coverage": 94.87785657998424,
+          "spread": 1204,
+          "celf": 1269,
+          "training_seconds": 18.422346707986435,
+          "evaluation_seconds": 0.02539241600607056,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 300,
+            "candidate": "steps300",
+            "dataset": "lastfm",
+            "id": "lastfm-pdp_v2-steps300-seed2",
+            "method": "pdp_v2",
+            "n": 40,
+            "seed": 2
+          },
+          "coverage": 95.19306540583136,
+          "spread": 1208,
+          "celf": 1269,
+          "training_seconds": 18.515233750003972,
+          "evaluation_seconds": 0.025267042001360096,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed0/final_evaluation.json": "6f5999ee654b831f27a9962819d6d954d2442f06935fd4fa0144c343b88dacd4",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed0/configuration.json": "14c4db0778794e72093bac8dc16e34a092952da4231b94b9f7d8c5a82bd986f8",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed0/completion.json": "cd01e2f81e321333ce6af3bbc3944a4902c9376b6cfbf3479509e94f700e2f17",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed1/final_evaluation.json": "55c3df65834d0209269b41f401e2206304b786a370530e064f1e6d7d3fbbb7e3",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed1/configuration.json": "fc8dbb75a1ac2699af85ea61ffd186bcf6e2d1803e51312ba117c9dff40033db",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed1/completion.json": "7fedd84468b1b336e0895e84b7452f06d3b313d462130495941fd5c10cc83383",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed2/final_evaluation.json": "bbab2c48f8d949cb44278debd4f98f061b961faf82587ffae2286c8ff4c00062",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed2/configuration.json": "b9d60ff92e7e73e0da4b2afc7b42696a94852ba0cfed53b70f5d7ada4af8e3c8",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-pdp_v2-steps300-seed2/completion.json": "664873358331240c369b210e95ffa9fe8599523213721ca9a268fc50c3a72a1c"
+      }
+    },
+    {
+      "dataset": "lastfm",
+      "method": "uniform4",
+      "candidate": "steps500",
+      "n": 40,
+      "M": 4,
+      "T": 500,
+      "expected_mean": 95.08799579721567,
+      "expected_sample_sd": 0.2983403386288572,
+      "seeds": [
+        95.42947202521671,
+        94.95665878644603,
+        94.87785657998424
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 4,
+            "T": 500,
+            "candidate": "steps500",
+            "dataset": "lastfm",
+            "id": "lastfm-uniform4-steps500-seed0",
+            "method": "uniform4",
+            "n": 40,
+            "seed": 0
+          },
+          "coverage": 95.42947202521671,
+          "spread": 1211,
+          "celf": 1269,
+          "training_seconds": 32.281104790992686,
+          "evaluation_seconds": 0.029574708009022288,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 500,
+            "candidate": "steps500",
+            "dataset": "lastfm",
+            "id": "lastfm-uniform4-steps500-seed1",
+            "method": "uniform4",
+            "n": 40,
+            "seed": 1
+          },
+          "coverage": 94.95665878644603,
+          "spread": 1205,
+          "celf": 1269,
+          "training_seconds": 31.685402000002796,
+          "evaluation_seconds": 0.024489333998644724,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 500,
+            "candidate": "steps500",
+            "dataset": "lastfm",
+            "id": "lastfm-uniform4-steps500-seed2",
+            "method": "uniform4",
+            "n": 40,
+            "seed": 2
+          },
+          "coverage": 94.87785657998424,
+          "spread": 1204,
+          "celf": 1269,
+          "training_seconds": 31.80868454198935,
+          "evaluation_seconds": 0.02566779201151803,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed0/final_evaluation.json": "50b380529ebb3ab0f947a6a4117a2b3c8ffde4724fb594da32ba55f557a53b51",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed0/configuration.json": "fdea50e6531329652b286f6d931ec30de0558318dc7bd5717b75b73555223f91",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed0/completion.json": "6d6cabae518eb7ebfc2ad17e1e7755633a382f0e17e8393f9db2baf2de556afd",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed1/final_evaluation.json": "30f6f855fa333f0460f7f1b7fd10fb6d060bc55ca9bb2a8d8f76e57cb0e84706",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed1/configuration.json": "ed8d980cc41d1081a6746e503a58ea938ca71844ca7480a8651c60bff5c3d21a",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed1/completion.json": "2612f68d0904dc7db180124fa458683b67a33ec3826739be35e67e63f7dbadf9",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed2/final_evaluation.json": "f3cdcd8cd254fc227fe57613c76d6aefb4b6014c11da6a4efd3398465d141e10",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed2/configuration.json": "6ba2b600d6a5bbc645fb616f1b1797d67d8c06543a717cf6205d413453526e01",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/lastfm-uniform4-steps500-seed2/completion.json": "050a0fdbf19f38111df76090eaf07d15072ac4f8b14b666d814fe7eefc57b957"
+      }
+    },
+    {
+      "dataset": "hepph",
+      "method": "uniform1",
+      "candidate": "steps500",
+      "n": 40,
+      "M": 4,
+      "T": 500,
+      "expected_mean": 83.64924372965727,
+      "expected_sample_sd": 3.218763763340929,
+      "seeds": [
+        81.90695002871912,
+        87.36358414704193,
+        81.6771970132108
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 4,
+            "T": 500,
+            "candidate": "steps500",
+            "dataset": "hepph",
+            "id": "hepph-uniform1-steps500-seed0",
+            "method": "uniform1",
+            "n": 40,
+            "seed": 0
+          },
+          "coverage": 81.90695002871912,
+          "spread": 1426,
+          "celf": 1741,
+          "training_seconds": 36.2548253749992,
+          "evaluation_seconds": 0.08009849999507423,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 500,
+            "candidate": "steps500",
+            "dataset": "hepph",
+            "id": "hepph-uniform1-steps500-seed1",
+            "method": "uniform1",
+            "n": 40,
+            "seed": 1
+          },
+          "coverage": 87.36358414704193,
+          "spread": 1521,
+          "celf": 1741,
+          "training_seconds": 36.25790375001088,
+          "evaluation_seconds": 0.08204399999522138,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 4,
+            "T": 500,
+            "candidate": "steps500",
+            "dataset": "hepph",
+            "id": "hepph-uniform1-steps500-seed2",
+            "method": "uniform1",
+            "n": 40,
+            "seed": 2
+          },
+          "coverage": 81.6771970132108,
+          "spread": 1422,
+          "celf": 1741,
+          "training_seconds": 37.00107458399725,
+          "evaluation_seconds": 0.08059679200232495,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed0/final_evaluation.json": "a588aa35e1678c310c664ed6a7f37b1b1c2f2c1fc419ff711059ce4d99f41751",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed0/configuration.json": "c010f266d95667889f927c50bbba2a8ecf270a8bcc068fe99159a3cd575807c4",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed0/completion.json": "940f1f9a64a8828feb8a05614aeae43f426b74f06149a3fab6f579c0cc13d801",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed1/final_evaluation.json": "fd750d9369f98237a76677c936fe98a917bc728dc3a113a960a05c9ddd7081fe",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed1/configuration.json": "a1e46a3805cb963711a22a660c250bd7e62d38002a927662256014962f9f6705",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed1/completion.json": "5027c51ae9c9092bd766904ff4968f0b1202de1ab7c5d26cdc6493a87d310f0a",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed2/final_evaluation.json": "d5e09561d10cc119af35207d02f9d6916b4e7251439befd8d72236965f769a37",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed2/configuration.json": "85dba7a2fc1b800a6f6d4c5b7d07162da835f1f4d615681d3095019c9bc7566a",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/hepph-uniform1-steps500-seed2/completion.json": "6a2a8c24453f3e34b11b8d3b77243512608f8cef08261a3c06052c8cee0df55b"
+      }
+    },
+    {
+      "dataset": "facebook",
+      "method": "pdp_v2",
+      "candidate": "frequency_a",
+      "n": 40,
+      "M": 2,
+      "T": 100,
+      "expected_mean": 91.3947840777109,
+      "expected_sample_sd": 1.8432755858777488,
+      "seeds": [
+        89.73709217611656,
+        93.37979094076655,
+        91.0674691162496
+      ],
+      "runs": [
+        {
+          "task": {
+            "M": 2,
+            "T": 100,
+            "candidate": "frequency_a",
+            "dataset": "facebook",
+            "id": "facebook-pdp_v2-frequency_a-seed0",
+            "method": "pdp_v2",
+            "n": 40,
+            "seed": 0
+          },
+          "coverage": 89.73709217611656,
+          "spread": 2833,
+          "celf": 3157,
+          "training_seconds": 8.17858641599014,
+          "evaluation_seconds": 0.11344779199862387,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed0/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 2,
+            "T": 100,
+            "candidate": "frequency_a",
+            "dataset": "facebook",
+            "id": "facebook-pdp_v2-frequency_a-seed1",
+            "method": "pdp_v2",
+            "n": 40,
+            "seed": 1
+          },
+          "coverage": 93.37979094076655,
+          "spread": 2948,
+          "celf": 3157,
+          "training_seconds": 7.37220941700798,
+          "evaluation_seconds": 0.09650137499556877,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed1/final_evaluation.json"
+        },
+        {
+          "task": {
+            "M": 2,
+            "T": 100,
+            "candidate": "frequency_a",
+            "dataset": "facebook",
+            "id": "facebook-pdp_v2-frequency_a-seed2",
+            "method": "pdp_v2",
+            "n": 40,
+            "seed": 2
+          },
+          "coverage": 91.0674691162496,
+          "spread": 2875,
+          "celf": 3157,
+          "training_seconds": 7.340871915992466,
+          "evaluation_seconds": 0.09283441600564402,
+          "source": "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed2/final_evaluation.json"
+        }
+      ],
+      "source_sha256": {
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed0/final_evaluation.json": "e18cb45e7d7d25f8285c1a38a5c82f60a8ddb44ccf1df13dee1b5d92f5a3e05c",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed0/configuration.json": "40d189883ef986b2c49efa61be56733a07c0c1e5949e15f0668b0e8dbbce1568",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed0/completion.json": "d39b6e42a948eeee2b3672f99dc034f5421f807f1ed462eb92cfa0f60230aa71",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed1/final_evaluation.json": "561fcecbe0abd40944fdc4458a7e5e8a339486faa52e970e9da29c9ad3cd20e8",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed1/configuration.json": "9d1ca9a079fa8cc1251204ee3fc2f81f3d0c5b9b21b35e66e600284bb95d8f90",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed1/completion.json": "e8063fbe5e5d854d19230154b74ced895253208435100028a1602e17ce3dbf87",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed2/final_evaluation.json": "c82429547f6a1a06af0eb77299ed216cbd55c1276b342c0dfdc3c3d2687af202",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed2/configuration.json": "41299d4c4e3baebf8cd20b17d49ef876f1820ca4c27a9ae1e6f6fd008bdf4631",
+        "outputs/research/dataset-parameter-screen-20261111-v1/models/facebook-pdp_v2-frequency_a-seed2/completion.json": "bdd2c358a160c23ca7d3ba93eb1036eda426ec16236acab7fb8864455db05e4d"
+      }
+    }
+  ]
+}

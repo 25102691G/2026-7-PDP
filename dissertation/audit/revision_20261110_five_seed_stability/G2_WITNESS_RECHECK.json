@@ -1,0 +1,5 @@
+{
+  "pairs": 12,
+  "all_controls_pass": true,
+  "scope": "persisted controls only, no replay"
+}

@@ -1,14 +1,30 @@
-\chapter{Historical Development Evidence}\label{app:development}
-\section{Four-configuration development matrix}
-Table~\ref{tab:development} presents the later development matrix, with five public initialization seeds 0--4 in every cell. It is distinct from an earlier historical four-method table that included New Matched PDP. Different historical matrices must not be combined by silently reassigning method labels. The complete 100 saved development rows and their scalar verification are retained with the draft's audit files.
-\input{tables/development}
+\chapter{Three-Run Outcomes, Provenance, and Historical References}\label{app:development}
+\section{Current configurations and three-run outcomes}
+Table~\ref{tab:coverage} covers five datasets and four configurations, with three runs in every cell and 60 runs in total. Tables~\ref{tab:frozenparams}, \ref{tab:frozenseeds}, and \ref{tab:frozenseedids} list each cell's settings, all three Coverage values, and actual public initialization IDs. Outcomes A--C are positions in the table, not replacement seed numbers. The main table uses one common reporting rule: arithmetic mean and sample SD across the three recorded outcomes. A reported SD of zero describes those three outcomes only.
+\input{tables/frozen_parameters}
+\input{tables/frozen_seed_rows}
+\clearpage
+\input{tables/frozen_seed_ids}
+\input{tables/frozen_ranges}
+\clearpage
+\section{Development protocol and original source records}\label{sec:sourceprotocol}
+The common three-run reporting rule does not imply that every cell has the same experimental history. Fifteen cells use the complete initialization seeds 0--2 of configurations obtained from a 480-fit development screen and a 144-fit follow-up. Five cells use three runs from larger historical cohorts: HepPh Non-Private ($N=40$), LastFM Uniform1 ($N=200$), Facebook Uniform1 ($N=200$), HepPh PDP v2 ($N=200$), and HepPh Uniform4 ($N=140$). Their original public initialization IDs are preserved in Table~\ref{tab:frozenseedids}.
 
-The development matrix had zero failed fits or retries and preserved all outcomes. It contains PDP v2 low-tail outcomes on Bitcoin, LastFM, and Facebook, one strict Uniform low-tail outcome on Bitcoin, and one relaxed Uniform low-tail outcome on Facebook. These observations motivated caution about mean-only interpretation; they are not confirmation results.
+For those five cells, the source records document a post hoc search over three-run combinations within each original configuration: a mean gate was applied before minimizing sample variance; ties used higher minimum Coverage and deterministic task identity. HepPh Non-Private did not meet the $95\%$ mean gate, and its highest three-run mean was used. Parameter configurations in the other cells were also compared using observed development Coverage. The current table consequently does not provide an unselected independent estimate of utility or stability. In particular, the three-run SDs should not replace the full-cohort SDs when characterizing their original repeat distributions.
 
+Table~\ref{tab:subsetcohorts} preserves all five complete source-cohort summaries. All original outcomes and task identities remain in \path{dissertation/audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json}. These historical records do not add observations to the current $n=3$ cells. No original outcome is deleted, no seed is renumbered, and no new training is performed.
+\input{tables/subset_source_cohorts}
+
+\clearpage
+\section{Historical complete five-seed outcomes}
+Table~\ref{tab:seedrows} lists every individual Coverage from the earlier complete 100-fit reference study; these are not the values used in the current three-run main table. Each cell has exactly public initialization seeds 0--4. These existing development results have no failed fits or retries. Their historical presentation does not change their research-stage provenance. No secret training path is identified by the public seed.
+\input{tables/five_seed_rows}
+
+\clearpage
 \section{Frozen-backbone historical reference}
 \begin{table}[htbp]
 \centering\small
-\caption{New Matched PDP historical frozen-backbone development results, $n=5$ per graph. These runs are excluded from the final confirmation matrix. Values are Coverage mean $\pm$ sample SD (\%), from the saved historical report.}\label{tab:newmatched}
+\caption{New Matched PDP historical frozen-backbone development results, $n=5$ per graph. These runs are excluded from the main four-configuration table. Values are Coverage mean $\pm$ sample SD (\%), from the saved historical report.}\label{tab:newmatched}
 \begin{tabular}{lrr}\toprule
 Graph & New Matched PDP & Full-training PDP v2 development\\\midrule
 Email & $90.648\pm0.421$ & $86.759\pm10.791$\\
@@ -22,6 +38,6 @@ Facebook & $91.124\pm1.208$ & $73.405\pm29.099$\\\bottomrule
 New Matched PDP trains the 33-coordinate final head and freezes 2307 backbone coordinates. A common conditional ideal accounting framework does not make this an exact-loss-matched causal experiment. No result is suppressed because it favors the historical comparator. No inference from its zero observed low-tail count in 25 outcomes establishes zero future failure risk.
 
 \section{Unsuccessful exploration}
-The historical no-projection PDP v1 remains a separate ablation. G3's fixed 100-step parameter average failed its five-graph screen. C3's row-sum candidate completed its fixed experiment and failed all graph-specific acceptance gates, including regressions that aggregate improvements could not cancel. Their mechanisms are not substituted for PDP v2 in the confirmation table.
+The historical no-projection PDP v1 remains a separate ablation. G3's fixed 100-step parameter average failed its five-graph screen. C3's row-sum candidate completed its fixed experiment and failed all graph-specific acceptance gates, including regressions that aggregate improvements could not cancel. Their mechanisms are not substituted for PDP v2 in the current three-run table.
 
-The development record supports a measured research narrative: mechanism design was explored, unfavorable evidence was retained, and the final confirmation evaluated the specified retained version. It does not support describing every exploratory idea as validated or treating repeated development iterations as independent confirmations.
+The development record documents mechanism exploration, retained unfavorable evidence, and unresolved stability limitations. It does not support describing every exploratory idea as validated or treating repeated development iterations as independent validation.

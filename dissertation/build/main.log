@@ -634,40 +634,48 @@ put line 50.
  [17] [18] [19] [20]) [21] (chapters/05_experimental_design
 Chapter 5.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 10.
+(Font)              <10.95> on input line 8.
+
+Underfull \hbox (badness 1715) in paragraph at lines 21--22
+\T1/lmr/m/n/12 Table []6.1[] re-ports five datasets and four con-fig-u-ra-tions
+, with three runs per
+ []
+
 [22
 
 
-] [23] [24] [25] [26]) [27] (chapters/06_results_discussion
+] [23]
+Underfull \hbox (badness 1348) in paragraph at lines 45--46
+\T1/lmr/m/n/12 plete ref-er-ence study used fixed pub-lic ini-tial-iza-tion see
+ds $\OT1/lmr/m/n/12 0\OML/lmm/m/it/12 ; \OT1/lmr/m/n/12 1\OML/lmm/m/it/12 ; \OT
+1/lmr/m/n/12 2\OML/lmm/m/it/12 ; \OT1/lmr/m/n/12 3\OML/lmm/m/it/12 ; \OT1/lmr/m
+/n/12 4$ \T1/lmr/m/n/12 for each
+ []
+
+[24]) [25] (chapters/06_results_discussion
 Chapter 6.
-(tables/coverage) [28
+(tables/coverage) [26
 
 
 ]
-File: figures/coverage_distributions.pdf Graphic file (type pdf)
-<use figures/coverage_distributions.pdf>
- [29] [30] (tables/effects)
-File: figures/primary_effects.pdf Graphic file (type pdf)
-<use figures/primary_effects.pdf>
- (tables/reference_gaps)
-[31] [32] (tables/low_tail) [33] [34]
-Underfull \hbox (badness 1394) in paragraph at lines 79--80
-\T1/lmr/m/n/12 Uniform1 dif-fer-ence of ap-prox-i-mately $\OMS/lmsy/m/n/12 ^^@\
-OT1/lmr/m/n/12 1\OML/lmm/m/it/12 :\OT1/lmr/m/n/12 100$ \T1/lmr/m/n/12 pp. Graph
--specific de-vel-op-ment
+File: figures/five_seed_coverage.pdf Graphic file (type pdf)
+<use figures/five_seed_coverage.pdf>
+ [27] [28]
+Underfull \hbox (badness 1033) in paragraph at lines 50--50
+[]\T1/lmr/bx/n/17.28 Historical con-trolled ev-i-dence for Gaussian-
  []
 
-[35] [36]) [37] (chapters/07_conclusion
+[29] [30]) [31] [32] (chapters/07_conclusion
 Chapter 7.
-[38
+[33
 
 
-] [39]) [40] (main.bbl [41
+] [34]) [35] (main.bbl [36
 
 
-]) [42] (appendices/a_reproducibility
+]) [37] (appendices/a_reproducibility
 Appendix A.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 8
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 7
 .
 (t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -676,13 +684,41 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [43
+ [38
 
 
-]) [44] (appendices/b_development
+]) [39] (appendices/b_development
 Appendix B.
-(tables/development) [45
+
+Underfull \hbox (badness 2486) in paragraph at lines 2--2
+[]\T1/lmr/bx/n/17.28 Current con-fig-u-ra-tions and three-run out-
+ []
+
+(tables/frozen_parameters) (tables/frozen_seed_rows) [40
 
 
-]) [46] (main.aux) )
-Output written on main.xdv (57 pages, 218836 bytes).
+] [41]
+(tables/frozen_seed_ids
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 4.
+) (tables/frozen_ranges) [42
+
+] [43]
+Underfull \hbox (badness 2318) in paragraph at lines 10--10
+[]\T1/lmr/bx/n/17.28 Development pro-to-col and orig-i-nal source
+ []
+
+(tables/subset_source_cohorts
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 13.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 13.
+) [44
+
+] (tables/five_seed_rows) [45
+
+]) [46
+
+]
+(main.aux) )
+Output written on main.xdv (57 pages, 207328 bytes).

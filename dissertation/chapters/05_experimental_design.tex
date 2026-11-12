@@ -1,12 +1,10 @@
 \chapter{Experimental Methodology}\label{ch:design}
 \section{Fixed datasets and preparation}
-The experiments use Email, Bitcoin, LastFM, HepPh, and Facebook. They are fixed benchmarks rather than randomly sampled graphs. The existing prepared training/test files, node-ID mappings, direction conventions, and original 50:50 split procedure are retained. Training accesses the training graph; the test graph does not enter sampling, gradients, loss computation, or model selection. No alternative partition, extra dataset, or regenerated preprocessing is part of the confirmation study.
-
-Table~\ref{tab:datasets} reports counts from the saved prepared-domain audit and frozen CELF constants. Public-universe sizes and active graph sizes are distinct quantities. In particular, Email retains an externally fixed 1005-identity universe. The theoretical condition that the universe is public is not established merely by the existence of a mapping file or its hash.
+The experiments use Email, Bitcoin, LastFM, HepPh, and Facebook with the existing prepared training/test files, node-ID mappings, direction conventions, and original 50:50 split procedure. Training accesses only the training graph. The test graph does not enter loss computation or checkpoint selection within a fit. Development comparisons have used final test Coverage, so this evaluation is not a fresh independent confirmation. The development and source protocol is documented in Appendix~\ref{app:development}. No new partition, graph preprocessing, or dataset is introduced.
 
 \begin{table}[htbp]
 \centering\small
-\caption{Fixed experimental domains. Active-node counts are from the saved preflight audit; CELF is the frozen test reference for $k=50$. No graph was reloaded to construct this table.}\label{tab:datasets}
+\caption{Fixed prepared domains and frozen test CELF references for $k=50$, from existing audits. Public-universe and active-node sizes are distinct.}\label{tab:datasets}
 \begin{tabular}{lrrrr}\toprule
 Graph & Public $|U|$ & Train nodes & Test nodes & CELF spread\\\midrule
 Email & 1005 & 462 & 458 & 432\\
@@ -17,90 +15,52 @@ Facebook & 20091 & 10011 & 10080 & 3157\\\bottomrule
 \end{tabular}
 \end{table}
 
-The differences between the five networks provide useful within-study variation. They do not identify graph size, density, or application domain as causes of a method difference. The protocol does not randomize graph topology, and this dissertation does not generate new graph descriptors from private test data to explain results retrospectively.
+The split procedure does not require equal final active-node or edge counts. The theoretical public status of the identity universe is an assumption, not a consequence of having a saved mapping. The five fixed graphs do not form a random sample of all networks.
 
-\section{Four configurations and common controls}
-All configurations use the released GRAT3 model, 32-dimensional all-one features, the same original loss with penalty 0.5, 100 updates, batch size 16, learning rate 0.005, and zero momentum. Training subgraphs have nominal size 40; RWR length 200 and restart probability 0.3, SCS threshold 4, frequency decay 1, and BES divisor 2 remain frozen.
+\section{Main experimental comparison}
+Table~\ref{tab:coverage} reports five datasets and four configurations, with three runs per dataset/configuration cell and 60 runs in total. One run consists of model initialization, training for the documented number of updates, and one final-state evaluation; the three outcomes are not repeated evaluations of one fitted model. Every cell is summarized by Coverage mean and sample SD. Actual public initialization IDs, individual outcomes, and training settings appear in Appendix~\ref{app:development}; IDs are not assumed to be identical across all cells.
 
-The three private configurations use four stable slots, two memberships per identity, double Clip3, and full 2340-coordinate Gaussian noise. They project the final 32 feature-map weights after each update; neither the bias nor the initialization is projected. Their noise scales and policy roles are summarized in Table~\ref{tab:config}. No calibration was chosen by looking at confirmation Coverage.
+The training-subgraph size, SCS threshold, and update count vary by cell; updates number 100, 300, or 500. These differences must be considered when interpreting utility gaps: the comparison does not isolate personalization while holding every optimization setting fixed. For private runs longer than 100 updates, the reference sum-noise scale is multiplied by at least $\sqrt{T/100}$, retaining the documented conditional ideal adaptive Gaussian composition upper bound. This accounting statement does not include development selection or joint publication of multiple models. All numerical outcomes and settings remain fixed; no further training is undertaken here.
+
+\section{Historical 100-step configurations and common controls}
+In the historical 100-step reference study, all configurations use released GRAT3, 32-dimensional all-one features, the original loss with penalty 0.5, 100 updates, batch size 16, learning rate 0.005, and zero momentum. Subgraph size is 40; RWR length is 200 with restart probability 0.3, SCS threshold 4, frequency decay 1, and BES divisor 2.
 
 \begin{table}[htbp]
 \centering\small
-\caption{Frozen configurations and independent confirmation allocation per graph. All privacy bounds are conditional ideal single-model bounds.}\label{tab:config}
+\caption{Configurations for the five-seed study. Noise is on the slot-sum scale. Privacy statements concern conditional ideal single-model bounds.}\label{tab:config}
 \begin{tabular}{lrrp{64mm}}\toprule
-Configuration & $\sigma_{\rm sum}$ & $n$ & Policy role\\\midrule
-Non-Private & none & 40 & Utility reference; no DP protection\\
-Uniform1 & 486 & 200 & Strictest-policy control, all $p_v=1$\\
-PDP v2 & 260 & 200 & Original heterogeneous caps, personalized participation\\
-Uniform4 & 139 & 140 & Relaxed privacy reference, all $p_v=1$\\\bottomrule
+Configuration & $\sigma_{\rm sum}$ & $n$ & Role\\\midrule
+Non-Private & none & 5 & Ordinary-training utility reference\\
+Uniform1 & 486 & 5 & Strictest-policy control, all $p_v=1$\\
+PDP v2 & 260 & 5 & Heterogeneous targets 1/2/4\\
+Uniform4 & 139 & 5 & Relaxed reference, all $p_v=1$\\\bottomrule
 \end{tabular}
 \end{table}
 
-Non-Private follows the original ordinary batch-mean SGD route. It does not use DP slots, clipping, Gaussian noise, or the private post-update projection. Its original sampling parameter is $Q=256$, with rate $\min\{1,256/\max(1,|V_{\rm train}|)\}$, whereas the private route uses $Q=64$ per slot. Hence Non-Private is a performance reference, not a one-factor noise-removal ablation.
+The private configurations have four stable slots, two memberships per identity, double Clip3, full 2340-coordinate Gaussian noise, and post-update nonnegative projection of the final 32 feature-map weights. The bias and initialization are not projected. PDP samples participation once before training: target-1 identities have probability about 0.26894 and targets 2/4 have probability one. Uniform methods have no outer Bernoulli sampling.
 
-Uniform1 and PDP v2 satisfy the same heterogeneous policy caps through different sufficient bounds. They do not have matched actual privacy loss. Uniform4 is a useful reference for the utility attainable under the specified relaxed mechanism, without a theorem making it an upper bound on the other methods' Coverage.
+Non-Private retains ordinary batch-mean SGD without private slots, clipping, Gaussian noise, or private post-update projection. Its sampling parameter is $Q=256$, whereas each private slot uses $Q=64$. Consequently its comparison with private training changes several operations, not just the noise source. Uniform1 and PDP meet the same declared caps through different sufficient bounds, without equal actual privacy loss. Uniform4 is neither a same-policy substitute nor a theoretical Coverage upper bound.
 
-\section{Evaluation protocol}
-Each successful fit is followed by one original final evaluation. Ranking uses pre-sigmoid scores; ties follow the original stable local-ID order. This matters because private optimization can create ties or weak score margins, and replacing the rule would alter the outcome. No checkpoint is selected using test Coverage.
+\section{Three-run summaries and historical repetition}
+The main comparison uses three runs in every cell. Separately, the earlier complete reference study used fixed public initialization seeds $0,1,2,3,4$ for each graph/configuration cell, trained for 100 updates, and evaluated each model once at its final state. That historical design has $5\times4\times5=100$ outcomes, with 100 attempts, no failures, no retries, and no unexecuted tasks. All historical outcomes remain in their original summaries \cite{projectdev}. Those counts describe the historical study, not the current 60-run table or the entire development search.
 
-The test evaluator selects 50 unique nodes, computes one-step outgoing spread with IC $p=1$, and divides by the graph's frozen CELF reference as in Equation~\eqref{eq:coverage}. There is no Monte Carlo diffusion variance at fixed model and graph under this deterministic evaluation. Random variability across repeats arises from initialization and the private training process, along with their nonlinear effects on ranking. The protocol does not separately estimate every variance component.
+These are existing development experiments. Their prior use in research decisions is retained; moving their presentation into the main chapter does not turn them into independent confirmation. Public initialization seeds are identifiers for initial model states, not secret Gaussian or Bernoulli seeds. The private sources are fresh for each fit. Equal public integers across configurations do not produce shared secret trajectories or justify a paired causal analysis.
 
-Raw Spread and the CELF denominator are retained alongside Coverage. This prevents accidental substitution of a different normalization and preserves the distinction between percentages and percentage points. A missing or invalid reference would require Coverage to be unavailable, rather than silently filled using another graph. All 2900 final analysis rows have the required saved scalars.
+For $r$ Coverage values, summaries use $r=3$ for every current dataset/configuration cell and $r=5$ only for the separate historical cells:
+\begin{equation}
+ \bar C=\frac{1}{r}\sum_{i=0}^{r-1}C_i,\qquad
+ s=\sqrt{\frac{1}{r-1}\sum_{i=0}^{r-1}(C_i-\bar C)^2}.\label{eq:fiveseed}
+\end{equation}
+The displayed uncertainty is sample SD, not standard error or a confidence interval. With three observations, its denominator is $r-1=2$; sample variance is $s^2$ and is not substituted under the SD label. Three runs provide a limited estimate of variability, and zero observed SD does not imply zero population variance. No test-Coverage checkpoint selection is performed within a fit. The development protocol and original source-cohort summaries in Appendix~\ref{app:development} are relevant to interpretation; the current comparison is not an independent confirmation.
 
-\section{Development and independent confirmation}
-The later development matrix has five predetermined public initialization seeds, 0 through 4, per graph and configuration: 100 outcomes. These informed mechanism retention, uncertainty assessment, and sample-size planning. Additional historical candidates have their own development records. They are not additional confirmation units and are not pooled with the final matrix.
+\section{Final evaluation}
+Final ranking uses pre-sigmoid scores and the original stable local-ID tie rule to choose 50 unique nodes. Spread is one-step outgoing IC with $p=1$; Coverage is $100\,\mathrm{Spread}/\mathrm{CELF}$ using the fixed denominator in Table~\ref{tab:datasets}. Evaluation is deterministic for a fixed model and graph. Training-path variability, rather than repeated Monte Carlo diffusion, is the source investigated here.
 
-U0 established that an independently wrapped Uniform-v2 mechanism was mathematically equivalent to the existing strict uniform control. U1 fixed the prospective four-configuration comparison. U2 reviewed and calibrated the relaxed reference; U3 generated its development evidence. U4 diagnosed the full development matrix, and U5 retained PDP v2 as the main research mechanism. U6-P and U6-D considered sample sizes and inference, while U6-F finalized the approved statistical plan and allocation before independent runs. This is confirmation frozen after development, not a claim of preregistration before any project outcomes were seen.
+Spread, Coverage, and the denominator are checked against every saved final evaluation, without opening graphs or checkpoints. All three results per current cell, as well as the historical five-seed record, are listed in Appendix~\ref{app:development}. Low utility is described by the strict event $C<50\%$, along with min/max; no threshold triggers deletion or retraining.
 
-The final allocation is $5(200+200+140+40)=2900$ complete units. The unequal reference sizes reflect planning roles: the primary PDP--Uniform1 contrast has the largest balanced arms, with fewer Non-Private and relaxed-reference repeats. Smaller reference samples are not assumed to have identical precision. All counts and intervals are shown accordingly.
+\section{Comparison and diagnostic limits}
+The main objective is to describe Coverage under the four configurations and compare PDP v2 with the strict uniform control, the relaxed reference, and Non-Private. Historical diagnostics separately examine variability. No new significance, equivalence, or noninferiority test is introduced. Differences between observed means are descriptive, and a particular utility ordering or SD is not assumed.
 
-\section{Initialization and secret randomness}
-The approved public initialization domain is the integer range from 1,000,000 to 2,147,483,647 after excluding the conservative historical set. Allocations are independent uniform draws with replacement, made before running the real tasks. Repeated integer draws are retained; there are no deliberately shared seed blocks or outcome-dependent redraws. Distinct integers alone would not prove independent or identically distributed model initializations.
+The investigation combines saved five-seed scalars, static training-source inspection, and historical controlled Gaussian-path diagnostics. VERIFIED denotes checked arithmetic or code behavior; DESCRIPTIVE denotes observed run statistics; HYPOTHESIS denotes a plausible explanation without isolated causal identification; UNRESOLVED denotes a missing measurement or control. Historical diagnostics are identified separately and do not increase the main table's three runs per cell.
 
-Each private fit also uses its original fresh secret Gaussian source, and PDP uses a fresh secret Bernoulli source. Public partition and sampling/batch roles remain fixed. The inferential model concerns the distribution generated by the approved initialization rule and secret sources, not an idealized uniform distribution over all possible neural weights. Independence and representativeness require those source assumptions and provenance; arithmetic consistency cannot prove them.
-
-The public manifest, initialization seeds, run IDs, source hashes, and complete hyperparameters are retained. Secret Bernoulli seeds, random bytes, masks, Gaussian innovations, and sampler states are not serialized for replay. Reproducibility therefore means traceable protocol and distributional replication, rather than reproducing the exact secret path of each model.
-
-\section{Primary estimate and frozen inference}
-For graph $d$ and method $m$, let $\bar Y_{dm}$ and $s_{dm}$ be the confirmation sample mean and sample SD, using denominator $n_{dm}-1$. Define
-\begin{align}
- \widehat D&=\frac15\sum_d(\bar Y_{dP}-\bar Y_{dU}),\\
- v_{dm}&=\frac{s_{dm}^2}{25n_{dm}},\quad
- \widehat V=\sum_{d,m\in\{P,U\}}v_{dm},\quad
- \mathrm{SE}=\sqrt{\widehat V},\\
- \nu&=\frac{\widehat V^2}{\sum_{d,m}v_{dm}^2/(n_{dm}-1)}.\label{eq:welch}
-\end{align}
-Here $P$ denotes PDP v2 and $U$ Uniform1. The frozen independent-arm stratified Welch/Satterthwaite approximation uses $T=\widehat D/\mathrm{SE}$ and
-\begin{align}
- p_{\mathrm{one}}&=\Pr(t_\nu\geq T),\\
- L_{95}&=\widehat D-t_{\nu,.95}\mathrm{SE},\\
- \mathrm{CI}_{95}&=\widehat D\pm t_{\nu,.975}\mathrm{SE}.
-\end{align}
-The primary significance level is one-sided $\alpha=0.05$. The positive-effect criterion requires the full valid matrix and $p_{\mathrm{one}}<0.05$, equivalently a positive $L_{95}$ in the ordinary identifiable case. The two-sided 95\% interval is reported as a separate uncertainty summary.
-
-The formula uses ten cell variances. It neither treats the five graphs as IID draws for a $t_4$ analysis nor pools all private observations into one identically distributed sample. The fixed graph weights are not changed by graph size, observed variance, or the sign of an effect. Shared-initialization paired tests would require covariance analysis and are not substituted after results.
-
-The 3 pp effect is a predetermined planning target, not the primary null boundary. A point estimate above 3 with $L_{95}\leq3$ would not establish that the true effect exceeds 3. The sample-size calculations used small-development-sample variance proxies and normal approximations; they never guaranteed sufficient power for every possible multimodal or heavy-tailed repeat distribution.
-
-\section{Secondary effects, multiplicity, and risk}
-Per-graph PDP--Uniform1 effects use independent-arm Welch intervals. Five one-sided per-graph claims form a gate-controlled Holm family: the primary average-effect gate must open first, followed by Holm thresholds at family level 0.05. Ordinary 95\% individual intervals and 99\% Bonferroni intervals are both retained. A positive average would not imply improvement on every graph.
-
-PDP--Uniform4 and PDP--Non-Private differences are important secondary estimations, reported per graph and with the same five equal weights. They are not alternative unadjusted success tests. No closeness, noninferiority, equivalence, or stability claim is created after seeing these gaps.
-
-Severe low utility is the strict event $Y<50\%$, with equality excluded. Every cell reports its count, rate, minimum, maximum, and sample SD. The frozen risk interval is a cellwise 95\% Clopper--Pearson interval under the approved IID Bernoulli event model. Zero observed events do not imply zero risk. Pooling the five graphs produces an inventory total, not one IID graph-independent event probability.
-
-The stored analysis additionally contains conservative Hoeffding risk intervals, including a simultaneous 20-cell reference, and an overall distribution-free primary sensitivity interval using public ranges. A predeclared within-cell bootstrap used 10,000 repetitions and public analysis seed 20261104. This draft reuses those sealed sensitivity outputs; it does not launch new resampling, select a more favorable sensitivity result, or replace the primary test.
-
-\section{Execution recovery and analysis-unit integrity}
-The scientific matrix has 2900 final units, while the complete execution lineage has 2902 fit attempts and two fit failures. Approved technical continuations reused 736 immutable completed results and completed 2164 further final units. Two separately approved technical second attempts were documented. The first replaced the original Email Non-Private entry-path failure, which had zero observed optimizer steps and no final evaluation, while retaining its real input-access and failure record. The second replaced the Facebook Non-Private timeout under selective continuation. Each kept its original public initialization and used a new execution ID. Completed low-utility models were not retrained or re-evaluated to improve the matrix.
-
-There were two authorized technical second attempts in total, two preserved unsuccessful attempts, and zero unexecuted final units. The reported 2902-attempt convention includes the first failed worker entry even though it performed no observed optimization; it is not a claim of 2902 completed trained models. There was no generic or Coverage-based retry permission.
-
-The continuation retained the original mechanisms, scalar definitions, statistical plan, and final allocation. Its prospective task timeout changed to 1200 seconds under a recorded amendment. The two historical failures and partial artifacts remain evidence. These technical attempts do not become extra independent statistical observations. Treating 2902 as the sample size would double count execution events that did not define additional final units.
-
-All final training completions were recorded before the original execution deadline. A later post-completion analysis wall-guard failure was diagnosed and preserved separately; it was not a third failed fit. U6-A then analyzed the sealed completed evidence under separately approved analysis scope. The complete research matrix is consequently retained, while inference remains conditional on the recovery and source-generation assumptions rather than declaring recovery scientifically invisible.
-
-\section{Validity and reproducibility limits}
-Welch/Satterthwaite inference is approximate. Large repeat counts improve estimation but do not produce an exact finite-sample theorem for arbitrary skew, multimodality, or rare catastrophic outcomes. Both inferential assumptions and severe-tail observations must be considered. No variance-component causal decomposition is inferred merely because the primary interval is narrow.
-
-Every result concerns the fixed prepared split and original objective. Feature alternatives, new graphs, multi-step cascades, different budget proportions, or modified optimization could behave differently. The experimental statistics do not certify privacy; the ideal theorem does not certify utility. The dissertation is assembled from existing scalars and sources, with no new model inference or graph evaluation.
+This revision performs no training, inference, graph reevaluation, secret-path reconstruction, or random experiment. Related large-scale testing is discontinued. No mechanism or accountant implementation is changed by this manuscript revision; the longer-budget private runs retain their documented noise scaling.

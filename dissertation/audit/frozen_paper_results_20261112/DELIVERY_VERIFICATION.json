@@ -1,0 +1,18 @@
+{
+  "status": "COMPLETE",
+  "fixed_cells": 10,
+  "displayed_fits": 30,
+  "table_pdf_page": 36,
+  "table_printed_page": 25,
+  "removed_table_cells": 10,
+  "pdf_pages": 52,
+  "machine_pdf_checks_pass": true,
+  "table_visual_inspection_pass": true,
+  "frozen_scope": "the ten retained dataset/method cells: no further training or parameter/result modification",
+  "original_run_files_unchanged": 5530,
+  "new_training": 0,
+  "new_inference": 0,
+  "commit_or_push": false,
+  "table_sha256": "7f3b5f92c8ac49eae6fb6d9a195c23c5364665a2e97a9fbd4f99bb4b86a89596",
+  "pdf_sha256": "2d4dccd058d3e87bf3526deca4b36d8a6e0ee20430d6aacd5a6de7c88e55a044"
+}

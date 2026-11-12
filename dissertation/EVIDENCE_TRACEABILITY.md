@@ -1,42 +1,23 @@
-# W1 evidence traceability
+Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
 
-All paths below are relative to repository root unless prefixed dissertation/. W1 writing authorization in the supplied request overrides prior PAPER_WRITING_BLOCKED for drafting only. Historical stage reports retain their original scope/status; no past authorization has been rewritten.
+Current Table6.1 authority (2026-11-12):20cells/60displayedfits;15complete seed0/1/2 configurations plus5explicit post hoc three-run subsets from U6 historical cohorts. Source sample sizes40/200/200/200/140 and full mean/SD/min/max/<50 summaries are shown in tables/subset_source_cohorts.tex;780raw outcomes are frozen in audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json. Actual public seeds are in tables/frozen_seed_ids.tex. verify_frozen_paper.py verifies all60selected values and all780source-cohort values. Supersedes older current-table descriptions below; no new experiment.
 
-| Draft claim / object | Primary evidence | Verification / scope |
+## Current table authority — 2026-11-12
+
+Table6.1 now contains20researcher-selected cells, n=3 each,60fits, from the480-fit screen and144-fit follow-up. Other cells are omitted, not unexecuted. Frozen source mapping: audit/frozen_paper_results_20261112/FROZEN_RESULTS.json; generator: scripts/verify_frozen_paper.py; parameters and seed triplets: tables/frozen_parameters.tex and tables/frozen_seed_rows.tex. This supersedes earlier main-table definitions below; all historical evidence remains preserved. No further training or result/configuration changes for those20dataset/method cells.
+
+# Current five-seed draft evidence map
+
+This revision supersedes the previous manuscript data scope on direct researcher instruction. No historical experimental protocol or record has been rewritten.
+
+| Claim | Source | Limit |
 |---|---|---|
-| School ordering, originality declaration, abstract, A4, spacing, PDF | `Dissertation - Guidelines and Assessment.pdf`, all 19 pages, especially §§4.1–4.5 pp6–8 and integrity pp17–19 | Full text extraction `audit/guidelines.txt`; all pages rendered; pp6–8 visual review. Actual filename lacks requested -1 suffix. Original untouched. |
-| Department formal name | School forms pp9,14,16 | EEE supported by supplied school forms. Researcher separately confirms degree and2027award year on2026-11-10; specialism remains unconfirmed. |
-| IM, GNN and PrivIM background | Root `PrivIM_Report.pdf`, model/source; primary external literature | Local 18-page paper extracted, references and method sections read. Bibliographic verification ledger separate. |
-| Chapter 3 adjacency/domain | `docs/pdp_research/G0_THEORY_BOUNDARY_REVIEW.md` §§2,8; `PREPARED_DOMAIN_PROTOCOL.md`; U5 proof readiness | Fixed U/Registry, surviving isolated nodes and stable identities; not arbitrary file-row deletion. |
-| Chapter 4 architecture and loss | `model/GRAT.py`, `model/layer/GRATLayer.py`, `model/functional/MaxCoverLoss.py`, `experiments/graph_util.py` | Static reads only; legacy released model, all-one32, A+I, loss .5; dimension 2340 checked algebraically. |
-| Slots, cached samplers and clipping | `experiments/node_dp_slots/{config,adapter,aggregation,mechanism,training}.py` | Four slots, K2, four padded positions, fixed /16, slot-local caches; clip offset/margin disclosed. |
-| Bernoulli and projection | `experiments/node_pdp/{registry,sampling,accounting}.py`; `experiments/node_pdp_v2_projected/policy.py` | One outer sample; p1=.268941..., p2=p4=1; 32 weights only, no initial/bias projection. |
-| Conditional proof chain | G0 §§4–7; U0 `PRIVACY_PROOF.md`; U2 `PRIVACY_PROOF.md`, certificates | Sensitivity12; Gaussian full2340; adaptive100; grid RDP conversion; two-direction amplification. Not machine certification. |
-| Uniform1 bound | `experiments/uniform_node_dp/accounting.py`; U0 report/proof/certificate | sigma486, epsilon numeric .9986929644, conservative <.998694. |
-| Uniform4 bound | `docs/pdp_research/stage_u2_uniform_eps4_mechanism/{PRIVACY_PROOF.md,accounting_certificate.json}` | sigma139, epsilon numeric3.99699597485, strict upper3.997. Relaxed reference only. |
-| NP route and common parameters | U6 `FROZEN_MECHANISM_AUDIT.md`, `FROZEN_PROTOCOL.json`; `experiments/train_models.py`, original training source | Ordinary SGD, no private clipping/slots/projection. NP not a pure noise ablation. |
-| Domain and node counts | U3 `PREFLIGHT_DATA_AUDIT.json`; U4 `PUBLIC_POLICY_COUNTS.json` | Already saved metadata, no graph files read. Email U1005 versus active train462/test458. |
-| Top50 / IC / ranking | `experiments/pdp_research_evaluation.py`; frozen SAP | Pre-sigmoid, original stable local-ID ties; one-step outgoing IC p1; denominator432/1684/1269/1741/3157. |
-| 2900 final observations | `docs/pdp_research/stage_u6a_posttraining_analysis/runtime/outputs/{observations.json,analysis.json,REPORT.md,OUTPUT_MANIFEST.json}` | Output manifest hashes verified; full independent deterministic arithmetic verification in `audit/SCALAR_VERIFICATION.json`. |
-| Statistical formulas, weighting, sample sizes | Original U6-F `FROZEN_STATISTICAL_ANALYSIS_PLAN.md`, byte-preserved U6-A plan; `ua_statistics.py` read only | Ten cells for primary variance; no t4, no graph pooling, no paired assumptions; n200/200/140/40. |
-| Recovery and attempts | U6-R2 `APPROVED_AMENDMENT.md`; U6-A `evidence.json`, `PARENT_SNAPSHOT.json`; U6-R2 posttraining `DIAGNOSIS.json` | 736 reused+2164 new=2900; 2902 attempts;2 failed fits; two separately authorized same-public-seed technical second attempts (Email entry path and Facebook timeout); later analysis wall guard preserved separately. |
-| Primary and secondary figures/tables | Final U6-A saved observations and analysis | `scripts/verify_saved_scalars.py`, `scripts/make_figures.py`; deterministic only, no graph or model imports, no new resampling. |
-| Sensitivity intervals | Sealed `analysis.json` bootstrap and Hoeffding fields | Copied with role sensitivity only; 10000 stored resamples never rerun in W1. |
-| Development100 | U5 `PER_SEED_RECHECK.csv`; U4 `GROUP_STATISTICS.csv`; U3 report | Complete100-row CSV retained; independently rechecked from Spread/CELF. Excluded from confirmation. |
-| New Matched historical | `docs/pdp_research/new_matched_pdp_development/REPORT.md`, `outputs/research/new-matched-frozen-dev-20261103/restricted/summary.csv`; R0 report/fairness audit | 2307 frozen/33 trained, n5; four favorable means and adverse HepPh result all retained. |
-| G2 Gaussian diagnostic | U4 `G2_INDEPENDENT_SCALAR_RECHECK.json`, `G2_CONTROLLED_PROTOCOL.md` | Historical witness-controlled path differences only; no complete variance decomposition. |
-| G3/C3 failure | `G3_AVERAGE_PROTOCOL.md`, `G3_AVERAGE_THEORY.md`, `outputs/research/g3-parameter-average-20261102-v1/restricted/analysis.json` and G3_REPORT.md; `stage_c3_rowsum/REPORT.md` | Rejected development candidates; not final algorithm or independent confirmation. |
-| U0–U6 decisions | Stage reports U0/U1/U2/U3/U4/U5/U6P/U6D/U6F and amendments | Chronology separated, no archived report rewritten. Later decision supersedes earlier prospective missing-data status. |
+| n5, seeds0..4, all100 raw outcomes and 20 cell summaries | U5 PER_SEED_RECHECK.csv and its original final evaluations; scripts/verify_five_seed.py | Existing development provenance retained, no independent confirmation claim |
+| Fixed model/data/loss/evaluator | Original source, U4 SOURCE_INDEX.md, existing configuration records | No graphs or checkpoints loaded |
+| Signal norm bound and noise scales | experiments/node_dp_slots/aggregation.py, mechanism.py; projected policy; uniform specs; U4 GAUSSIAN_NOISE_ANALYSIS.md | Parameter-space scale, not measured functional SNR or Coverage variance |
+| Conditional Gaussian path effects | G2 controlled report and witnesses; U4 G2_INDEPENDENT_SCALAR_RECHECK.json | Historical limited conditions, not population variance decomposition |
+| Ranking counterexamples | U4 OPTIMIZATION_RANKING_REVIEW.md, RANKING_SCALAR_REVIEW.csv; G1 historical report | Boundary ties do not explain every severe loss |
+| Conditional mathematical privacy | Original G0/U0/U2 proofs and certificates | Unchanged; no machine or joint-release certification |
+| Current manuscript tables/plot | tables/coverage.tex, five_seed_rows.tex; figures/five_seed_coverage.pdf | All five observations, SD not SE/CI |
 
-## Proof-to-equation map
-
-| LaTeX label | Trusted mathematical source |
-|---|---|
-| eq:doubleclip, lem:sensitivity | G0 §§3–4; U2 §2 |
-| eq:update | G0 §3; U2 §§3–4; policy.step |
-| eq:gaussrdp, eq:rdp | G0 §5; U2 §§3–4; Mironov for RDP framework |
-| eq:conversion | G0 §6; U2 §5; not substituted by a different textbook conversion |
-| eq:participation, eq:amplified, thm:pdp | G0 §7; node_pdp accounting/Registry |
-| eq:welch and test formulas | U6 frozen SAP §§1–4; saved ua_statistics.py |
-
-Human review remains required for application of ideal theorem assumptions and intended disclosure scope. No proof of raw preparation, private test release, all-model joint privacy or full machine implementation is invented. Those extensions are PROOF_REVIEW_REQUIRED.
+See INSTABILITY_DIAGNOSIS.md for checked observations and unresolved questions. Historical audits and the prior manuscript snapshot are internal history, not numerical authority for this revision. No related large-scale continuation is planned.

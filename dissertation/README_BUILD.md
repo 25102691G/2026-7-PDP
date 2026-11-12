@@ -1,47 +1,18 @@
-# PDP-PrivIM MSc dissertation initial draft
+Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
 
-Prepared 2026-11-10 for internal student/supervisor review under W1. Seven complete English chapter drafts, mandatory front matter, numbered tables/figures/equations, IEEE numeric bibliography, and two appendices. Only `dissertation/` is authored. No experiment launcher is called.
+# PDP-PrivIM dissertation: three-run Coverage comparison
 
-## Build on this machine
+## Verify and build
 
-From the project root:
-
+From repository root:
 ```sh
-./dissertation/scripts/build.sh
-```
-
-The script uses the local official Tectonic0.17.0 executable, its bundled BibTeX engine and a cache under `dissertation/tooling/cache`. First build needs network access for TeX packages. It preserves `build/main.log`, `build/main.blg`, `build/main.bbl` and `build/compile_console.log`, then copies the compiled PDF to `build/dissertation_initial_draft.pdf`. PDF is searchable text, not rasterized pages. `main.tex` is the manuscript entry point. `tooling/` is local tooling, not submission content.
-
-With a separately installed TeX Live/MacTeX toolchain, an equivalent build from `dissertation/` is:
-
-```sh
-latexmk -xelatex -interaction=nonstopmode -halt-on-error -outdir=build main.tex
-cp build/main.pdf build/dissertation_initial_draft.pdf
-```
-
-This alternative is documentation, not a claim that latexmk is installed here.
-
-## Recheck existing saved data / PDF
-
-```sh
-dissertation/tooling/venv/bin/python dissertation/scripts/count_words.py
-dissertation/tooling/venv/bin/python dissertation/scripts/verify_privacy_constants.py
-dissertation/tooling/venv/bin/python dissertation/scripts/verify_saved_scalars.py
-dissertation/tooling/venv/bin/python dissertation/scripts/verify_development.py
+dissertation/tooling/venv/bin/python dissertation/scripts/verify_frozen_paper.py
 dissertation/tooling/venv/bin/python dissertation/scripts/make_figures.py
+./dissertation/scripts/build.sh
+dissertation/tooling/venv/bin/python dissertation/scripts/count_words.py
 dissertation/tooling/venv/bin/python dissertation/scripts/verify_pdf.py
 ```
 
-The verification and plotting scripts only read saved scalar observations, analysis outputs, reports and public mathematical constants. They do not import the project's training/model modules, open graph files or checkpoints, run resampling, or use a random source. Source output hashes are checked. Do not substitute historical five-seed tables for confirmation.
+The active generators read existing scalars only, never training/model modules, graphs or checkpoints. No randomness, inference, training, or resampling occurs. `verify_frozen_paper.py` checks all 60 main-table raw scalars, actual public seed IDs and frozen source hashes, and generates the current table plus parameter/seed appendices. The historical verify_five_seed.py now writes coverage_historical_five_seed.tex and cannot overwrite the current table. Retired generators/assets are archived; historical audit JSON is not current verification. The PDF entry point is main.tex and the deliverable is build/dissertation_initial_draft.pdf.
 
-## Files
-
-- `chapters/`, `frontmatter/`, `tables/`, `figures/`, `appendices/`, `references.bib`: editable manuscript sources/assets.
-- `audit/`: data checks, DOI metadata, source traceability, full scalar CSVs, PDF QA and visual contact sheets; internal auxiliary material, not manuscript sections.
-- `EVIDENCE_TRACEABILITY.md`, `LITERATURE_VERIFICATION.md`: claim/source map and literature review ledger.
-- `DISSERTATION_REQUIREMENTS_CHECKLIST.md`, `MISSING_INFORMATION.md`, `SUBMISSION_TIMELINE.md`: compliance and human actions.
-- `AI_ASSISTANCE_RECORD.md`: drafting assistance for review and any required disclosure.
-
-Confirmed identity settings are in `frontmatter/identity.tex`: WENTAO ZHAO (25102691G), MSc in Electronic and Information Engineering, award year2027, initial submission November2026, academic supervisor Prof. YE Qingqing (Associate Professor). The existing title is unchanged. Specialism remains unconfirmed and is omitted. Acknowledgements remain for the student. The school originality declaration retains its exact wording, with the printed name filled and signature line blank. No actual submission, Turnitin check, supervisor approval or signature has been performed.
-
-Formatting checks are technical observations, not institutional approval. Full release privacy is not certified. No commit/push is authorized.
+Identity and official title remain in frontmatter/identity.tex. The degree is MSc in Electronic and Information Engineering; student WENTAO ZHAO (25102691G); supervisor Prof. YE Qingqing; award2027; initial submission November2026. Signature remains blank. This shortened diagnostic revision requires renewed student/supervisor review; earlier page/word counts no longer apply. No submission, public release, commit or push is performed.

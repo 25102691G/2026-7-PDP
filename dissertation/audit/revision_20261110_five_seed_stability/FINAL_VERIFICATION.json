@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "pdf_pages": 49,
+  "current_table_n": 5,
+  "all100_raw_evaluations_verified": true,
+  "old_large_scale_claims_removed_from_compiled_pdf": true,
+  "diagnostic_sources_unchanged": 122,
+  "mechanism_and_accountant_edits": 0,
+  "new_training": 0,
+  "new_inference": 0,
+  "new_random_experiments": 0,
+  "related_large_scale_experiments": "DISCONTINUED_BY_RESEARCHER",
+  "evidence_deletion": false,
+  "pdf_machine_checks": true,
+  "visual_review": true,
+  "chapter_prose_approximation": 7521,
+  "limitation": "shortened diagnostic revision; renewed supervisor/length review needed",
+  "commit": false,
+  "push": false
+}

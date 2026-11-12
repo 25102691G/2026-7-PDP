@@ -1,110 +1,81 @@
 \chapter{Results and Discussion}\label{ch:results}
-\section{Completeness and interpretation}
-All 20 planned graph-by-configuration cells are complete. There are 1000 PDP v2, 1000 Uniform1, 700 Uniform4, and 200 Non-Private final units. The complete sealed U6-A observations provide Spread, Coverage, the CELF denominator, public initialization seed, run identity, and execution provenance for each unit \cite{projectu6}. The deterministic verification for this draft independently recomputed cell statistics and Welch contrasts from those saved scalars, without importing a model or evaluating a graph.
+\section{Evidence scope}
+Table~\ref{tab:coverage} reports Coverage for five datasets and four configurations. Every cell contains three runs, giving $5\times4\times3=60$ runs in total, and reports the arithmetic mean and sample SD. The three individual outcomes, actual public initialization IDs, parameter settings, and source protocol are documented in Appendix~\ref{app:development}. The results are descriptive development evidence rather than independent confirmation.
 
-The numerical conclusions below distinguish four kinds of statement. The tables describe observed outcomes. Confidence intervals and the primary test provide inference under the frozen repeat-generation assumptions. Chapter~\ref{ch:method} supplies a conditional privacy theorem. Possible explanations for utility behavior remain hypotheses unless separately identified by controlled evidence. No category is used as a substitute for another.
-
-\section{Coverage across the four configurations}
+\section{Three-run Coverage comparison}
 \input{tables/coverage}
-Table~\ref{tab:coverage} reports mean and sample SD using every final unit. Non-Private has the highest observed mean on each graph. Uniform4 has a higher observed mean than PDP v2 on each graph. These are properties of the current matrix; they do not establish a universal ordering or make either reference a theoretical upper bound.
+PDP v2 has higher mean Coverage than Uniform1 on all five datasets. The differences, computed from the unrounded means, are 4.938 percentage points on Email, 14.628 on Bitcoin, 14.762 on LastFM, 9.860 on HepPh, and 8.806 on Facebook. These observations support a utility advantage over the strict uniform control within this reported comparison. They do not alone establish statistical significance or a general expected-utility advantage, and the cell-specific optimization settings prevent attributing each gap solely to personalized participation.
 
-The private means conceal wide spreads between runs. Email's PDP mean is 86.170\%, with SD 11.224 pp. The corresponding SDs for LastFM, HepPh, and Facebook are about 23.332, 21.225, and 25.009 pp. Such variation matters when a single trained model is used operationally. A moderate improvement in expected Coverage would not alone ensure reliable utility from one run.
+Relative to Non-Private, PDP v2 has lower mean Coverage on all five datasets, with gaps ranging from 0.630 percentage points on LastFM to 6.096 on Email. Non-Private provides an unconstrained utility reference, but its training also differs in clipping, slot organization, projection, and sampling. The observed gaps therefore cannot be assigned entirely to Gaussian noise.
 
-Figure~\ref{fig:distributions} shows the complete empirical Coverage distributions. It uses saved scalars rather than regenerated graph evaluations. The private configurations display broad lower tails on several graphs, whereas Non-Private is more concentrated under the tested repeat protocol. This comparison includes multiple differences in training organization and protection; it is not an isolated estimate of the effect of adding Gaussian noise.
+Relative to Uniform4, PDP v2 is higher by 0.552 percentage points on LastFM and lower on the other four datasets. Uniform4 is a relaxed-privacy reference; its stated privacy bound does not establish compliance with all heterogeneous policies. Neither the observed results nor the privacy theory make it a Coverage upper bound.
 
-\begin{figure}[htbp]
-\centering\includegraphics[width=\textwidth]{figures/coverage_distributions.pdf}
-\caption{Empirical Coverage distributions from all 2900 final saved scalar outcomes. Each panel is one fixed graph; curves are empirical cumulative distributions. The dashed line marks the strict-low-utility threshold at 50\%. Different reference sample sizes remain as planned.}\label{fig:distributions}
-\end{figure}
+The sample SD comparison is mixed. PDP v2 has lower sample SD than Uniform1 on Bitcoin and HepPh, but higher SD on Email, LastFM, and Facebook. It therefore does not show a uniform reduction in observed variability. HepPh PDP v2 has a reported SD of 0.000 because its three recorded Coverage values coincide; this does not establish zero population variance. All 60 outcomes and their means and sample SDs are checked against their original saved evaluations. Source-cohort variability is reported separately in Appendix~\ref{app:development}.
 
-\section{Primary five-graph comparison}
-The main comparison is PDP v2 minus Uniform1, with each graph weighted by one fifth. The verified output is
-\begin{align*}
- \widehat D&=+0.7845395873\ \mathrm{pp},\\
- \mathrm{SE}&=0.8839786950\ \mathrm{pp},\qquad \nu=1656.1919278,\\
- p_{\mathrm{one}}&=0.1874667289,\\
- L_{95}&=-0.6702897323\ \mathrm{pp},\\
- \mathrm{CI}_{95}&=[-0.9492939081,\ 2.518373083]\ \mathrm{pp}.
-\end{align*}
-The frozen one-sided test does not reject at $\alpha=0.05$. The point estimate is positive, but the interval permits a modest negative effect and a positive effect of some size. The evidence therefore does not establish the proposed average utility advantage under the stated protocol.
+\section{Historical five-seed instability evidence}
+The following discussion and Figure~\ref{fig:fiveseed} refer to the earlier complete 100-fit study with five seeds 0--4 per cell, rather than the current three-run results in Table~\ref{tab:coverage}. The original evidence remains available in Appendix~\ref{app:development}; it is retained to explain historical instability, not substituted into the newly fixed table.
 
-This conclusion is narrower than saying that personalization is useless. An inconclusive superiority test does not establish equality, and no equivalence margin or equivalence test was approved. Equally, the positive estimate must not be described as a statistically demonstrated improvement. Presenting both the sign and the uncertainty preserves the distinction.
-
-The planning target was 3 pp. The observed estimate is below that target and the reported two-sided 95\% upper endpoint is also below 3. Thus the current approximate interval does not support an improvement of that magnitude; it remains compatible with smaller positive benefits. This comparison concerns the predeclared planning scale, not an externally validated minimum benefit shared by all IM applications.
-
-\section{Graph-specific effects and multiplicity}
-\input{tables/effects}
-The per-graph effects are positive on Email, Bitcoin, LastFM, and HepPh, and negative on Facebook. Email's effect is only $+0.1655092593$ pp. Bitcoin and LastFM have the largest positive estimates, $+1.979809976$ and $+1.912135540$ pp, respectively. HepPh contributes $+0.5505456634$ pp, while Facebook contributes $-0.6853025024$ pp.
-
-All five ordinary 95\% intervals include zero. More importantly for confirmatory claims, the frozen primary gate is closed, so none of the per-graph Holm claims is established. The raw one-sided values also do not cross 0.05. Choosing Bitcoin or LastFM after observing the matrix would not produce a successful replacement for the predeclared five-graph research question.
-
-Figure~\ref{fig:effects} displays the graph-specific intervals together with the primary estimate. It separates the uncertainty of each graph effect from the uncertainty of the fixed average. The average interval is narrower because the estimator combines independent arm estimates, not because the five graphs are treated as a large IID graph sample.
+Private results can vary substantially within the same cell. LastFM PDP v2 has Coverage values 80.693, 91.726, 19.701, 93.223, and 97.478\%, giving $76.564\pm32.386$\%. Four relatively high outcomes coexist with one severe loss; retaining that loss produces the large SD. It is not a formatting error or a repeated-evaluation artifact. All historical seeds are shown in Appendix~\ref{app:development}.
 
 \begin{figure}[htbp]
-\centering\includegraphics[width=.92\textwidth]{figures/primary_effects.pdf}
-\caption{PDP v2 minus strict Uniform1, in percentage points. Bars are individual approximate two-sided 95\% Welch intervals. The bottom point is the fixed equal-weight five-graph estimate; per-graph intervals are not multiplicity-adjusted here. Sources: U6-A saved observations and frozen analysis.}\label{fig:effects}
+\centering\includegraphics[width=.96\textwidth]{figures/five_seed_coverage.pdf}
+\caption{Historical five-seed Coverage outcomes per configuration and graph, separate from the current three-run results in Table~\ref{tab:coverage}. Points are individual fits; diamonds and bars show mean and sample SD, not confidence intervals. Horizontal offsets only separate points visually. Every saved outcome is included.}\label{fig:fiveseed}
 \end{figure}
 
-\section{Gaps to relaxed privacy and Non-Private references}
-\input{tables/reference_gaps}
-Against Uniform4, the fixed five-graph average difference is $-2.760097453$ pp, with two-sided 95\% interval $[-4.526931435,-0.9932634706]$ pp. This secondary estimate describes a utility deficit relative to the specified relaxed mechanism. It is consistent with an average gap under the repeat model, but is not a substitute primary success test or proof that Uniform4 dominates all other mechanisms.
+Uniform4 has sample SD 0.731 pp on Bitcoin but 24.121 pp on Facebook under the same nominal noise scale. Its Facebook values include a severe low outcome. Uniform1 and PDP also show different responses across graphs. Such heterogeneity does not identify graph size or any particular topology statistic as the cause; the graphs differ in many uncontrolled ways.
 
-Facebook has the largest observed PDP--Uniform4 deficit, $-5.256527445$ pp. The other four deficits range from about $-1.408$ to $-3.210$ pp. Their individual intervals vary, and several include zero. Uniform4's own low tails show that a smaller Gaussian scale does not eliminate variability in this training system.
+\section{Verified update scales and bounded signal}
+The common private kernel first clips each subgraph gradient, then clips each slot sum to norm at most 3. With four slots, the combined signal $S_t$ satisfies $\|S_t\|_2\leq12$. The pre-projection update is
+\begin{equation}
+ \Delta\theta_t=-\frac{0.005}{16}(S_t+Z_t),\qquad
+ Z_t\sim\mathcal N(0,\sigma^2I_{2340}).
+\end{equation}
+Therefore the signal update has norm at most 0.00375. The Gaussian increment has coordinate SD $0.005\sigma/16$ and root mean square Euclidean norm $\sqrt{2340}\,0.005\sigma/16$.
 
-Against Non-Private, the equal-weight average difference is $-9.965100134$ pp, with interval $[-11.26440434,-8.66579593]$ pp. Per-graph estimates range from about $-5.994$ pp on Email to $-14.243$ pp on Facebook. These gaps quantify the difference between the complete private and ordinary training routes, not the isolated cost of a single privacy operation.
+\begin{table}[htbp]
+\centering\small
+\caption{Verified pre-projection update scales from frozen public constants. RMS means $\sqrt{\mathbb E\|\Delta\theta_{\rm noise}\|_2^2}$; it is not a Coverage SD or a measured gradient SNR.}\label{tab:noisescale}
+\begin{tabular}{lrrr}\toprule
+Configuration & Coordinate noise SD & Noise L2 RMS & Signal norm bound\\\midrule
+Uniform1 & 0.151875 & 7.346732 & 0.003750\\
+PDP v2 & 0.081250 & 3.930351 & 0.003750\\
+Uniform4 & 0.043438 & 2.101226 & 0.003750\\\bottomrule
+\end{tabular}
+\end{table}
 
-Uniform4 does not carry the original heterogeneous target 1/2 compliance guarantee. Non-Private carries no protection. Neither is a fair same-policy replacement for PDP v2 merely because its mean is higher. The result instead identifies how far the current personalized mechanism lies below two differently constrained reference procedures.
+Table~\ref{tab:noisescale} gives the historical 100-step reference scales. For the longer private runs, the sum-noise scale is increased by at least $\sqrt{T/100}$, retaining the original conditional ideal single-model accounting upper bounds. These are parameter-budget variants, not unchanged 100-step trajectories.
 
-\section{Severe low utility and observed variability}
-\input{tables/low_tail}
-Table~\ref{tab:low} preserves every extreme value and all strict-low-utility events. PDP v2 has 103 of 1000 outcomes below 50\%; Uniform1 has 115 of 1000; Uniform4 has 58 of 700; and Non-Private has zero of 200. These are whole-matrix inventory totals. They should not be assigned a pooled binomial confidence interval as if the five heterogeneous graph distributions were identical.
+These scales make noise-driven parameter trajectories a well-motivated concern: full-coordinate random increments are large relative to the bounded signal. However, the signal bound is an upper bound rather than an observed useful gradient, and parameters can have redundant functional directions. The numbers do not identify a fraction of Coverage variance, establish a function-space SNR, or describe the final distribution after adaptive gradients and projection. Multiplying by $\sqrt{100}$ would describe only an additive independent-noise reference, not the actual trained model.
 
-Within graphs, PDP's event counts are 1/200, 7/200, 31/200, 32/200, and 32/200 in the stated graph order. Uniform1 has 3/200, 12/200, 36/200, 38/200, and 26/200. PDP therefore has fewer observed events on the first four graphs but more on Facebook. This mixed pattern does not justify a general stability-superiority claim, and the frozen analysis does not supply a separate confirmatory risk-success test.
+\section{Historical controlled evidence for Gaussian-path sensitivity}
+A separate historical G2 diagnostic held initialization, the retained graph, slot caches, and all 100 batches fixed within each of 12 pairs, while using a fresh Gaussian path. Its 24 fits cover Bitcoin, LastFM, and Facebook and are not additional observations in Table~\ref{tab:coverage}.
 
-Clopper--Pearson intervals quantify the cellwise event-rate uncertainty under the IID model. They are individual intervals, not a joint guarantee across all 20 cells. The saved Hoeffding alternatives offer conservative references if only independence and boundedness are used. No interval procedure converts a low observed count into a policy-independent guarantee against a poor future model.
+In one LastFM condition, Coverage changed from 96.848\% to 50.118\%, a difference of $-46.730$ pp, while Top-50 overlap was 14\%. A Facebook condition changed from 72.632\% to 93.031\%, or $+20.399$ pp. The Bitcoin changes were smaller in the saved conditions. Thus a changed Gaussian-driven training path can materially change final selection and Coverage even with the outer retained graph fixed.
 
-The minima are consequential. PDP reaches 5.744\% on HepPh and 8.806\% on Facebook; Uniform1 reaches 9.707\% and 8.362\% on those graphs. These outcomes remain in every mean and SD. They were not treated as errors solely because they were poor. Conversely, different sample sizes make simple minimum-based rankings of methods unfair: a method run 200 times has more opportunities to exhibit an extreme than one run 40 times.
+This is a conditional path effect: later gradients respond to previous noisy states. It does not separate direct noise from the optimizer's response, nor establish how much of the variance in all five current graphs or either Uniform mechanism it explains. Its controls and scalar records support a specific existence result, not a universal causal ranking of instability factors.
 
-PDP has a smaller observed sample SD than Uniform1 on four graphs, but not Facebook. LastFM's SD difference is very small. These descriptive comparisons do not establish lower population variance, stochastic dominance, or a significant severe-loss reduction. Practical use would require an independently justified risk criterion as well as a mean objective.
+\section{What outer sampling does and does not explain}
+PDP's one-time Bernoulli sampling changes the retained graph and may change what useful structure is available. Initialization, retention, and Gaussian paths vary together across the five historical ordinary PDP repeats, so their variance contributions cannot be separated from this table.
 
-\section{Sensitivity analyses and inference limits}
-The predeclared, saved bootstrap percentile interval is $[-0.9025217677,2.533756590]$ pp, based on 10,000 within-cell resamples with analysis seed 20261104. It is close to the primary Welch interval in this record and also includes zero. It remains a sensitivity analysis dependent on the within-cell sampling model, not an independently randomized second experiment.
+Uniform1 and Uniform4 do not have that outer sampling, yet their saved Coverage results can be unstable. Bernoulli sampling is therefore not a necessary cause shared by all unstable configurations. The fixed-retained-graph G2 differences also show that holding retention fixed need not remove path sensitivity. This does not prove that retention has no additional effect on PDP.
 
-The saved distribution-free Hoeffding interval, in percentage points, is much wider:
-\[[-28.19371919,\ 29.76279837].\] Its width follows from conservative public Coverage ranges rather than the observed variances. It illustrates the cost of weaker distributional assumptions. Selecting whichever interval happens to support a desired conclusion would defeat the frozen plan.
+\section{Representation, loss, projection, and final ranking}
+Gaussian noise enters all 2340 coordinates, including hidden-layer and attention parameters. The post-update constraint applies only to the final 32 feature-map weights. It does not fix hidden representations, attention, or ordering of candidate nodes. Multilayer nonlinear responses are a plausible route from parameter differences to different selected sets, but existing data do not isolate a dominant layer.
 
-The primary inference conditions on the approved generation model, valid provenance, and recovery treatment. Scalar verification establishes arithmetic agreement and saved-data consistency; it cannot certify ideal IID randomness, rule out every source fault, or prove privacy. The inferential statements should therefore retain their approximate and conditional character.
+The unchanged training objective is a continuous coverage surrogate plus selection penalty on sampled training subgraphs. Final evaluation instead chooses a hard Top-50 set on the held-out graph. Lower surrogate loss does not mathematically ensure higher final Coverage. Whether a particular low run suffered poor surrogate optimization, poor transfer, redundant selected neighborhoods, or several interacting effects remains unresolved without additional controlled measurements.
 
-\section{Development versus confirmation}
-The final four-configuration development matrix gave a five-graph average PDP--Uniform1 difference of approximately $-1.100$ pp. Graph-specific development differences were $+4.630$, $+8.373$, $-0.725$, $-3.573$, and $-14.203$ pp. Independent confirmation instead gives $+0.785$ pp on average with a different sign pattern. No algorithmic change is inferred from that difference; small development cells and fresh initialization and secret trajectories can produce different estimates.
+The ranking interface itself is discrete: changed scores can change selected identities and the union of their outgoing neighborhoods. However, small score gaps or tied scores are not a general established cause. The saved ranking audit records finite logits and zero selected zero-outdegree nodes in all 100 runs. One large boundary tie occurs in a high-utility Email Uniform1 run. Historical severe-loss examples include large boundary score gaps and no boundary ties. Those counterexamples rule out a simple common explanation based solely on sigmoid saturation or incorrect tie breaking; ranking uses pre-sigmoid scores.
 
-The development matrix had only five observations per cell. Its SDs were useful planning proxies but uncertain descriptions of the repeat distribution. In particular, Facebook's large negative development contrast should not be discarded, and the later smaller negative confirmation estimate should not be presented as correction of an invalid old result. Both are valid observations at their respective stages.
+\section{Measurement checks and uncertainty}
+The main three-run table was checked against all 60 raw evaluations and frozen source hashes. Separately, the historical five-seed evaluations reproduce the archived historical means and SDs. For each fixed cell, Coverage is a constant multiple of Spread, so a changing normalization is not the cause of within-cell variation. Fixed-model evaluation at one-step IC probability one introduces no Monte Carlo diffusion variance.
 
-The development effect signs and ranks are insufficient to select a globally favorable initialization subset. Public seeds do not encode a shared secret path across methods. Removing a seed after seeing outcomes changes the analysis population and can create a misleading story. The complete 100-row development evidence is retained separately in Appendix~\ref{app:development}; none enters the 2900-unit confirmation estimate.
+The available code and saved diagnostics support the presence of clipping, full-coordinate noise, and post-update projection. They do not constitute exhaustive implementation verification or machine-level DP certification. No new mechanism defect is established by the observed large SD alone.
 
-\section{Gaussian-path diagnostics and historical candidates}
-A historical controlled G2 investigation varied Gaussian trajectories while holding the specified initialization and outer retained-graph witness fixed. For one LastFM setting, Coverage changed from approximately 96.848\% to 50.118\%, a difference of $-46.730$ pp. A Facebook setting changed from about 72.632\% to 93.031\%, or $+20.399$ pp. The saved control witnesses support the observation that Gaussian training paths can materially alter final rankings and Coverage.
+Historical gradient summaries and clipping/projection counts exist, but comparable stepwise useful-gradient directions, layerwise signal norms, and functional perturbation measurements are incomplete. This prevents a quantitative variance decomposition. Five public initialization seeds also do not separate initialization from fresh secret randomness; calling one integer a bad seed would overstate the evidence.
 
-This diagnostic does not allocate all observed variance among initialization, outer sampling, Gaussian innovations, graph structure, and their interactions. It contains a small controlled set rather than an exhaustive factorial study. It also concerns historical development mechanisms and should not be presented as a new randomized ablation of the 2900 final runs.
+\section{Historical references and current research status}
+The frozen-backbone New Matched PDP reference trains 33 coordinates and freezes 2307. Its historical five-seed results are retained in Appendix~\ref{app:development}, including the HepPh result unfavorable to that reference. It had smaller observed SDs than full-training PDP on all five graphs, but changes trainable space, clipping geometry, and secret paths simultaneously. It is not a controlled proof that dimension reduction cures instability.
 
-G3 parameter averaging and C3 row-sum stability exploration were not accepted by their frozen development screens. C3 completed all 100 outcomes and still failed the required per-graph gates, even though some graph averages improved. These failures matter because a cross-graph average can mask local regressions. They remain historical evidence, not additional confirmed versions of PDP v2.
+G3 parameter averaging and C3 row-sum candidates failed their frozen development gates. They remain historical rejected candidates. No restart, mechanism modification, or new experiment is undertaken here. The current comparison describes the observed utility differences, while these historical diagnostics explain why broader utility and stability claims remain limited.
 
-New Matched PDP froze 2307 coordinates and privately trained a 33-coordinate head. In its five-run-per-graph development record, it had higher mean Coverage than full-training PDP v2 on four graphs, but was about 2.114 pp lower on HepPh. Its SD was smaller on all five graphs, and it had zero severe-low-utility events in 25 runs. These observations are not hidden simply because they challenge the usefulness of full private training.
-
-The frozen-backbone comparison matches a conditional ideal privacy-bound framework, not exact privacy loss or a single causal factor. It changes trainable dimension, gradient geometry, and representation learning while using independent secret trajectories. Its results motivate research into training-space choices, but do not establish that a random frozen backbone is always sufficient or that head-only training is the final superior mechanism.
-
-\section{Budget utilization and possible utility explanations}
-The mechanism uses personalization in a concrete way: strict identities have lower participation and the base noise scale is 260 rather than 486. It is therefore incorrect to say that no heterogeneous allowance is used. Nevertheless, targets 2 and 4 both have $p_v=1$ and the same approximately 1.982 base bound, leaving no further response to the budget-4 label.
-
-There is a plausible signal--noise tradeoff. Reduced Gaussian noise can benefit optimization, while removing strict nodes and incident edges can alter slot topology, subgraph content, and useful gradients. Double clipping can further change signal direction and magnitude. The current experiment compares the complete mechanisms, so it cannot quantify the contribution of each component or prove that one exactly cancels another.
-
-The full-coordinate noise geometry offers another hypothesis. At the PDP learning-rate and denominator, each unprojected coordinate has one-update Gaussian SD $0.005\cdot260/16=0.08125$. This does not become small merely because only 32 coordinates are projected. Noise enters hidden-layer and attention parameters too, and a nonlinear score ordering can change sharply near ties. Parameter-space noise energy is calculable, but its mapping to the observed Coverage tail is not a proven causal decomposition.
-
-The scientifically supported explanation is therefore a limit on current evidence: the frozen mechanism did not demonstrate a reliable average advantage, and severe variability persisted. The findings are compatible with multiple mechanism-level hypotheses. A future study would need new authorization, a justified design, and frozen hypotheses to separate them.
-
-\section{Scientific implications and threats to validity}
-The study separates three propositions that are sometimes conflated: heterogeneous caps can be met by the stated ideal mechanism; lower base noise can be permitted by personalization; and a reliable utility improvement is empirically obtained. The first two have conditional mathematical support. The third is not established by this confirmation matrix.
-
-Internal validity depends on the source and execution lineage, graph isolation, fixed ranking rules, and approved continuation decisions. Construct validity is limited by one-step Coverage relative to CELF rather than actual social outcomes. Statistical validity depends on the repeat-generation assumptions and approximate inference, with low-tail intervals and sensitivity analyses providing context. External validity is restricted to five prepared graphs, one split, one architecture, one policy mixture, and one budget allocation.
-
-Finally, publication privacy is a separate threat boundary. Raw scalar evaluations and model collections may reveal information not protected by the single-model theorem. This dissertation draft is prepared for researcher and supervisor review; its existence does not authorize a general public release of the underlying restricted artifacts. Future claims should retain these limits even if a later mechanism produces a significant utility gain.
+The strongest supported explanation is that Gaussian-driven adaptive training paths can cause large Coverage changes, within a system whose bounded signal and full-coordinate noise have very different scales. The roles of graph structure, initialization, outer sampling, nonlinear representation, and discrete ranking remain incompletely separated. Reporting these limits is necessary before proposing a specific remedy.

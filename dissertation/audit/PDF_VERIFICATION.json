@@ -5,7 +5,7 @@
   "all_pages_A4": true,
   "bad_page_sizes": [],
   "pdf_version_at_least_1_4": true,
-  "internal_goto_links": 150,
+  "internal_goto_links": 170,
   "citation_named_destinations": 16,
   "invalid_internal_goto_links": 0,
   "encrypted": false,
@@ -30,55 +30,55 @@
       "name": "IXFAWU+LMMathItalic12-Regular",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 9956
+      "embedded_bytes": 10117
     },
     {
       "name": "TQTHRL+LMRoman12-Regular",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 5044
+      "embedded_bytes": 5195
     },
     {
       "name": "YEUUOC+LMMathSymbols10-Regular",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 2453
+      "embedded_bytes": 2574
     },
     {
-      "name": "AKHCZK+LMMathSymbols8-Regular",
+      "name": "AKHCZK+LMMathExtension10-Regular",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 962
+      "embedded_bytes": 2363
     },
     {
-      "name": "VDVGTR+LMRoman8-Regular",
-      "extension": "cff",
-      "type": "Type1",
-      "embedded_bytes": 3465
-    },
-    {
-      "name": "CAFSZL+LMRoman12-Italic",
-      "extension": "cff",
-      "type": "Type1",
-      "embedded_bytes": 10286
-    },
-    {
-      "name": "DDIEWW+LMMathItalic8-Regular",
-      "extension": "cff",
-      "type": "Type1",
-      "embedded_bytes": 3193
-    },
-    {
-      "name": "FKPJSN+MSBM10",
+      "name": "VDVGTR+MSBM10",
       "extension": "cff",
       "type": "Type1",
       "embedded_bytes": 813
     },
     {
-      "name": "PVTTLK+LMMathExtension10-Regular",
+      "name": "CAFSZL+LMRoman8-Regular",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 2395
+      "embedded_bytes": 3028
+    },
+    {
+      "name": "DDIEWW+LMMathSymbols8-Regular",
+      "extension": "cff",
+      "type": "Type1",
+      "embedded_bytes": 740
+    },
+    {
+      "name": "FKPJSN+LMRoman12-Italic",
+      "extension": "cff",
+      "type": "Type1",
+      "embedded_bytes": 10286
+    },
+    {
+      "name": "PVTTLK+LMMathItalic8-Regular",
+      "extension": "cff",
+      "type": "Type1",
+      "embedded_bytes": 3034
     },
     {
       "name": "JAGKKY+LMMathItalic6-Regular",
@@ -90,7 +90,7 @@
       "name": "NOMARO+LMRoman10-Regular",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 8689
+      "embedded_bytes": 8211
     },
     {
       "name": "KPXLOM+LMRoman6-Regular",
@@ -102,7 +102,7 @@
       "name": "UTACNV+LMMathItalic10-Regular",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 1283
+      "embedded_bytes": 1938
     },
     {
       "name": "FZDNHS+LMRoman10-Regular",
@@ -111,34 +111,40 @@
       "embedded_bytes": 1965
     },
     {
-      "name": "CXABHB+DejaVuSerif",
+      "name": "SKPBZL+DejaVuSerif",
       "extension": "ttf",
       "type": "Type0",
-      "embedded_bytes": 15268
+      "embedded_bytes": 16264
     },
     {
-      "name": "CHARIV+DejaVuSerif",
+      "name": "EIYRLE+DejaVuSerif",
       "extension": "ttf",
       "type": "Type0",
-      "embedded_bytes": 14520
+      "embedded_bytes": 3632
     },
     {
       "name": "DZGKAF+LMRoman10-Bold",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 3688
+      "embedded_bytes": 3465
     },
     {
       "name": "GJMHKB+LMMono10-Regular",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 6239
+      "embedded_bytes": 6703
     },
     {
-      "name": "NITCSQ+LMMono12-Regular",
+      "name": "NITCSQ+LMRoman8-Regular",
       "extension": "cff",
       "type": "Type1",
-      "embedded_bytes": 1712
+      "embedded_bytes": 7221
+    },
+    {
+      "name": "UBBQTN+LMMono12-Regular",
+      "extension": "cff",
+      "type": "Type1",
+      "embedded_bytes": 3801
     }
   ],
   "out_of_page_text": [],
@@ -146,9 +152,9 @@
   "body_font_pt": 12,
   "body_baseline_to_font_ratio": 1.4939371744791667,
   "body_spacing_method": "setspace onehalfspacing; physical body line pitch about18pt for12pt text",
-  "abstract_words": 326,
-  "pdf_whole_document_lexical_words": 15345,
-  "source_chapter_prose_estimate": 9968,
+  "abstract_words": 283,
+  "pdf_whole_document_lexical_words": 14073,
+  "source_chapter_prose_estimate": 8297,
   "section_page_order": [
     {
       "pdf_page": 1,
@@ -164,7 +170,7 @@
     },
     {
       "pdf_page": 4,
-      "leading_text": "Abstract Influence maximization selects a small seed set to reach many nodes in a network. Graph neural network training can expose sensitive node information. "
+      "leading_text": "Abstract This dissertation studies whether personalized node-level privacy can improve GNNbased influence-maximization Coverage under heterogeneous requirements"
     },
     {
       "pdf_page": 5,
@@ -176,11 +182,11 @@
     },
     {
       "pdf_page": 9,
-      "leading_text": "List of Figures 6.1 Empirical Coverage distributions from all 2900 final saved scalar outcomes. Each panel is one fixed graph; curves are empirical cumulative d"
+      "leading_text": "List of Figures 6.1 Historical five-seed Coverage outcomes per configuration and graph, separate from the current three-run results in Table 6.1. Points are ind"
     },
     {
       "pdf_page": 10,
-      "leading_text": "List of Tables 5.1 Fixed experimental domains. Active-node counts are from the saved"
+      "leading_text": "List of Tables 5.1 Fixed prepared domains and frozen test CELF references for k = 50, from existing audits. Public-universe and active-node sizes are distinct."
     },
     {
       "pdf_page": 11,
@@ -207,32 +213,31 @@
       "leading_text": "Chapter 5 Experimental Methodology 5.1 Fixed datasets and preparation"
     },
     {
-      "pdf_page": 39,
-      "leading_text": "Chapter 6 Results and Discussion 6.1 Completeness and interpretation"
+      "pdf_page": 37,
+      "leading_text": "Chapter 6 Results and Discussion 6.1 Evidence scope"
     },
     {
-      "pdf_page": 49,
+      "pdf_page": 44,
       "leading_text": "Chapter 7 Conclusions and Suggestions for Future Research 7.1"
     },
     {
-      "pdf_page": 52,
+      "pdf_page": 47,
       "leading_text": "References [1] D. Kempe, J. Kleinberg, and \u00c9. Tardos, \u201cMaximizing the spread of influence through a social network,\u201d in Proceedings of the Ninth ACM SIGKDD"
     },
     {
-      "pdf_page": 54,
+      "pdf_page": 49,
       "leading_text": "Appendix A Reproducibility and Evidence Boundaries A.1"
     },
     {
-      "pdf_page": 56,
-      "leading_text": "Appendix B Historical Development Evidence B.1 Four-configuration development matrix"
+      "pdf_page": 51,
+      "leading_text": "Appendix B Three-Run Outcomes, Provenance, and Historical References B.1"
     }
   ],
   "log_checks": {
     "undefined_references": false,
     "overfull_boxes": []
   },
-  "visual_review_status": "PASS_UPDATED_FRONT3_VISUALLY_REVIEWED_OTHER54_PIXEL_IDENTICAL",
+  "visual_review_status": "PASS_AGENT_REVIEW_ALL_57_PAGES_VIA_5_CONTACT_SHEETS_AND_FULL_SIZE_ABSTRACT_TABLE_6_1",
   "scope": "technical checks; not school approval, plagiarism check or proof certification",
-  "machine_checks_pass": true,
-  "identity_update_verification": "dissertation/audit/identity_update_20261110/VERIFICATION.json"
+  "machine_checks_pass": true
 }

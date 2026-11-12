@@ -1,3 +1,7 @@
+Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
+
+> 2026-11-10 five-seed revision: earlier completion, page-count and word-count claims below are historical. Current empirical scope is n=5/cell; see FINAL_DELIVERY_REPORT.md and audit/revision_20261110_five_seed_stability/. Renewed scientific and length review is required.
+
 # Items requiring student or supervisor confirmation
 
 ## Confirmed by the researcher — 2026-11-10

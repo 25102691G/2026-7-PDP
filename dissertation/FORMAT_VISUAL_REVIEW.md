@@ -1,3 +1,9 @@
+Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
+
+Latest verified delivery: 57-page PDF; abstract 283 words on one page; all 60 main outcomes and 780 historical source outcomes verified; machine checks and all-page visual review PASS. Details: audit/revision_20261112_unified_three_seed/REPORT.md.
+
+> 2026-11-10 five-seed revision: earlier completion, page-count and word-count claims below are historical. Current empirical scope is n=5/cell; see FINAL_DELIVERY_REPORT.md and audit/revision_20261110_five_seed_stability/. Renewed scientific and length review is required.
+
 # Final visual and technical review
 
 All57 PDF pages were rendered and inspected through five contact sheets, with full-size checks of the conditional theorem/formulas, Coverage risk table, both scientific figures and reference-gap table. Chapter transitions, front matter, contents, lists, references and appendices were checked. No graphic crop, off-page text, overlapping table cell, missing visible mathematical symbol or unreadable plot legend was observed. The most recent minor revisions concerned execution-recovery wording and consistent dataset capitalization; affected pages were re-rendered.
@@ -21,3 +27,5 @@ This is a technical review against the supplied Section4 requirements, not PolyU
 ## Identity-only update —2026-11-10
 
 Updated cover/title/originality pages visually inspected at full resolution. Confirmed WENTAO ZHAO, complete degree display,2027award year and November2026initial submission. Original declaration wording unchanged; typed name filled, signature/date blank. Same57pages. All54pages after the front three have identical extracted text and rendered pixel hashes to the pre-edit PDF; seven chapter sources and technical assets/data hashes unchanged. A4/spacing/searchability/embedding/security/cross-reference checks pass again. Metadata author is WENTAO ZHAO and subject includes the official full degree. Supervisor/title and studentID are recorded in identity.tex, without extra cover fields. Specialism omitted.
+
+Current five-seed revision verified:49pages; all100 raw evaluations and20seed sets checked; no retired large-scale claims in compiled PDF; machine PDF checks and visual review PASS;122diagnostic sources unchanged. No training/inference/new randomness, commit or push. Chapter prose estimate7521words; earlier length/readiness claims do not apply.

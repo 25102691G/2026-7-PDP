@@ -1,0 +1,2 @@
+Gaussian path effects identified conditionally in historical G2; common no-Bernoulli Uniform instability rules out outer sampling as necessary cause. Noise scales high relative to bounded sum signal; this is not measured functional SNR. n5 source verified previously; recheck with raw evaluations in revision.
+LastFM PDP seed2 contributes77.07% of centered squared deviations, a descriptive arithmetic fact. Conditional G2 path effect supported by12persisted control witnesses. Noise/gradient/representation/top50 variance shares remain unidentified.

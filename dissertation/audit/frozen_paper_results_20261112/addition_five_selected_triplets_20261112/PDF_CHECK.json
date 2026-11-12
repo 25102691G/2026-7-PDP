@@ -1,0 +1,14 @@
+{
+  "pages": 54,
+  "pdf_pages": {
+    "main": 36,
+    "cohorts": 49,
+    "ids": 52,
+    "outcomes": 51,
+    "params": 50
+  },
+  "exact_selected_values_present": true,
+  "seed_ids_not_renumbered": true,
+  "full_source_cohort_summaries_present": true,
+  "visual_review": "PASS: Table6.1 and four updated appendix tables; no clipping or overlap"
+}

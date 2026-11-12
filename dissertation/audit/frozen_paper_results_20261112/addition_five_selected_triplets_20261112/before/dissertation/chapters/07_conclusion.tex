@@ -1,0 +1,25 @@
+\chapter{Conclusions and Suggestions for Future Research}\label{ch:conclusion}
+\section{Research question and current priority}
+The project studies personalized node-private GNN influence maximization under heterogeneous requirements. The current empirical priority is understanding why Uniform and PDP training produce high Coverage variability. Superiority to Uniform1 and closeness to Uniform4 are not requirements for the present diagnosis.
+
+PDP v2 retains the original GRAT3, loss, prepared graphs, and evaluation, while combining one-time participation, stable overlapping slots, double clipping, full-coordinate Gaussian updates, and projection of the final 32 weights. No mechanism is changed in this revision.
+
+\section{Conditional theoretical findings}
+Under explicit fixed-domain, locality, ideal-randomization, and release assumptions, the slot-sum sensitivity is at most 12. Full 100-step composition and one outer amplification yield approximate target-1 bounds $(0.986940353797,2.6894142137\times10^{-6})$ and target-2/4 bounds $(1.982092738992,10^{-5})$. These are sufficient conditional single-model bounds, not measured exact privacy losses or machine certification. Targets 2 and 4 share the same participation probability and bound.
+
+Raw preprocessing, the public status of identities and policies, private test release, execution channels, numerical random sources, and joint publication require separate treatment. Utility statistics do not establish these privacy properties.
+
+\section{Fixed selected results and historical empirical findings}
+The current Table~\ref{tab:coverage} contains fifteen researcher-fixed configurations selected after a 480-fit development screen and a 144-fit follow-up, each retaining the complete initialization seeds 0--2. Their 45 fits and selected parameters are fixed against further training or modification. The other five cells are omitted from the current paper table; all original results remain archived. This post hoc configuration selection is not independent confirmation and does not support a complete four-method ranking. No seed is removed within a retained configuration.
+
+In the separate historical complete five-seed study, the private configurations show substantial within-cell variation. LastFM PDP v2 has a sample SD of 32.386 pp; Uniform4 ranges from 0.731 pp SD on Bitcoin to 24.121 pp on Facebook. These are sample descriptions with $n=5$, not precise population-variance estimates or confirmed method rankings. The individual outcomes help distinguish concentration from occasional severe losses.
+
+\section{Evidence about instability}
+Static source and arithmetic checks show a small bounded signal increment relative to full-coordinate Gaussian increment scales. Historical controlled pairs additionally show large Coverage changes when only the Gaussian source is changed while initialization and the retained graph are fixed. Together these facts justify close attention to noise-driven adaptive optimization.
+
+Outer Bernoulli sampling cannot explain all instability because Uniform methods omit it. Deterministic fixed-model evaluation and fixed CELF normalization also do not explain the observed run-to-run variation. Hidden representation changes, surrogate-to-Top-50 mismatch, and selected-neighborhood overlap remain plausible intermediate mechanisms; no single component is established as the dominant root cause.
+
+\section{Limits and deferred questions}
+The saved evidence does not provide a complete layerwise or stepwise variance decomposition. Five ordinary repeats confound public initialization with fresh secret trajectories. Historical frozen-backbone comparisons change several factors, and failed G3/C3 candidates do not supply a proven fix. Large SD alone is neither proof of an implementation bug nor evidence of a failed privacy theorem.
+
+Related large-scale testing is discontinued. This revision conducts no new training, model inference, graph evaluation, or randomized experiment. Any later intervention would require a separately defined question and authorization; no follow-on experiment is scheduled here. The current deliverable is an auditable partial table of fixed selected results, the preserved historical five-seed evidence, and a bounded diagnosis of what existing evidence can explain.

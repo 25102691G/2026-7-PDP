@@ -11,3 +11,9 @@ Seven substantive English chapters, verified saved-scalar tables, school-complia
 Stop and deliver initial draft; student/supervisor carry out documented personal, scientific and school submission review. No automatic follow-on experiments or school actions.
 ## Errors resolved
 UV cache outside sandbox redirected locally; system Python diagnostic redirected to isolated environment; long inline math/path boxes fixed; per-chapter BibTeX auxiliary warnings removed using master inputs; PDF ligature/hyphenation/counting flags corrected. Full final checks recorded in audit/.
+
+## Superseding researcher direction (2026-11-10)
+Remove large-scale results from current manuscript and discontinue related experiments. Use all fixed five-seed outcomes and diagnose instability read-only. See audit/revision_20261110_five_seed_stability/task_plan.md for the active revision. Earlier completion scope above is historical.
+
+## Current revision (2026-11-12)
+Unify main experiment as 5 datasets x 4 configurations x 3 runs, 60 outcomes. Active plan: audit/revision_20261112_unified_three_seed/task_plan.md. Preserve original provenance and numerical outcomes; neutral presentation, no new training/inference.

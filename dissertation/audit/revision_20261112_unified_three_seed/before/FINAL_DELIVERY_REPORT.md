@@ -1,0 +1,9 @@
+Current Table6.1 authority (2026-11-12):20cells/60displayedfits;15complete seed0/1/2 configurations plus5explicit post hoc three-run subsets from U6 historical cohorts. Source sample sizes40/200/200/200/140 and full mean/SD/min/max/<50 summaries are shown in tables/subset_source_cohorts.tex;780raw outcomes are frozen in audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json. Actual public seeds are in tables/frozen_seed_ids.tex. verify_frozen_paper.py verifies all60selected values and all780source-cohort values. Supersedes older current-table descriptions below; no new experiment.
+
+# Current revision delivery status
+
+2026-11-10: researcher requested removal of large-scale confirmation from the manuscript and discontinuation of related future experiments. Current main table uses all existing fixed seeds0..4, n5/cell, 100 outcomes. Abstract, design, results, conclusion, appendices, bibliography and plotting pipeline have been revised accordingly. Prior draft/assets are archived internally without deleting experiments.
+
+Research emphasis is read-only instability diagnosis; superiority to Uniform1 and closeness to Uniform4 are not current requirements. Original algorithms/privacy accounting/data are unchanged. This is a shortened research revision, not a claim of submission readiness or preservation of the earlier word count. Current checks and scope are recorded in audit/revision_20261110_five_seed_stability/; PDF technical checks are in audit/PDF_VERIFICATION.json. Completion status is recorded after build verification.
+
+Current five-seed revision verified:49pages; all100 raw evaluations and20seed sets checked; no retired large-scale claims in compiled PDF; machine PDF checks and visual review PASS;122diagnostic sources unchanged. No training/inference/new randomness, commit or push. Chapter prose estimate7521words; earlier length/readiness claims do not apply.

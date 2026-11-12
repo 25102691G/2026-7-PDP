@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "main_scope": {
+    "datasets": 5,
+    "configurations": 4,
+    "runs_per_cell": 3,
+    "total_runs": 60,
+    "statistic": "Coverage mean +/- sample SD"
+  },
+  "all_numeric_table_rows_unchanged": true,
+  "actual_seed_ids_and_parameters_unchanged": true,
+  "protected_manifest_cohorts_and_theory_hashes_unchanged": true,
+  "scalar_verification": {
+    "status": "PASS",
+    "fixed_cells": 20,
+    "displayed_fits": 60,
+    "complete_seed012_cells": 15,
+    "posthoc_triplet_cells": 5,
+    "omitted_cells": 0,
+    "source_files_checked": 195,
+    "full_source_cohort_runs_verified": 780,
+    "post_hoc_development_selection": true,
+    "independent_confirmation": false,
+    "new_training": 0,
+    "new_inference": 0,
+    "frozen_manifest_sha256": "28014d2cdb8468a66d1c3b1d48f57f9e4ce1e4ae86e5dfc520987f622cf88da8"
+  },
+  "pdf_pages": 57,
+  "pdf_machine_checks_pass": true,
+  "visual_review": "PASS_AGENT_REVIEW_ALL_57_PAGES_VIA_5_CONTACT_SHEETS_AND_FULL_SIZE_ABSTRACT_TABLE_6_1",
+  "abstract_words": 283,
+  "new_training": 0,
+  "new_inference": 0,
+  "commit_push": false,
+  "source_provenance": "Detailed original development and subset protocol preserved in Appendix B; neutral main-table captions do not assert absence of selection.",
+  "pdf_sha256": "3a2e81a8f1f72bff9d2a5bd7e280c4565a7672a4a0530f66ea90a812dea2e04e"
+}

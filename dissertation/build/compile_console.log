@@ -1,23 +1,35 @@
 note: Running TeX ...
 warning: algorithm.sty:11: 
 Invalid UTF-8 byte or sequence at line 11 replaced by U+FFFD.
-warning: chapters/06_results_discussion:80: Underfull \hbox (badness 1394) in paragraph at lines 79--80
+warning: chapters/05_experimental_design:22: Overfull \hbox (40.00311pt too wide) in paragraph at lines 21--22
+warning: chapters/05_experimental_design:46: Underfull \hbox (badness 1348) in paragraph at lines 45--46
+warning: chapters/06_results_discussion:50: Underfull \hbox (badness 1033) in paragraph at lines 50--50
+warning: appendices/b_development:2: Underfull \hbox (badness 2486) in paragraph at lines 2--2
+warning: appendices/b_development:10: Underfull \hbox (badness 2318) in paragraph at lines 10--10
 note: Running BibTeX on main.aux ...
 note: Rerunning TeX because bibtex was run ...
 warning: algorithm.sty:11: 
 Invalid UTF-8 byte or sequence at line 11 replaced by U+FFFD.
-warning: chapters/06_results_discussion:80: Underfull \hbox (badness 1394) in paragraph at lines 79--80
-note: Rerunning TeX because "main.toc" changed ...
+warning: chapters/05_experimental_design:22: Underfull \hbox (badness 1715) in paragraph at lines 21--22
+warning: chapters/05_experimental_design:46: Underfull \hbox (badness 1348) in paragraph at lines 45--46
+warning: chapters/06_results_discussion:50: Underfull \hbox (badness 1033) in paragraph at lines 50--50
+warning: appendices/b_development:2: Underfull \hbox (badness 2486) in paragraph at lines 2--2
+warning: appendices/b_development:10: Underfull \hbox (badness 2318) in paragraph at lines 10--10
+note: Rerunning TeX because "main.aux" changed ...
 warning: algorithm.sty:11: 
 Invalid UTF-8 byte or sequence at line 11 replaced by U+FFFD.
-warning: chapters/06_results_discussion:80: Underfull \hbox (badness 1394) in paragraph at lines 79--80
+warning: chapters/05_experimental_design:22: Underfull \hbox (badness 1715) in paragraph at lines 21--22
+warning: chapters/05_experimental_design:46: Underfull \hbox (badness 1348) in paragraph at lines 45--46
+warning: chapters/06_results_discussion:50: Underfull \hbox (badness 1033) in paragraph at lines 50--50
+warning: appendices/b_development:2: Underfull \hbox (badness 2486) in paragraph at lines 2--2
+warning: appendices/b_development:10: Underfull \hbox (badness 2318) in paragraph at lines 10--10
 warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
 note: Running xdvipdfmx ...
-note: Writing `build/main.aux` (20.16015625 KiB)
-note: Writing `build/main.lot` (2.20703125 KiB)
-note: Writing `build/main.bbl` (6.4921875 KiB)
-note: Writing `build/main.pdf` (254.1259765625 KiB)
-note: Writing `build/main.toc` (6.865234375 KiB)
+note: Writing `build/main.toc` (6.625 KiB)
+note: Writing `build/main.log` (22.603515625 KiB)
+note: Writing `build/main.bbl` (6.5107421875 KiB)
+note: Writing `build/main.lot` (2.81640625 KiB)
+note: Writing `build/main.aux` (20.466796875 KiB)
+note: Writing `build/main.lof` (591 B)
 note: Writing `build/main.blg` (379 B)
-note: Writing `build/main.lof` (888 B)
-note: Writing `build/main.log` (21.6865234375 KiB)
+note: Writing `build/main.pdf` (231.8857421875 KiB)

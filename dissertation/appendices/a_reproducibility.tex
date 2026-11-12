@@ -1,28 +1,24 @@
 \chapter{Reproducibility and Evidence Boundaries}\label{app:evidence}
-\section{Evidence hierarchy}
-The experimental claims use the final U6-A saved scalar matrix as their numerical authority. Frozen protocols define estimands and analysis units. Mechanism source and archived mathematical derivations define the privacy claim. Development reports document exploratory decisions and failed candidates, without entering the confirmatory estimate.
+\section{Current numerical authority}
+The main comparison reports five datasets and four configurations, with three runs per cell and 60 runs in total. Every value is mapped to its original final evaluation and configuration. Actual public initialization IDs and individual outcomes are listed in Appendix~\ref{app:development}, together with the development protocol, complete historical source-cohort summaries, and the earlier five-seed study. Scalar verification reads saved numerical artifacts; it does not instantiate trained models, access graph data, or perform inference.
 
-The principal internal locators below identify project records, not public releases. They permit the researcher and supervisor to trace the draft. They do not authorize redistribution of restricted underlying data or models.
 \begingroup\small\raggedright
 \begin{description}
-\item[Final observations and analysis.] \path{docs/pdp_research/stage_u6a_posttraining_analysis/runtime/outputs/observations.json} and \path{analysis.json} in the same directory, with the output manifest and report.
-\item[Frozen statistical plan.] \path{docs/pdp_research/stage_u6_independent_confirmation/FROZEN_STATISTICAL_ANALYSIS_PLAN.md}, preserved in the U6-A stage.
-\item[Conditional theory.] \path{docs/pdp_research/G0_THEORY_BOUNDARY_REVIEW.md}; U0 and U2 \path{PRIVACY_PROOF.md} and accounting certificates.
-\item[Stable-slot query.] \path{experiments/node_dp_slots/config.py}, \path{adapter.py}, \path{aggregation.py}, \path{mechanism.py}, and \path{training.py}.
-\item[Personalization and projection.] \path{experiments/node_pdp/registry.py}, \path{sampling.py}, \path{accounting.py}; \path{experiments/node_pdp_v2_projected/policy.py}.
-\item[Original scoring and evaluation.] \path{model/GRAT.py}, \path{model/layer/GRATLayer.py}, \path{model/functional/MaxCoverLoss.py}, and \path{experiments/pdp_research_evaluation.py}.
-\item[Recovery.] U6-R and U6-R2 approved amendments, original and continuation manifests, U6-R2 post-training diagnosis, and U6-A evidence lineage.
+\item[Five-seed scalar index.] \path{docs/pdp_research/stage_u5_research_decision/PER_SEED_RECHECK.csv}.
+\item[Five-seed source summaries.] \path{docs/pdp_research/stage_u4_four_configuration_diagnostics/GROUP_STATISTICS.csv} and the original evaluations indexed by the scalar file.
+\item[Current fixed table and provenance.] \path{dissertation/audit/frozen_paper_results_20261112/FROZEN_RESULTS.json}; twenty dataset/configuration cells, sixty runs, actual public seed IDs, parameters and source hashes.
+\item[Current table verification.] \path{dissertation/scripts/verify_frozen_paper.py}; all actual public seed IDs, sample SD with denominator two, source hashes, and 780 full source-cohort outcomes.
+\item[Historical verification.] \path{dissertation/scripts/verify_five_seed.py}; the earlier complete five-seed evidence and a separate historical table; it does not overwrite the current main table.
+\item[Instability evidence.] U4 \path{GAUSSIAN_NOISE_ANALYSIS.md}, \path{OPTIMIZATION_RANKING_REVIEW.md}, and \path{G2_INDEPENDENT_SCALAR_RECHECK.json}; G2 historical controlled report and witnesses.
+\item[Conditional theory.] \path{docs/pdp_research/G0_THEORY_BOUNDARY_REVIEW.md}; U0 and U2 proof and calibration certificates.
+\item[Training update.] \path{experiments/node_dp_slots/mechanism.py} and \path{aggregation.py}; projected policy in \path{experiments/node_pdp_v2_projected/policy.py}.
 \end{description}
 \endgroup
 
-\section{Statistical replication}
-The editable draft includes a deterministic scalar-verification script. It checks the sealed output hashes, unique run identities, exact cell counts, Spread-to-Coverage arithmetic, mean, sample SD, range, strict-low-tail counts and intervals, and primary and secondary Welch contrasts. It never loads graph files or checkpoints and does not re-run the bootstrap.
+\section{Reproducibility limits}
+Public seeds, parameters, source identities, scalar outputs, and failures support protocol auditing. Fresh secret Gaussian and Bernoulli trajectories are not serialized for replay. A public seed does not reconstruct a fitted private model. Replication concerns the specified mechanism and its repeat distribution rather than identical secret paths.
 
-The accompanying CSV retains all 2900 saved scalar rows with public initialization and provenance. Those rows remain an internal audit artifact, separate from the submission manuscript. This separation keeps engineering evidence accessible without inserting thousands of run identifiers into the dissertation body.
+All recorded low-utility results remain in the five-seed statistics. Historical diagnostics and alternative candidates are labeled separately and do not enlarge the main table's sample size. Source hashing and scalar checks establish consistency, not ideal random-source independence, machine-level privacy, or a full causal account of instability.
 
-A repeated future study would reproduce the public protocol and the intended output distribution. It could not reproduce each secret path from a stored Gaussian seed, because that material is deliberately not recorded. Equal public initialization does not imply equal private randomness, and a hash confirms byte identity rather than a privacy theorem.
-
-\section{Proof-review obligations}
-The ideal proof has a complete archived chain for slot locality, sensitivity, adaptive Gaussian RDP, the stated conversion, and bidirectional one-time amplification. Before relying on it for a particular release, the student and supervisor should verify that all public auxiliary information is legitimately fixed, the decoded adjacency is applicable, slot isolation remains true, and the intended output is within the theorem.
-
-End-to-end raw preprocessing, private-test release, unrestricted private seed identities, finite-precision randomization, timing/failure channels, and joint release of the research collection have no completed certificate in this dissertation. Any claim extending to those objects is \texttt{PROOF\_REVIEW\_REQUIRED}. The draft supplies no invented proof to close those gaps.
+\section{Disclosure boundary}
+Model collections require composition beyond a single-model theorem. Test evaluations and selected identities may require separate protection. This dissertation remains an internal draft for student and supervisor review; writing and formatting it do not authorize public release of restricted artifacts. No new real experiment is executed by this revision.

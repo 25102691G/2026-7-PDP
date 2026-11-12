@@ -1,0 +1,7 @@
+# AI-assisted drafting record — for student/supervisor review
+
+W1 authorized Codex to prepare an English initial draft and LaTeX layout from existing project evidence. Assistance included source organization, drafting seven chapters, arranging the archived proof, deterministic saved-scalar verification, literature metadata checks, plotting existing observations, and build/format QA. No new training, inference, graph evaluation or experiment was performed. No original research contribution is attributed to the student solely because this text was generated.
+
+The student must personally verify the argument, citations, data and contribution attribution; revise the wording to reflect their own understanding; confirm permitted assistance and disclosure requirements with the supervisor/Department; perform the approved plagiarism-check process; and sign the originality certificate only after review. The supplied PDF stresses personal work, attribution, permitted collaboration and pre-examination electronic checking. It does not supply a specific generative-AI disclosure template. No missing school policy is invented here.
+
+No claim of plagiarism-check completion, authorship approval, institutional originality endorsement or submission permission is made. This record should inform any required declaration; it is kept separate from the submitted manuscript until the correct disclosure is confirmed.

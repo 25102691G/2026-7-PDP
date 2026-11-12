@@ -1,3 +1,7 @@
+Current manuscript reporting scope (2026-11-12): five datasets x four configurations x three runs per cell = 60 runs. Table 6.1 reports Coverage mean and sample SD. Current individual outcomes, actual public seed IDs and parameters are in the Appendix B tables; the development/source protocol and full historical cohorts are retained there separately. Frozen numerical outcomes and original provenance are unchanged. Earlier revision descriptions below are historical unless restated here.
+
+> 2026-11-10 five-seed revision: earlier completion, page-count and word-count claims below are historical. Current empirical scope is n=5/cell; see FINAL_DELIVERY_REPORT.md and audit/revision_20261110_five_seed_stability/. Renewed scientific and length review is required.
+
 # PolyU / W1 compliance checklist
 
 Authority: supplied root `Dissertation - Guidelines and Assessment.pdf` (19 pages), especially Section4 pp6–8. This is technical draft review, not school or supervisor approval. Final machine QA is in `audit/PDF_VERIFICATION.json` and visual review record. Outstanding specialism, student review/signature and workflow items prevent calling the document submission-ready.

@@ -1,0 +1,23 @@
+[
+  {
+    "configuration": "Uniform1",
+    "sigma_sum": 486,
+    "coordinate_update_sd": 0.151875,
+    "update_noise_l2_rms": 7.346732373137053,
+    "signal_update_norm_upper_bound": 0.00375
+  },
+  {
+    "configuration": "PDP v2",
+    "sigma_sum": 260,
+    "coordinate_update_sd": 0.08125,
+    "update_noise_l2_rms": 3.9303506522955427,
+    "signal_update_norm_upper_bound": 0.00375
+  },
+  {
+    "configuration": "Uniform4",
+    "sigma_sum": 139,
+    "coordinate_update_sd": 0.043437500000000004,
+    "update_noise_l2_rms": 2.1012259256503096,
+    "signal_update_norm_upper_bound": 0.00375
+  }
+]

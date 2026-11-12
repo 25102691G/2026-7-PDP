@@ -1,0 +1,61 @@
+\chapter{Experimental Methodology}\label{ch:design}
+\section{Fixed datasets and preparation}
+The experiments use Email, Bitcoin, LastFM, HepPh, and Facebook with the existing prepared training/test files, node-ID mappings, direction conventions, and original 50:50 split procedure. Training accesses only the training graph. The test graph does not enter loss computation or checkpoint selection. No new partition, graph preprocessing, or dataset is introduced.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Fixed prepared domains and frozen test CELF references for $k=50$, from existing audits. Public-universe and active-node sizes are distinct.}\label{tab:datasets}
+\begin{tabular}{lrrrr}\toprule
+Graph & Public $|U|$ & Train nodes & Test nodes & CELF spread\\\midrule
+Email & 1005 & 462 & 458 & 432\\
+Bitcoin & 4411 & 2033 & 2378 & 1684\\
+LastFM & 6292 & 3096 & 3196 & 1269\\
+HepPh & 10513 & 5249 & 5264 & 1741\\
+Facebook & 20091 & 10011 & 10080 & 3157\\\bottomrule
+\end{tabular}
+\end{table}
+
+The split procedure does not require equal final active-node or edge counts. The theoretical public status of the identity universe is an assumption, not a consequence of having a saved mapping. The five fixed graphs do not form a random sample of all networks.
+
+\section{Four configurations and common controls}
+All configurations use released GRAT3, 32-dimensional all-one features, the original loss with penalty 0.5, 100 updates, batch size 16, learning rate 0.005, and zero momentum. Subgraph size is 40; RWR length is 200 with restart probability 0.3, SCS threshold 4, frequency decay 1, and BES divisor 2.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Configurations for the five-seed study. Noise is on the slot-sum scale. Privacy statements concern conditional ideal single-model bounds.}\label{tab:config}
+\begin{tabular}{lrrp{64mm}}\toprule
+Configuration & $\sigma_{\rm sum}$ & $n$ & Role\\\midrule
+Non-Private & none & 5 & Ordinary-training utility reference\\
+Uniform1 & 486 & 5 & Strictest-policy control, all $p_v=1$\\
+PDP v2 & 260 & 5 & Heterogeneous targets 1/2/4\\
+Uniform4 & 139 & 5 & Relaxed reference, all $p_v=1$\\\bottomrule
+\end{tabular}
+\end{table}
+
+The private configurations have four stable slots, two memberships per identity, double Clip3, full 2340-coordinate Gaussian noise, and post-update nonnegative projection of the final 32 feature-map weights. The bias and initialization are not projected. PDP samples participation once before training: target-1 identities have probability about 0.26894 and targets 2/4 have probability one. Uniform methods have no outer Bernoulli sampling.
+
+Non-Private retains ordinary batch-mean SGD without private slots, clipping, Gaussian noise, or private post-update projection. Its sampling parameter is $Q=256$, whereas each private slot uses $Q=64$. Consequently its comparison with private training changes several operations, not just the noise source. Uniform1 and PDP meet the same declared caps through different sufficient bounds, without equal actual privacy loss. Uniform4 is neither a same-policy substitute nor a theoretical Coverage upper bound.
+
+\section{Five-seed repetition and summary statistics}
+Every graph/configuration cell uses the complete fixed public initialization seeds $0,1,2,3,4$. One repeat is one model initialized from the specified seed, trained for 100 updates, and evaluated once at the final state. It is not repeated testing of the same fitted model. The complete design has $5\times4\times5=100$ existing outcomes, with 100 attempts, no failures, no retries, and no unexecuted tasks. All poor outcomes remain in the summaries \cite{projectdev}.
+
+These are existing development experiments. Their prior use in research decisions is retained; moving their presentation into the main chapter does not turn them into independent confirmation. Public initialization seeds are identifiers for initial model states, not secret Gaussian or Bernoulli seeds. The private sources are fresh for each fit. Equal public integers across configurations do not produce shared secret trajectories or justify a paired causal analysis.
+
+For saved Coverage values $C_0,\ldots,C_4$, each table cell reports
+\begin{equation}
+ \bar C=\frac{1}{5}\sum_{i=0}^{4}C_i,\qquad
+ s=\sqrt{\frac{1}{4}\sum_{i=0}^{4}(C_i-\bar C)^2}.\label{eq:fiveseed}
+\end{equation}
+The displayed uncertainty is sample SD, not standard error or a confidence interval. Sample variance is $s^2$; it is not substituted under the same label. No best-seed, best-subset, or test-Coverage checkpoint selection is performed. Five observations give an uncertain estimate of the repeat distribution. A large SD can reflect one or more severe losses and must be interpreted with the five individual values.
+
+\section{Final evaluation}
+Final ranking uses pre-sigmoid scores and the original stable local-ID tie rule to choose 50 unique nodes. Spread is one-step outgoing IC with $p=1$; Coverage is $100\,\mathrm{Spread}/\mathrm{CELF}$ using the fixed denominator in Table~\ref{tab:datasets}. Evaluation is deterministic for a fixed model and graph. Training-path variability, rather than repeated Monte Carlo diffusion, is the source investigated here.
+
+Spread, Coverage, and the denominator are checked against every saved final evaluation, without opening graphs or checkpoints. All five results per cell are listed in Appendix~\ref{app:development}. Low utility is described by the strict event $C<50\%$, along with min/max; no threshold triggers deletion or retraining.
+
+\section{Current diagnostic objective and limits}
+The current objective is to understand the high variability of Uniform and PDP. Superiority to Uniform1, closeness to Uniform4, and a particular SD are not acceptance requirements for this diagnosis. No new significance, equivalence, or noninferiority test is introduced. Differences between observed means are descriptive.
+
+The investigation combines saved five-seed scalars, static training-source inspection, and historical controlled Gaussian-path diagnostics. VERIFIED denotes checked arithmetic or code behavior; DESCRIPTIVE denotes observed run statistics; HYPOTHESIS denotes a plausible explanation without isolated causal identification; UNRESOLVED denotes a missing measurement or control. Historical diagnostics are identified separately and do not increase the five-seed table's sample size.
+
+This revision performs no training, inference, graph reevaluation, secret-path reconstruction, or random experiment. Related large-scale testing is discontinued. The mechanism and accountant remain unchanged.

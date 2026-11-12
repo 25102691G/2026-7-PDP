@@ -1,0 +1,262 @@
+[
+  {
+    "dataset": "email",
+    "configuration": "Non-Private",
+    "seeds": [
+      1,
+      2,
+      4
+    ],
+    "n": 3,
+    "mean": 91.20370370370371,
+    "sample_sd": 0.0,
+    "sample_variance": 0.0
+  },
+  {
+    "dataset": "email",
+    "configuration": "Uniform epsilon=1",
+    "seeds": [
+      0,
+      3,
+      4
+    ],
+    "n": 3,
+    "mean": 81.55864197530865,
+    "sample_sd": 1.885307364640523,
+    "sample_variance": 3.5543838591677934
+  },
+  {
+    "dataset": "email",
+    "configuration": "PDP v2",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "n": 3,
+    "mean": 93.90432098765432,
+    "sample_sd": 5.862166639883513,
+    "sample_variance": 34.364997713763145
+  },
+  {
+    "dataset": "email",
+    "configuration": "Uniform epsilon=4",
+    "seeds": [
+      0,
+      1,
+      4
+    ],
+    "n": 3,
+    "mean": 89.73765432098764,
+    "sample_sd": 0.353593803623135,
+    "sample_variance": 0.12502857796067615
+  },
+  {
+    "dataset": "bitcoin",
+    "configuration": "Non-Private",
+    "seeds": [
+      1,
+      2,
+      3
+    ],
+    "n": 3,
+    "mean": 99.32699920823435,
+    "sample_sd": 0.239991204532508,
+    "sample_variance": 0.057595778252964094
+  },
+  {
+    "dataset": "bitcoin",
+    "configuration": "Uniform epsilon=1",
+    "seeds": [
+      1,
+      2,
+      3
+    ],
+    "n": 3,
+    "mean": 88.89548693586698,
+    "sample_sd": 9.527687213951706,
+    "sample_variance": 90.77682364689882
+  },
+  {
+    "dataset": "bitcoin",
+    "configuration": "PDP v2",
+    "seeds": [
+      2,
+      3,
+      4
+    ],
+    "n": 3,
+    "mean": 92.41884402216944,
+    "sample_sd": 2.6164230628437544,
+    "sample_variance": 6.845669643780693
+  },
+  {
+    "dataset": "bitcoin",
+    "configuration": "Uniform epsilon=4",
+    "seeds": [
+      1,
+      2,
+      4
+    ],
+    "n": 3,
+    "mean": 98.09976247030879,
+    "sample_sd": 0.21410637027695484,
+    "sample_variance": 0.04584153779317249
+  },
+  {
+    "dataset": "lastfm",
+    "configuration": "Non-Private",
+    "seeds": [
+      0,
+      1,
+      4
+    ],
+    "n": 3,
+    "mean": 94.3525085369057,
+    "sample_sd": 0.5966806772577095,
+    "sample_variance": 0.35602783061271887
+  },
+  {
+    "dataset": "lastfm",
+    "configuration": "Uniform epsilon=1",
+    "seeds": [
+      1,
+      3,
+      4
+    ],
+    "n": 3,
+    "mean": 91.35802469135803,
+    "sample_sd": 8.92600956055297,
+    "sample_variance": 79.67364667508302
+  },
+  {
+    "dataset": "lastfm",
+    "configuration": "PDP v2",
+    "seeds": [
+      1,
+      3,
+      4
+    ],
+    "n": 3,
+    "mean": 94.14236931967429,
+    "sample_sd": 2.9844439269420495,
+    "sample_variance": 8.90690555306128
+  },
+  {
+    "dataset": "lastfm",
+    "configuration": "Uniform epsilon=4",
+    "seeds": [
+      1,
+      2,
+      3
+    ],
+    "n": 3,
+    "mean": 94.14236931967427,
+    "sample_sd": 2.685448472630847,
+    "sample_variance": 7.211633499155349
+  },
+  {
+    "dataset": "hepph",
+    "configuration": "Non-Private",
+    "seeds": [
+      0,
+      2,
+      4
+    ],
+    "n": 3,
+    "mean": 80.413555427915,
+    "sample_sd": 0.7979577248391563,
+    "sample_variance": 0.6367365306304826
+  },
+  {
+    "dataset": "hepph",
+    "configuration": "Uniform epsilon=1",
+    "seeds": [
+      0,
+      3,
+      4
+    ],
+    "n": 3,
+    "mean": 90.38866551790159,
+    "sample_sd": 4.58583700032153,
+    "sample_variance": 21.02990099351797
+  },
+  {
+    "dataset": "hepph",
+    "configuration": "PDP v2",
+    "seeds": [
+      0,
+      1,
+      4
+    ],
+    "n": 3,
+    "mean": 88.30174229370094,
+    "sample_sd": 5.072917620419735,
+    "sample_variance": 25.73449318356502
+  },
+  {
+    "dataset": "hepph",
+    "configuration": "Uniform epsilon=4",
+    "seeds": [
+      0,
+      1,
+      3
+    ],
+    "n": 3,
+    "mean": 91.67145318782309,
+    "sample_sd": 3.6639123340188613,
+    "sample_variance": 13.424253591375539
+  },
+  {
+    "dataset": "facebook",
+    "configuration": "Non-Private",
+    "seeds": [
+      0,
+      1,
+      4
+    ],
+    "n": 3,
+    "mean": 91.17305458768872,
+    "sample_sd": 0.4023346823621165,
+    "sample_variance": 0.1618731966314252
+  },
+  {
+    "dataset": "facebook",
+    "configuration": "Uniform epsilon=1",
+    "seeds": [
+      1,
+      2,
+      3
+    ],
+    "n": 3,
+    "mean": 96.16724738675958,
+    "sample_sd": 0.9064990827528777,
+    "sample_variance": 0.8217405870318086
+  },
+  {
+    "dataset": "facebook",
+    "configuration": "PDP v2",
+    "seeds": [
+      1,
+      3,
+      4
+    ],
+    "n": 3,
+    "mean": 90.07496568472178,
+    "sample_sd": 11.074718113110439,
+    "sample_variance": 122.64938128485646
+  },
+  {
+    "dataset": "facebook",
+    "configuration": "Uniform epsilon=4",
+    "seeds": [
+      0,
+      3,
+      4
+    ],
+    "n": 3,
+    "mean": 91.94382852919438,
+    "sample_sd": 3.7399172871490167,
+    "sample_variance": 13.986981314716061
+  }
+]

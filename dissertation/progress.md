@@ -9,3 +9,9 @@ Final delivery: all seven substantive chapters,13external+3internal references,2
 2026-11-10 identity-only update: researcher confirmed WENTAO ZHAO /25102691G, MSc in Electronic and Information Engineering, Prof. YE Qingqing (Associate Professor), award2027 and initial submission November2026. Existing dissertation title retained; specialism omitted; printed originality name filled, signature/date not generated. Seven technical chapters, proofs, tables, figures, references and data are protected by a pre-edit snapshot. Rebuild/verification results follow in audit/identity_update_20261110/.
 
 Identity update complete: build/PDF checks PASS;57pages; visible changes confined to pages1–3; other54pages text/pixel identical;25protected file hashes and38,107outside file metadata entries unchanged. Signature blank; no date/specialism invented.
+
+2026-11-10 five-seed revision: direct researcher instruction supersedes large-scale manuscript scope. All100 raw evaluations rechecked, exact seeds0..4 in20cells. Main empirical chapters revised, related large-scale assets retired internally. No experiment launched.
+
+Five-seed revision complete:49pages, all100 source scalar checks and20seed sets pass; current PDF contains no retired large-scale numeric claims. Visual contact sheets and Table6.1 inspected; orphan pages fixed.122diagnostic sources unchanged. Current manuscript is a shorter diagnostic revision, pending renewed supervisor/length review.
+
+2026-11-12 unified three-run revision COMPLETE: 5 datasets x4 configurations x3 runs=60, mean/sample SD. Abstract, Chapters1/3/5/6/7, appendices and generator synchronized. Detailed provenance preserved in Appendix B. Scalar verification PASS (60 outcomes,195hashes,780historical source outcomes). PDF57pages, abstract283words, machine checks and all-page visual review PASS. See audit/revision_20261112_unified_three_seed/REPORT.md. No training/inference/commit/push.

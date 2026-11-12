@@ -1,0 +1,8 @@
+{
+  "pages": 52,
+  "table61_pdf_pages": [
+    36
+  ],
+  "values_verified": true,
+  "visual_review": "PASS: main table, parameter table, seed table"
+}
