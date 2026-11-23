@@ -1,18 +1,16 @@
 \chapter{Three-Run Outcomes, Provenance, and Historical References}\label{app:development}
-\section{Current configurations and three-run outcomes}
-Table~\ref{tab:coverage} covers five datasets and four configurations, with three runs in every cell and 60 runs in total. Tables~\ref{tab:frozenparams}, \ref{tab:frozenseeds}, and \ref{tab:frozenseedids} list each cell's settings, all three Coverage values, and actual public initialization IDs. Outcomes A--C are positions in the table, not replacement seed numbers. The main table uses one common reporting rule: arithmetic mean and sample SD across the three recorded outcomes. A reported SD of zero describes those three outcomes only.
-\input{tables/frozen_parameters}
-\input{tables/frozen_seed_rows}
+\section{Configurations and individual outcomes}
+Table~\ref{tab:frozendetails} lists the settings, public initialization IDs, individual Coverage values, observed range, and low-utility count for all 20 cells in Table~\ref{tab:coverage}. By the calibration in Section~\ref{sec:main-experiment}, Uniform1 retains its reference bound of $\epsilon<0.998694$ and Uniform4 retains its reference bound of $\epsilon<3.997$, both at $\delta=10^{-5}$ (Section~\ref{sec:uniform-bounds}). For PDP-PrivIM, the per-target bounds are those in Theorem~\ref{thm:pdp}. These are conditional ideal guarantees for individual models.
+{\setlength{\tabcolsep}{4pt}
+\input{tables/frozen_details}
+}
 \clearpage
-\input{tables/frozen_seed_ids}
-\input{tables/frozen_ranges}
-\clearpage
-\section{Development protocol and original source records}\label{sec:sourceprotocol}
-The common three-run reporting rule does not imply that every cell has the same experimental history. Fifteen cells use the complete initialization seeds 0--2 of configurations obtained from a 480-fit development screen and a 144-fit follow-up. Five cells use three runs from larger historical cohorts: HepPh Non-Private ($N=40$), LastFM Uniform1 ($N=200$), Facebook Uniform1 ($N=200$), HepPh PDP v2 ($N=200$), and HepPh Uniform4 ($N=140$). Their original public initialization IDs are preserved in Table~\ref{tab:frozenseedids}.
+\section{Development protocol and source cohorts}\label{sec:sourceprotocol}
+Fifteen cells use the complete initialization seeds 0--2 of configurations obtained from a 480-fit development screen and a 144-fit follow-up. Five cells use three runs from larger historical cohorts: HepPh Non-Private ($N=40$), LastFM Uniform1 ($N=200$), Facebook Uniform1 ($N=200$), HepPh PDP-PrivIM ($N=200$), and HepPh Uniform4 ($N=140$). Their original public initialization IDs are listed in Table~\ref{tab:frozendetails}. Figure~\ref{fig:parameter-sensitivity} uses 35 distinct PDP-PrivIM configurations from the 480-fit screen. It includes all 105 saved fits for the plotted settings. Each dataset's 100-update reference at $n=40$ and $M=4$ appears in all three panels.
 
 For those five cells, the source records document a post hoc search over three-run combinations within each original configuration: a mean gate was applied before minimizing sample variance; ties used higher minimum Coverage and deterministic task identity. HepPh Non-Private did not meet the $95\%$ mean gate, and its highest three-run mean was used. Parameter configurations in the other cells were also compared using observed development Coverage. The current table consequently does not provide an unselected independent estimate of utility or stability. In particular, the three-run SDs should not replace the full-cohort SDs when characterizing their original repeat distributions.
 
-Table~\ref{tab:subsetcohorts} preserves all five complete source-cohort summaries. All original outcomes and task identities remain in \path{dissertation/audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json}. These historical records do not add observations to the current $n=3$ cells. No original outcome is deleted, no seed is renumbered, and no new training is performed.
+Table~\ref{tab:subsetcohorts} summarizes all five source cohorts in full. The original outcomes and task identifiers are available in \path{dissertation/audit/frozen_paper_results_20261112/U6_FULL_SOURCE_COHORTS.json}. The statistics in Table~\ref{tab:coverage} use only the three outcomes listed per cell in Table~\ref{tab:frozendetails}.
 \input{tables/subset_source_cohorts}
 
 \clearpage
@@ -20,13 +18,18 @@ Table~\ref{tab:subsetcohorts} preserves all five complete source-cohort summarie
 Table~\ref{tab:seedrows} lists every individual Coverage from the earlier complete 100-fit reference study; these are not the values used in the current three-run main table. Each cell has exactly public initialization seeds 0--4. These existing development results have no failed fits or retries. Their historical presentation does not change their research-stage provenance. No secret training path is identified by the public seed.
 \input{tables/five_seed_rows}
 
+\begin{figure}[p]
+\centering\includegraphics[width=.96\textwidth]{figures/five_seed_coverage.pdf}
+\caption{Historical five-seed Coverage outcomes per configuration and graph. Dots show individual fits, diamonds show means, and bars show one sample SD. Horizontal offsets separate individual fits.}\label{fig:fiveseed}
+\end{figure}
+
 \clearpage
 \section{Frozen-backbone historical reference}
 \begin{table}[htbp]
 \centering\small
 \caption{New Matched PDP historical frozen-backbone development results, $n=5$ per graph. These runs are excluded from the main four-configuration table. Values are Coverage mean $\pm$ sample SD (\%), from the saved historical report.}\label{tab:newmatched}
 \begin{tabular}{lrr}\toprule
-Graph & New Matched PDP & Full-training PDP v2 development\\\midrule
+Graph & New Matched PDP & Full-training PDP-PrivIM development\\\midrule
 Email & $90.648\pm0.421$ & $86.759\pm10.791$\\
 Bitcoin & $95.879\pm3.794$ & $81.971\pm27.105$\\
 LastFM & $93.428\pm0.769$ & $76.564\pm32.386$\\
@@ -38,6 +41,6 @@ Facebook & $91.124\pm1.208$ & $73.405\pm29.099$\\\bottomrule
 New Matched PDP trains the 33-coordinate final head and freezes 2307 backbone coordinates. A common conditional ideal accounting framework does not make this an exact-loss-matched causal experiment. No result is suppressed because it favors the historical comparator. No inference from its zero observed low-tail count in 25 outcomes establishes zero future failure risk.
 
 \section{Unsuccessful exploration}
-The historical no-projection PDP v1 remains a separate ablation. G3's fixed 100-step parameter average failed its five-graph screen. C3's row-sum candidate completed its fixed experiment and failed all graph-specific acceptance gates, including regressions that aggregate improvements could not cancel. Their mechanisms are not substituted for PDP v2 in the current three-run table.
+The historical no-projection PDP v1 remains a separate ablation. G3's fixed 100-step parameter average failed its five-graph screen. C3's row-sum candidate completed its fixed experiment and failed all graph-specific acceptance gates, including regressions that aggregate improvements could not cancel. Their mechanisms are not substituted for PDP-PrivIM in the current three-run table.
 
 The development record documents mechanism exploration, retained unfavorable evidence, and unresolved stability limitations. It does not support describing every exploratory idea as validated or treating repeated development iterations as independent validation.

@@ -1,0 +1,30 @@
+{
+  "draft_pdf_sha256": "3a2e81a8f1f72bff9d2a5bd7e280c4565a7672a4a0530f66ea90a812dea2e04e",
+  "guidelines_pdf_sha256": "426d720fad5df1096be8135fee3b66f244bad20115274b9e41f105d5e03d6cfe",
+  "review": "REVIEW.md",
+  "scope": "read-only manuscript review; one new report and this metadata file only",
+  "scalar_checks": {
+    "cells": 20,
+    "runs": 60,
+    "source_hashes": 195,
+    "full_cohort_runs": 780,
+    "status": "PASS"
+  },
+  "pdf_checks": {
+    "pages": 57,
+    "A4_all": true,
+    "version": "PDF 1.5",
+    "encrypted": false,
+    "all_fonts_embedded": true,
+    "font_programs": 22,
+    "all_pages_searchable": true,
+    "body_baseline_pt": 17.92724609375,
+    "off_page_text": [],
+    "abstract_words": 283,
+    "replacement_chars": 0,
+    "internal_links": 170,
+    "invalid_links": 0,
+    "log_warnings": [],
+    "visual": "57 pages inspected in contact sheets; sparse text-only pages 25,43,46; main figure 39 historical, current main table 37"
+  }
+}

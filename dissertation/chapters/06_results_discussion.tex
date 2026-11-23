@@ -4,25 +4,26 @@ Table~\ref{tab:coverage} reports Coverage for five datasets and four configurati
 
 \section{Three-run Coverage comparison}
 \input{tables/coverage}
-PDP v2 has higher mean Coverage than Uniform1 on all five datasets. The differences, computed from the unrounded means, are 4.938 percentage points on Email, 14.628 on Bitcoin, 14.762 on LastFM, 9.860 on HepPh, and 8.806 on Facebook. These observations support a utility advantage over the strict uniform control within this reported comparison. They do not alone establish statistical significance or a general expected-utility advantage, and the cell-specific optimization settings prevent attributing each gap solely to personalized participation.
+PDP-PrivIM has higher mean Coverage than Uniform1 on all five datasets. The differences, computed from the unrounded means, are 4.938 percentage points on Email, 14.628 on Bitcoin, 14.762 on LastFM, 9.860 on HepPh, and 8.806 on Facebook. These observations support a utility advantage over the strict uniform control within this reported comparison. They do not alone establish statistical significance or a general expected-utility advantage, and the cell-specific optimization settings prevent attributing each gap solely to personalized participation.
 
-Relative to Non-Private, PDP v2 has lower mean Coverage on all five datasets, with gaps ranging from 0.630 percentage points on LastFM to 6.096 on Email. Non-Private provides an unconstrained utility reference, but its training also differs in clipping, slot organization, projection, and sampling. The observed gaps therefore cannot be assigned entirely to Gaussian noise.
+Relative to Non-Private, PDP-PrivIM has lower mean Coverage on all five datasets, with gaps ranging from 0.630 percentage points on LastFM to 6.096 on Email. Non-Private provides an unconstrained utility reference, but its training also differs in clipping, slot organization, projection, and sampling. The observed gaps therefore cannot be assigned entirely to Gaussian noise.
 
-Relative to Uniform4, PDP v2 is higher by 0.552 percentage points on LastFM and lower on the other four datasets. Uniform4 is a relaxed-privacy reference; its stated privacy bound does not establish compliance with all heterogeneous policies. Neither the observed results nor the privacy theory make it a Coverage upper bound.
+Relative to Uniform4, PDP-PrivIM is higher by 0.552 percentage points on LastFM and lower on the other four datasets. Uniform4 is a relaxed-privacy reference; its stated privacy bound does not establish compliance with all heterogeneous policies. Neither the observed results nor the privacy theory make it a Coverage upper bound.
 
-The sample SD comparison is mixed. PDP v2 has lower sample SD than Uniform1 on Bitcoin and HepPh, but higher SD on Email, LastFM, and Facebook. It therefore does not show a uniform reduction in observed variability. HepPh PDP v2 has a reported SD of 0.000 because its three recorded Coverage values coincide; this does not establish zero population variance. All 60 outcomes and their means and sample SDs are checked against their original saved evaluations. Source-cohort variability is reported separately in Appendix~\ref{app:development}.
+The sample SD comparison is mixed. PDP-PrivIM has lower sample SD than Uniform1 on Bitcoin and HepPh, but higher SD on Email, LastFM, and Facebook. It therefore does not show a uniform reduction in observed variability. HepPh PDP-PrivIM has a reported SD of 0.000 because its three recorded Coverage values coincide; this does not establish zero population variance. All 60 outcomes and their means and sample SDs are checked against their original saved evaluations. Source-cohort variability is reported separately in Appendix~\ref{app:development}.
 
-\section{Historical five-seed instability evidence}
-The following discussion and Figure~\ref{fig:fiveseed} refer to the earlier complete 100-fit study with five seeds 0--4 per cell, rather than the current three-run results in Table~\ref{tab:coverage}. The original evidence remains available in Appendix~\ref{app:development}; it is retained to explain historical instability, not substituted into the newly fixed table.
-
-Private results can vary substantially within the same cell. LastFM PDP v2 has Coverage values 80.693, 91.726, 19.701, 93.223, and 97.478\%, giving $76.564\pm32.386$\%. Four relatively high outcomes coexist with one severe loss; retaining that loss produces the large SD. It is not a formatting error or a repeated-evaluation artifact. All historical seeds are shown in Appendix~\ref{app:development}.
+\section{Sensitivity to training settings}
+Figure~\ref{fig:parameter-sensitivity} compares three slices of the saved PDP-PrivIM development screen. The subgraph-size and SCS-threshold slices use 100 updates. The training-length slice holds $n=40$ and $M=4$ fixed and compares 100, 300, and 500 updates. For longer runs, the Gaussian slot-sum noise scale is increased by at least $\sqrt{T/100}$ to retain the reference conditional ideal accounting bound. This slice therefore measures the joint change in training length and per-update noise.
 
 \begin{figure}[htbp]
-\centering\includegraphics[width=.96\textwidth]{figures/five_seed_coverage.pdf}
-\caption{Historical five-seed Coverage outcomes per configuration and graph, separate from the current three-run results in Table~\ref{tab:coverage}. Points are individual fits; diamonds and bars show mean and sample SD, not confidence intervals. Horizontal offsets only separate points visually. Every saved outcome is included.}\label{fig:fiveseed}
+\centering\includegraphics[width=\textwidth]{figures/parameter_sensitivity.pdf}
+\caption{Exploratory PDP-PrivIM sensitivity to (a) subgraph size $n$ at $M=4$, $T=100$; (b) update count $T$ and its corresponding noise scale at $n=40$, $M=4$; and (c) SCS threshold $M$ at $n=40$, $T=100$. Points show mean Coverage and bars show one sample SD from three saved fits. Small horizontal offsets separate datasets.}\label{fig:parameter-sensitivity}
 \end{figure}
 
-Uniform4 has sample SD 0.731 pp on Bitcoin but 24.121 pp on Facebook under the same nominal noise scale. Its Facebook values include a severe low outcome. Uniform1 and PDP also show different responses across graphs. Such heterogeneity does not identify graph size or any particular topology statistic as the cause; the graphs differ in many uncontrolled ways.
+Across the tested subgraph sizes, the range of mean Coverage is 19.44--36.28 percentage points across datasets. The highest tested mean occurs at $n=60$ on LastFM and $n=40$ on Facebook. From 100 to 500 updates with the corresponding noise adjustment, the mean rises from 65.201\% to 90.355\% on Email and falls from 76.144\% to 55.715\% on HepPh. The tested $M$ values produce a 37.62-point mean range on LastFM and a 0.46-point range on Facebook. These ranges describe the observed means at the tested settings. With three fits per point and substantial variation in some cells, the sweep provides exploratory evidence about sensitivity.
+
+\section{Historical five-seed instability evidence}
+Historical LastFM PDP-PrivIM Coverage was $76.564\pm32.386$\%, including one run at 19.701\%. Figure~\ref{fig:fiveseed} and Table~\ref{tab:seedrows} show all five seeds.
 
 \section{Verified update scales and bounded signal}
 The common private kernel first clips each subgraph gradient, then clips each slot sum to norm at most 3. With four slots, the combined signal $S_t$ satisfies $\|S_t\|_2\leq12$. The pre-projection update is
@@ -38,7 +39,7 @@ Therefore the signal update has norm at most 0.00375. The Gaussian increment has
 \begin{tabular}{lrrr}\toprule
 Configuration & Coordinate noise SD & Noise L2 RMS & Signal norm bound\\\midrule
 Uniform1 & 0.151875 & 7.346732 & 0.003750\\
-PDP v2 & 0.081250 & 3.930351 & 0.003750\\
+PDP-PrivIM & 0.081250 & 3.930351 & 0.003750\\
 Uniform4 & 0.043438 & 2.101226 & 0.003750\\\bottomrule
 \end{tabular}
 \end{table}
@@ -55,9 +56,9 @@ In one LastFM condition, Coverage changed from 96.848\% to 50.118\%, a differenc
 This is a conditional path effect: later gradients respond to previous noisy states. It does not separate direct noise from the optimizer's response, nor establish how much of the variance in all five current graphs or either Uniform mechanism it explains. Its controls and scalar records support a specific existence result, not a universal causal ranking of instability factors.
 
 \section{What outer sampling does and does not explain}
-PDP's one-time Bernoulli sampling changes the retained graph and may change what useful structure is available. Initialization, retention, and Gaussian paths vary together across the five historical ordinary PDP repeats, so their variance contributions cannot be separated from this table.
+PDP-PrivIM's one-time Bernoulli sampling changes the retained graph and may change what useful structure is available. Initialization, retention, and Gaussian paths vary together across the five historical ordinary PDP-PrivIM repeats, so their variance contributions cannot be separated from this table.
 
-Uniform1 and Uniform4 do not have that outer sampling, yet their saved Coverage results can be unstable. Bernoulli sampling is therefore not a necessary cause shared by all unstable configurations. The fixed-retained-graph G2 differences also show that holding retention fixed need not remove path sensitivity. This does not prove that retention has no additional effect on PDP.
+Uniform1 and Uniform4 do not have that outer sampling, yet their saved Coverage results can be unstable. Bernoulli sampling is therefore not a necessary cause shared by all unstable configurations. The fixed-retained-graph G2 differences also show that holding retention fixed need not remove path sensitivity. This does not prove that retention has no additional effect on PDP-PrivIM.
 
 \section{Representation, loss, projection, and final ranking}
 Gaussian noise enters all 2340 coordinates, including hidden-layer and attention parameters. The post-update constraint applies only to the final 32 feature-map weights. It does not fix hidden representations, attention, or ordering of candidate nodes. Multilayer nonlinear responses are a plausible route from parameter differences to different selected sets, but existing data do not isolate a dominant layer.
@@ -73,9 +74,9 @@ The available code and saved diagnostics support the presence of clipping, full-
 
 Historical gradient summaries and clipping/projection counts exist, but comparable stepwise useful-gradient directions, layerwise signal norms, and functional perturbation measurements are incomplete. This prevents a quantitative variance decomposition. Five public initialization seeds also do not separate initialization from fresh secret randomness; calling one integer a bad seed would overstate the evidence.
 
-\section{Historical references and current research status}
-The frozen-backbone New Matched PDP reference trains 33 coordinates and freezes 2307. Its historical five-seed results are retained in Appendix~\ref{app:development}, including the HepPh result unfavorable to that reference. It had smaller observed SDs than full-training PDP on all five graphs, but changes trainable space, clipping geometry, and secret paths simultaneously. It is not a controlled proof that dimension reduction cures instability.
+\section{Findings from historical comparisons}
+The frozen-backbone New Matched PDP reference trains 33 coordinates and freezes 2307. Its historical five-seed results are retained in Appendix~\ref{app:development}, including the HepPh result unfavorable to that reference. It had smaller observed SDs than full-training PDP-PrivIM on all five graphs, but changes trainable space, clipping geometry, and secret paths simultaneously. It is not a controlled proof that dimension reduction cures instability.
 
-G3 parameter averaging and C3 row-sum candidates failed their frozen development gates. They remain historical rejected candidates. No restart, mechanism modification, or new experiment is undertaken here. The current comparison describes the observed utility differences, while these historical diagnostics explain why broader utility and stability claims remain limited.
+Neither parameter averaging (G3) nor the row-sum variant (C3) met its prespecified development criteria. Run-to-run variability therefore remains an open issue for PDP-PrivIM.
 
 The strongest supported explanation is that Gaussian-driven adaptive training paths can cause large Coverage changes, within a system whose bounded signal and full-coordinate noise have very different scales. The roles of graph structure, initialization, outer sampling, nonlinear representation, and discrete ranking remain incompletely separated. Reporting these limits is necessary before proposing a specific remedy.

@@ -4,7 +4,7 @@ import json,re,statistics,unicodedata
 import pymupdf
 from pypdf import PdfReader
 from PIL import Image,ImageOps,ImageDraw
-P=Path(__file__).resolve().parents[1];pdf=P/'build/dissertation_initial_draft.pdf'
+P=Path(__file__).resolve().parents[1];pdf=P.parent/'dissertation_initial_draft.pdf'
 doc=pymupdf.open(pdf);r=PdfReader(str(pdf));qa=P/'audit/rendered';qa.mkdir(exist_ok=True)
 texts=[unicodedata.normalize('NFKC',p.get_text(flags=pymupdf.TEXTFLAGS_TEXT | pymupdf.TEXT_DEHYPHENATE)) for p in doc];alltext='\n'.join(texts)
 (P/'audit/dissertation_extracted.txt').write_text(alltext)

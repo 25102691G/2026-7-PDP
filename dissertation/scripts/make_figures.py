@@ -10,7 +10,7 @@ from matplotlib import rcParams
 rcParams.update({'font.family':'DejaVu Serif','font.size':10,'pdf.fonttype':42,'axes.spines.top':False,'axes.spines.right':False})
 rows=list(csv.DictReader((P/'audit/development_100_rows.csv').open()))
 D=['email','bitcoin','lastfm','hepph','facebook'];M=['Non-Private','Uniform epsilon=1','PDP v2','Uniform epsilon=4']
-colors=['#333333','#bf6b2f','#21638c','#65904a'];names=['NP','Uniform1','PDP v2','Uniform4']
+colors=['#333333','#bf6b2f','#21638c','#65904a'];names=['NP','Uniform1','PDP-PrivIM','Uniform4']
 fig,axs=plt.subplots(3,2,figsize=(7.3,8.6),sharey=True)
 for d,l,ax in zip(D,['Email','Bitcoin','LastFM','HepPh','Facebook'],axs.flat):
  for i,(m,c) in enumerate(zip(M,colors)):

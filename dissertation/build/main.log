@@ -623,57 +623,57 @@ Chapter 3.
 [10
 
 
-] [11] [12]) [13] [14] (chapters/04_methodology
+] [11] [12]) [13] (chapters/04_methodology
 Chapter 4.
-[15
+[14
 
 
-] [16]
+] [15]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 50.
- [17] [18] [19] [20]) [21] (chapters/05_experimental_design
+ [16] [17] [18] [19]) [20] (chapters/05_experimental_design
 Chapter 5.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10.95> on input line 8.
 
-Underfull \hbox (badness 1715) in paragraph at lines 21--22
+Underfull \hbox (badness 1715) in paragraph at lines 23--24
 \T1/lmr/m/n/12 Table []6.1[] re-ports five datasets and four con-fig-u-ra-tions
 , with three runs per
  []
 
-[22
+[21
 
 
-] [23]
-Underfull \hbox (badness 1348) in paragraph at lines 45--46
+] [22]
+Underfull \hbox (badness 1348) in paragraph at lines 50--51
 \T1/lmr/m/n/12 plete ref-er-ence study used fixed pub-lic ini-tial-iza-tion see
 ds $\OT1/lmr/m/n/12 0\OML/lmm/m/it/12 ; \OT1/lmr/m/n/12 1\OML/lmm/m/it/12 ; \OT
 1/lmr/m/n/12 2\OML/lmm/m/it/12 ; \OT1/lmr/m/n/12 3\OML/lmm/m/it/12 ; \OT1/lmr/m
 /n/12 4$ \T1/lmr/m/n/12 for each
  []
 
-[24]) [25] (chapters/06_results_discussion
+[23]) [24] (chapters/06_results_discussion
 Chapter 6.
-(tables/coverage) [26
+(tables/coverage) [25
 
 
 ]
-File: figures/five_seed_coverage.pdf Graphic file (type pdf)
-<use figures/five_seed_coverage.pdf>
- [27] [28]
-Underfull \hbox (badness 1033) in paragraph at lines 50--50
+File: figures/parameter_sensitivity.pdf Graphic file (type pdf)
+<use figures/parameter_sensitivity.pdf>
+ [26] [27]
+Underfull \hbox (badness 1033) in paragraph at lines 51--51
 []\T1/lmr/bx/n/17.28 Historical con-trolled ev-i-dence for Gaussian-
  []
 
-[29] [30]) [31] [32] (chapters/07_conclusion
+[28] [29]) [30] (chapters/07_conclusion
 Chapter 7.
-[33
+[31
 
 
-] [34]) [35] (main.bbl [36
+] [32]) [33] (main.bbl [34
 
 
-]) [37] (appendices/a_reproducibility
+]) [35] (appendices/a_reproducibility
 Appendix A.
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 7
 .
@@ -684,41 +684,31 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [38
+ [36
 
 
-]) [39] (appendices/b_development
+]) [37] (appendices/b_development
 Appendix B.
-
-Underfull \hbox (badness 2486) in paragraph at lines 2--2
-[]\T1/lmr/bx/n/17.28 Current con-fig-u-ra-tions and three-run out-
- []
-
-(tables/frozen_parameters) (tables/frozen_seed_rows) [40
-
-
-] [41]
-(tables/frozen_seed_ids
+(tables/frozen_details
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 4.
-) (tables/frozen_ranges) [42
+) [38
 
-] [43]
-Underfull \hbox (badness 2318) in paragraph at lines 10--10
-[]\T1/lmr/bx/n/17.28 Development pro-to-col and orig-i-nal source
- []
 
-(tables/subset_source_cohorts
+] [39] (tables/subset_source_cohorts
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10> on input line 13.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <7> on input line 13.
-) [44
-
-] (tables/five_seed_rows) [45
-
-]) [46
+) [40
 
 ]
-(main.aux) )
-Output written on main.xdv (57 pages, 207328 bytes).
+(tables/five_seed_rows)
+File: figures/five_seed_coverage.pdf Graphic file (type pdf)
+<use figures/five_seed_coverage.pdf>
+ [41
+
+] [42]) [43
+
+] (main.aux) )
+Output written on main.xdv (54 pages, 203600 bytes).

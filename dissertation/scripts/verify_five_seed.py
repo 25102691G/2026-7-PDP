@@ -33,10 +33,10 @@ def table(name,caption,label,cols,head,body):
 body=[]
 for d,l in zip(D,LABEL):
  body.append(l+' & '+' & '.join(f'{statistics.mean(groups[d,m]):.3f} $\\pm$ {statistics.stdev(groups[d,m]):.3f}' for m in M)+r' \\')
-table('coverage_historical_five_seed.tex',r'Coverage mean $\pm$ sample SD (\%): all five fixed initialization seeds 0--4 per graph and configuration ($n=5$ per cell; 100 runs total). Existing development evidence; no seed selection.', 'tab:coveragehistorical','lrrrr','Graph & Non-Private & Uniform1 & PDP v2 & Uniform4',body)
+table('coverage_historical_five_seed.tex',r'Coverage mean $\pm$ sample SD (\%): all five fixed initialization seeds 0--4 per graph and configuration ($n=5$ per cell; 100 runs total). Existing development evidence; no seed selection.', 'tab:coveragehistorical','lrrrr','Graph & Non-Private & Uniform1 & PDP-PrivIM & Uniform4',body)
 body=[]
 for d,l in zip(D,LABEL):
- for m,n in zip(M,['Non-Private','Uniform1','PDP v2','Uniform4']):
+ for m,n in zip(M,['Non-Private','Uniform1','PDP-PrivIM','Uniform4']):
   body.append(l+' & '+n+' & '+' & '.join(f'{v:.3f}' for v in groups[d,m])+r' \\')
 table('five_seed_rows.tex',r'All five saved Coverage values (\%), indexed by public initialization seed. Each value is one fit and one final evaluation; secret training paths differ across fits.','tab:seedrows','llrrrrr','Graph & Configuration & 0 & 1 & 2 & 3 & 4',body)
 noise=[dict(configuration=m,sigma_sum=s,coordinate_update_sd=.005*s/16,update_noise_l2_rms=math.sqrt(2340)*.005*s/16,signal_update_norm_upper_bound=.005*12/16) for m,s in [('Uniform1',486),('PDP v2',260),('Uniform4',139)]]

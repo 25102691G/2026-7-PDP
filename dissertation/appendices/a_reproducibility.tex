@@ -1,14 +1,14 @@
 \chapter{Reproducibility and Evidence Boundaries}\label{app:evidence}
-\section{Current numerical authority}
+\section{Sources of the reported results}
 The main comparison reports five datasets and four configurations, with three runs per cell and 60 runs in total. Every value is mapped to its original final evaluation and configuration. Actual public initialization IDs and individual outcomes are listed in Appendix~\ref{app:development}, together with the development protocol, complete historical source-cohort summaries, and the earlier five-seed study. Scalar verification reads saved numerical artifacts; it does not instantiate trained models, access graph data, or perform inference.
 
 \begingroup\small\raggedright
 \begin{description}
 \item[Five-seed scalar index.] \path{docs/pdp_research/stage_u5_research_decision/PER_SEED_RECHECK.csv}.
 \item[Five-seed source summaries.] \path{docs/pdp_research/stage_u4_four_configuration_diagnostics/GROUP_STATISTICS.csv} and the original evaluations indexed by the scalar file.
-\item[Current fixed table and provenance.] \path{dissertation/audit/frozen_paper_results_20261112/FROZEN_RESULTS.json}; twenty dataset/configuration cells, sixty runs, actual public seed IDs, parameters and source hashes.
-\item[Current table verification.] \path{dissertation/scripts/verify_frozen_paper.py}; all actual public seed IDs, sample SD with denominator two, source hashes, and 780 full source-cohort outcomes.
-\item[Historical verification.] \path{dissertation/scripts/verify_five_seed.py}; the earlier complete five-seed evidence and a separate historical table; it does not overwrite the current main table.
+\item[Main comparison records.] \path{dissertation/audit/frozen_paper_results_20261112/FROZEN_RESULTS.json}; twenty dataset/configuration cells, sixty runs, public initialization IDs, parameters, and source hashes.
+\item[Main comparison verification.] \path{dissertation/scripts/verify_frozen_paper.py}; public initialization IDs, sample SD with denominator two, source hashes, and 780 full source-cohort outcomes.
+\item[Historical verification.] \path{dissertation/scripts/verify_five_seed.py}; verification of the earlier complete five-seed results.
 \item[Instability evidence.] U4 \path{GAUSSIAN_NOISE_ANALYSIS.md}, \path{OPTIMIZATION_RANKING_REVIEW.md}, and \path{G2_INDEPENDENT_SCALAR_RECHECK.json}; G2 historical controlled report and witnesses.
 \item[Conditional theory.] \path{docs/pdp_research/G0_THEORY_BOUNDARY_REVIEW.md}; U0 and U2 proof and calibration certificates.
 \item[Training update.] \path{experiments/node_dp_slots/mechanism.py} and \path{aggregation.py}; projected policy in \path{experiments/node_pdp_v2_projected/policy.py}.
@@ -21,4 +21,4 @@ Public seeds, parameters, source identities, scalar outputs, and failures suppor
 All recorded low-utility results remain in the five-seed statistics. Historical diagnostics and alternative candidates are labeled separately and do not enlarge the main table's sample size. Source hashing and scalar checks establish consistency, not ideal random-source independence, machine-level privacy, or a full causal account of instability.
 
 \section{Disclosure boundary}
-Model collections require composition beyond a single-model theorem. Test evaluations and selected identities may require separate protection. This dissertation remains an internal draft for student and supervisor review; writing and formatting it do not authorize public release of restricted artifacts. No new real experiment is executed by this revision.
+Joint model release requires composition across the released models. Evaluations on private test graphs and the disclosure of selected identities may require separate privacy guarantees.

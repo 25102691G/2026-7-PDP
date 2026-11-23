@@ -1,13 +1,15 @@
 """Verify saved selected scalars and full source cohorts; render paper tables."""
 from pathlib import Path
+from fractions import Fraction
 import hashlib,json,statistics
 ROOT=Path(__file__).resolve().parents[2];P=ROOT/'dissertation';A=P/'audit/frozen_paper_results_20261112'
 f=A/'FROZEN_RESULTS.json';o=json.loads(f.read_text());D=['email','bitcoin','lastfm','hepph','facebook'];M=['nonprivate','uniform1','pdp_v2','uniform4']
-L=dict(zip(D,['Email','Bitcoin','LastFM','HepPh','Facebook']));N=dict(zip(M,['Non-Private','Uniform1','PDP v2','Uniform4']))
+L=dict(zip(D,['Email','Bitcoin','LastFM','HepPh','Facebook']));N=dict(zip(M,['Non-Private','Uniform1','PDP-PrivIM','Uniform4']))
 expected={(d,m) for d in D for m in M}
+reference_sigma={'uniform1':486, 'pdp_v2':260, 'uniform4':139}
 assert o['researcher_frozen'] and len(o['cells'])==20 and o['selected_runs']==60
 assert {(c['dataset'],c['method']) for c in o['cells']}==expected
-cells={};hash_count=0;posthoc=0
+cells={};sigmas={};hash_count=0;posthoc=0
 for c in o['cells']:
  for rel,h in c['source_sha256'].items():
   assert hashlib.sha256((ROOT/rel).read_bytes()).hexdigest()==h,rel
@@ -16,7 +18,7 @@ for c in o['cells']:
  public=[r['task']['seed'] for r in c['runs']]
  assert len(public)==3 and len(set(public))==3
  assert public==(c['public_seeds'] if subset else [0,1,2])
- vals=[]
+ vals=[];cell_sigmas=set()
  for r in c['runs']:
   p=ROOT/r['source'];e=json.loads(p.read_text());cfg=json.loads(p.with_name('configuration.json').read_text());t=r['task']
   assert (t['n'],t['M'],t['T'],t['candidate'])==(c['n'],c['M'],c['T'],c['candidate'])
@@ -30,12 +32,28 @@ for c in o['cells']:
     assert (b['subgraph_size'],b['sampling']['frequency_threshold'],b['actual_optimizer_steps'])==(40,4,100)
    else:
     b=checkpoint['base'];assert (b['n'],b['M_SCS'],b['T'])==(40,4,100)
-    assert b['s_sum']==dict(uniform1=486.,pdp_v2=260.,uniform4=139.)[c['method']]
+    assert b['s_sum']==reference_sigma[c['method']]
   else:assert cfg['task']==t
+  if c['method']!='nonprivate':
+   ref=reference_sigma[c['method']]
+   if subset:
+    sigma=cfg['training']['sigma_sum']
+    assert c['T']==100 and sigma==ref
+   else:
+    noise=cfg['noise']
+    factor=noise['temporal_factor']
+    sigma=noise['sigma_sum']
+    assert noise['reference_steps']==100 and noise['sigma100']==ref
+    assert 100*Fraction(factor)**2>=c['T']
+    assert sigma==ref*factor
+   cell_sigmas.add(sigma)
   assert e['reference_spread']==r['celf'] and e['spread']==r['spread']
   assert abs(e['coverage']-100*e['spread']/e['reference_spread'])<1e-10
   vals.append(e['coverage'])
  assert vals==c['seeds'] and abs(statistics.mean(vals)-c['expected_mean'])<1e-10 and abs(statistics.stdev(vals)-c['expected_sample_sd'])<1e-10
+ if c['method']!='nonprivate':
+  assert len(cell_sigmas)==1
+  sigmas[c['dataset'],c['method']]=cell_sigmas.pop()
  posthoc+=int(subset);cells[c['dataset'],c['method']]=c
 assert posthoc==5
 full_path=ROOT/o['full_source_cohorts_file']
@@ -75,25 +93,27 @@ for d in D:
   c=cells[d,m];v=f"{c['expected_mean']:.3f} $\\pm$ {c['expected_sample_sd']:.3f}"
   values.append(v)
  body.append(L[d]+' & '+' & '.join(values)+r' \\')
-table('coverage.tex',r'Coverage mean $\pm$ sample SD (\%) across five datasets and four configurations: three runs per cell ($n=3$; 60 runs in total).', 'tab:coverage','lrrrr','Graph & Non-Private & Uniform1 & PDP v2 & Uniform4',body,
- r'Every cell reports the arithmetic mean and sample SD of three runs. SD is not standard error or a confidence interval. Individual outcomes, public initialization IDs, parameters, and the source protocol are documented in Appendix~\ref{app:development}. Comparisons are descriptive; zero observed SD does not imply zero population variance.')
-body=[];values=[];ids=[]
-for d in D:
- for m in M:
-  c=cells[d,m];name=N[m]
-  body.append(f"{L[d]} & {name} & {c['n']} & {c['M']} & {c['T']}"+r' \\')
-  values.append(f"{L[d]} & {name} & "+' & '.join(f'{v:.6f}' for v in c['seeds'])+r' \\')
-  ids.append(f"{L[d]} & {name} & "+' & '.join(str(r['task']['seed']) for r in c['runs'])+r' \\')
-table('frozen_parameters.tex',r'Public parameter settings for the three-run comparison in Table~\ref{tab:coverage}: training-subgraph size $n$, SCS threshold $M$, and updates $T$.', 'tab:frozenparams','llrrr','Graph & Configuration & $n$ & $M$ & $T$',body)
-table('frozen_seed_rows.tex',r'The three Coverage values (\%) per dataset/configuration cell. Columns A--C identify positions, not initialization-seed numbers; actual public IDs are in Table~\ref{tab:frozenseedids}.', 'tab:frozenseeds','llrrr','Graph & Configuration & Outcome A & Outcome B & Outcome C',values)
-table('frozen_seed_ids.tex',r'Actual public initialization-seed IDs corresponding to outcomes A--C in Table~\ref{tab:frozenseeds}. Original IDs are preserved.', 'tab:frozenseedids','llrrr','Graph & Configuration & Public seed A & Public seed B & Public seed C',ids,size='scriptsize')
+table('coverage.tex',r'Coverage mean $\pm$ sample SD (\%) across five datasets and four configurations: three runs per cell ($n=3$; 60 runs in total).', 'tab:coverage','lrrrr','Graph & Non-Private & Uniform1 & PDP-PrivIM & Uniform4',body,
+ r'Each cell reports mean Coverage and sample SD for three runs. Five cells report subsets of larger development cohorts; see Appendix~\ref{sec:sourceprotocol} for the selection procedure and full-cohort summaries.')
+
 body=[]
 for d in D:
  for m in M:
-  v=cells[d,m]['seeds'];low=sum(x<50 for x in v)
-  body.append(f"{L[d]} & {N[m]} & {min(v):.3f} & {max(v):.3f} & {low}/3"+r' \\')
-table('frozen_ranges.tex',r'Observed Coverage ranges (\%) and strict low-utility counts across the three runs in each cell of Table~\ref{tab:coverage}.', 'tab:frozenranges','llrrr',r'Graph & Configuration & Minimum & Maximum & $C<50\%$',body,
- r'All 60 reported runs completed; no reported outcome is below 50\%. These are descriptive counts for the reported outcomes, not a failure-risk estimate or a ledger of every development attempt.')
+  cell=cells[d,m]
+  values=cell['seeds']
+  runs=[
+   rf"\shortstack[r]{{{value:.6f}\\({run['task']['seed']})}}"
+   for value,run in zip(values,cell['runs'])
+  ]
+  low=sum(value<50 for value in values)
+  sigma=sigmas.get((d,m))
+  scale=f'{sigma:.3f}' if sigma is not None else r'\textemdash'
+  params=rf"\shortstack[l]{{({cell['n']}, {cell['M']}, {cell['T']})\\{scale}}}"
+  fields=[L[d],N[m],params,*runs,f"{min(values):.3f}",f"{max(values):.3f}",f"{low}/3"]
+  body.append(' & '.join(fields)+r' \\[2pt]')
+table('frozen_details.tex',r'Configuration and individual outcomes for every cell in Table~\ref{tab:coverage}.', 'tab:frozendetails','lllrrrrrr',
+ r'Graph & Configuration & \shortstack[l]{$(n,M,T)$\\$\sigma_T$} & Run A & Run B & Run C & Min & Max & $C<50\%$',body,
+ r'The parameter column gives subgraph size, SCS threshold, and updates above the recorded nominal sum-noise scale, rounded to three decimals. A dash denotes ordinary non-private training. Run columns pair Coverage (\%) with public initialization IDs in parentheses. Minima, maxima, and low-utility counts summarize the three displayed runs.',size='scriptsize')
 body=[]
 for cohort in sorted(full,key=lambda c:(D.index(c['dataset']),M.index(c['method']))):
  body.append(f"{L[cohort['dataset']]} & {N[cohort['method']]} & {cohort['n']} & {cohort['mean']:.3f} $\\pm$ {cohort['sample_sd']:.3f} & {cohort['minimum']:.3f} & {cohort['maximum']:.3f} & {cohort['below50']}"+r' \\')
