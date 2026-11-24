@@ -1,6 +1,14 @@
 \chapter{Proposed Personalized Node-DP Mechanism}\label{ch:method}
 \section{Frozen system and model}
-PDP-PrivIM changes the private training organization while preserving the existing GRAT3, loss, and subgraph construction. The trained parameter vector has dimension 2340. Its three layers map 32 to 32, 32 to 32, and 32 to 1 dimensions, using all-one 32-dimensional input features. The released-code layer includes a biased linear map and a biased scalar attention map of concatenated pre-transformation features. The first two layer outputs pass through ReLU; the final score is converted by sigmoid for the loss. Test ranking uses pre-sigmoid scores.
+PDP-PrivIM changes the private training organization while preserving the existing GRAT3, loss, and subgraph construction. The trained parameter vector has dimension 2340. Its three layers map 32 to 32, 32 to 32, and 32 to 1 dimensions, using all-one 32-dimensional input features.
+
+For one layer, let $h_u$ be the input feature vector at node $u$, and let $N^+(u)$ and $N^-(u)$ denote its outgoing and incoming neighbors in the graph supplied to the layer. For each edge $(u,v)$, the released implementation scores the concatenated input features and normalizes over the outgoing edges of $u$. It then aggregates incoming messages at $v$ and applies an affine feature map:
+\begin{align}
+ e_{uv} &= \operatorname{ReLU}\bigl(a^\top[h_u\Vert h_v]+c\bigr), \\
+ \alpha_{uv} &= \frac{\exp(e_{uv})}{\sum_{w\in N^+(u)}\exp(e_{uw})}, \\
+ z_v &= W\left(\sum_{u\in N^-(v)}\alpha_{uv}h_u\right)+b .
+\end{align}
+Here $[h_u\Vert h_v]$ denotes concatenation, $(a,c)$ are the attention weights and scalar bias, and $(W,b)$ are the feature-map weights and bias. An empty incoming sum gives a zero aggregate. The first two layers pass $z_v$ through ReLU before the next layer. The third layer produces the scalar logit, which enters the loss through a sigmoid and is used directly for test ranking.
 
 This parameter count follows directly from the released layer shapes: two layers each contribute $32\cdot32+32+64+1=1121$ coordinates, and the final layer contributes $32+1+64+1=98$, giving $2(1121)+98=2340$. The final projection acts on the 32 weights of the last feature map. Its bias and attention parameters are separate coordinates.
 
@@ -14,7 +22,7 @@ The first term penalizes uncovered vertices in the differentiable surrogate; the
 \section{Public Registry and one-time participation}
 The Registry fixes targets for all identities in $U$ before graph training. Its nominal public proportions are 20\%, 40\%, and 40\% for targets 1, 2, and 4, with integer quotas resolved by the existing rule. Those proportions concern the full public universe, not realized training membership or a secret retained graph.
 
-For every present identity, independently draw one Bernoulli decision with probability
+Following the personalized subsampling principle of Jorgensen et al. \cite{jorgensen2015}, the mechanism sets participation probabilities from the public target budgets. For every present identity, it independently draws one Bernoulli decision with probability
 \begin{equation}
  p_v=\min\left\{1,\frac{\exp(\epsilon^{\mathrm{tar}}_v)-1}{\exp(2)-1}\right\}.\label{eq:participation}
 \end{equation}
@@ -110,7 +118,7 @@ If the non-Gaussian tape is itself data-independent random information, its marg
 The projected update is a function of noisy history. It changes later queries but not the uniform sensitivity argument. Consequently it is legitimate within adaptive composition. This does \emph{not} assert that projected training can be obtained by applying one function only to the final unprojected model.
 
 \section{Conversion and numerical certificates}
-The archived conversion is more specific than the simplest RDP-to-DP inequality. For $a=e^\epsilon$ and $x\geq0$,
+The conversion follows Proposition~12 of Canonne et al. \cite{canonne2020}. For $a=e^\epsilon$ and $x\geq0$,
 \begin{equation}
  (x-a)_+\leq c_\alpha a^{1-\alpha}x^\alpha,\qquad
  c_\alpha=\frac{(\alpha-1)^{\alpha-1}}{\alpha^\alpha}.

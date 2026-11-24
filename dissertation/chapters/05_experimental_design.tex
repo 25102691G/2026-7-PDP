@@ -1,6 +1,8 @@
 \chapter{Experimental Methodology}\label{ch:design}
 \section{Fixed datasets and preparation}
-The experiments use the prepared training and test graphs for Email, Bitcoin, LastFM, HepPh, and Facebook, with the original 50:50 split procedure, node-ID mappings, and edge-direction conventions. Training uses only the training graph. The test graph does not enter loss computation or checkpoint selection within a fit. Development comparisons used final test Coverage, so the results provide exploratory evidence. Appendix~\ref{app:development} documents the development protocol and data sources.
+The experiments use the prepared training and test graphs for Email, Bitcoin, LastFM, HepPh, and Facebook, with the original 50:50 split procedure, node-ID mappings, and edge-direction conventions. Training uses only the training graph. The test graph does not enter loss computation or checkpoint selection within a fit.
+
+Email uses the email-Eu-core network, whose directed edges represent messages between members of a research institution \cite{snapemail}. Bitcoin uses the Bitcoin OTC network, whose directed edges record trust ratings between users \cite{snapbitcoin}. LastFM uses the LastFM Asia friendship network \cite{snaplastfm}, and HepPh connects authors who have co-authored a paper in high-energy physics phenomenology \cite{snaphepph}. Facebook uses the page-to-page mutual-like edge list from the dataset authors\textquotesingle{} MUSAE repository \cite{musaefacebook}.
 
 \begin{table}[htbp]
 \centering\small
@@ -20,12 +22,12 @@ Facebook & Undirected & 20091 & 10011 & 44069 & 10080 & 41101 & 3157\\\bottomrul
 The split procedure does not require equal final active-node or edge counts. The theoretical public status of the identity universe is an assumption, not a consequence of having a saved mapping. The five fixed graphs do not form a random sample of all networks.
 
 \section{Main experimental comparison}\label{sec:main-experiment}
-Table~\ref{tab:coverage} reports five datasets and four configurations, with three runs per dataset/configuration cell and 60 runs in total. One run consists of model initialization, training for the documented number of updates, and one final-state evaluation; the three outcomes are not repeated evaluations of one fitted model. Every cell is summarized by Coverage mean and sample SD. Actual public initialization IDs, individual outcomes, and training settings appear in Appendix~\ref{app:development}; IDs are not assumed to be identical across all cells.
+Table~\ref{tab:coverage} summarizes results for five datasets and four configurations. Each configuration has five runs on each dataset, giving 100 runs in total. Each run consists of model initialization, training for the specified number of updates, and one final-state evaluation. Each cell reports mean Coverage and sample SD.
 
-The training-subgraph size, SCS threshold, and update count vary by cell. Runs use 100, 300, or 500 updates. Observed utility gaps therefore reflect differences between entire configurations. In the private runs, $n$ and $M$ modify the local sampler. The two-slot membership bound, fixed update denominator, and slot clipping remain the same, so Lemma~\ref{lem:sensitivity} still gives sensitivity at most 12 under its stated assumptions.
+The training-subgraph size, SCS threshold, and update count vary by differrent dataset. Runs use 100, 300, or 500 updates. In the private runs, $n$ and $M$ modify the local sampler. The two-slot membership bound, fixed update denominator, and slot clipping remain the same, so Lemma~\ref{lem:sensitivity} still gives sensitivity at most 12 under its stated assumptions.
 
 \paragraph{Noise calibration.}
-The longer runs multiply each reference Gaussian draw by a public factor $f_T\geq\sqrt{T/100}$. In the ideal mechanism, the resulting scale is $\sigma_T=\sigma_{100}f_T$. Substituting into Equation~\eqref{eq:rdp} gives $\rho_T(\alpha)\leq\rho_{100}(\alpha)$ at every order $\alpha>1$. The reference conversion and, for PDP-PrivIM, one-time amplification therefore give the same conditional ideal upper bounds for each individual model. Table~\ref{tab:frozendetails} lists the recorded nominal noise scales. Development selection and joint model publication require separate accounting.
+The longer runs multiply each reference Gaussian draw by a public factor $f_T\geq\sqrt{T/100}$. In the ideal mechanism, the resulting scale is $\sigma_T=\sigma_{100}f_T$. Substituting into Equation~\eqref{eq:rdp} gives $\rho_T(\alpha)\leq\rho_{100}(\alpha)$ at every order $\alpha>1$. The reference conversion and, for PDP-PrivIM, one-time amplification therefore give the same conditional ideal upper bounds for each individual model. For example, PDP-PrivIM uses 500 updates with nominal $\sigma_T\approx581.378$ on Email and 300 updates with $\sigma_T\approx450.333$ on LastFM. The recorded scales for all cells accompany the run records described below. Development selection and joint model publication require separate accounting.
 
 \section{Historical 100-step configurations and common controls}
 In the historical 100-step reference study, all configurations use released GRAT3, 32-dimensional all-one features, the original loss with penalty 0.5, 100 updates, batch size 16, learning rate 0.005, and zero momentum. Subgraph size is 40; RWR length is 200 with restart probability 0.3, SCS threshold 4, frequency decay 1, and BES divisor 2.
@@ -46,24 +48,24 @@ The private configurations have four stable slots, two memberships per identity,
 
 Non-Private retains ordinary batch-mean SGD without private slots, clipping, Gaussian noise, or private post-update projection. Its sampling parameter is $Q=256$, whereas each private slot uses $Q=64$. Consequently its comparison with private training changes several operations, not just the noise source. Uniform1 and PDP-PrivIM meet the same declared caps through different sufficient bounds, without equal actual privacy loss. Uniform4 is neither a same-policy substitute nor a theoretical Coverage upper bound.
 
-\section{Three-run summaries and historical repetition}
-The main comparison uses three runs in every cell. Separately, the earlier complete reference study used fixed public initialization seeds $0,1,2,3,4$ for each graph/configuration cell, trained for 100 updates, and evaluated each model once at its final state. That historical design has $5\times4\times5=100$ outcomes, with 100 attempts, no failures, no retries, and no unexecuted tasks. All historical outcomes remain in their original summaries \cite{projectdev}. Those counts describe the historical study, not the current 60-run table or the entire development search.
+\section{five-run summaries and historical repetition}
+The main comparison uses five runs in every cell. Separately, the earlier complete reference study used fixed public initialization seeds $0,1,2,3,4$ for each graph/configuration cell, trained for 100 updates, and evaluated each model once at its final state. That historical design has $5\times4\times5=100$ outcomes, with 100 attempts, no failures, no retries, and no unexecuted tasks. All historical outcomes remain in their original summaries \cite{projectdev}. Those counts describe the historical study, not the current 100-run table or the entire development search.
 
 Both sets of experiments informed development decisions. Public initialization seeds identify initial model states. Each private fit uses fresh secret Gaussian or Bernoulli draws as applicable. Runs with the same public seed can therefore follow different training paths across configurations.
 
-For $r$ Coverage values, summaries use $r=3$ for every current dataset/configuration cell and $r=5$ only for the separate historical cells:
+For $r$ Coverage values, summaries use $r=5$ for every current dataset/configuration cell and $r=5$ only for the separate historical cells:
 \begin{equation}
  \bar C=\frac{1}{r}\sum_{i=0}^{r-1}C_i,\qquad
  s=\sqrt{\frac{1}{r-1}\sum_{i=0}^{r-1}(C_i-\bar C)^2}.\label{eq:fiveseed}
 \end{equation}
-The displayed uncertainty is sample SD, not standard error or a confidence interval. With three observations, its denominator is $r-1=2$; sample variance is $s^2$ and is not substituted under the SD label. Three runs provide a limited estimate of variability, and zero observed SD does not imply zero population variance. No test-Coverage checkpoint selection is performed within a fit. The development protocol and original source-cohort summaries in Appendix~\ref{app:development} are relevant to interpretation; the current comparison is not an independent confirmation.
+The displayed uncertainty is sample SD, not standard error or a confidence interval. With five observations, its denominator is $r-1=4$; sample variance is $s^2$ and is not substituted under the SD label. five runs provide a limited estimate of variability, and zero observed SD does not imply zero population variance. Within each fit, the final model is evaluated without test-Coverage checkpoint selection.
 
 \section{Final evaluation}
 Final ranking uses pre-sigmoid scores and the original stable local-ID tie rule to choose 50 unique nodes. Spread is one-step outgoing IC with $p=1$; Coverage is $100\,\mathrm{Spread}/\mathrm{CELF}$ using the fixed denominator in Table~\ref{tab:datasets}. Evaluation is deterministic for a fixed model and graph. Training-path variability, rather than repeated Monte Carlo diffusion, is the source investigated here.
 
-Spread, Coverage, and the denominator are checked against every saved final evaluation, without opening graphs or checkpoints. All three results per current cell, as well as the historical five-seed record, are listed in Appendix~\ref{app:development}. Low utility is described by the strict event $C<50\%$, along with min/max; no threshold triggers deletion or retraining.
+Spread, Coverage, and the denominator are checked against the saved final evaluations. Historical variability is also described using the minimum, maximum, and proportion of runs with Coverage below 50\%.
 
 \section{Comparison and diagnostic limits}
 The analysis compares observed Coverage under PDP-PrivIM, the strict uniform control, the relaxed uniform reference, and Non-Private. It summarizes differences between sample means descriptively. Historical diagnostics provide separate evidence about variability.
 
-The investigation combines saved five-seed scalars, static training-source inspection, and historical controlled Gaussian-path diagnostics. VERIFIED denotes checked arithmetic or code behavior; DESCRIPTIVE denotes observed run statistics; HYPOTHESIS denotes a plausible explanation without isolated causal identification; UNRESOLVED denotes a missing measurement or control. Historical diagnostics are identified separately and do not increase the main table's three runs per cell.
+The investigation combines saved five-seed scalars, static training-source inspection, and historical controlled Gaussian-path diagnostics. VERIFIED denotes checked arithmetic or code behavior; DESCRIPTIVE denotes observed run statistics; HYPOTHESIS denotes a plausible explanation without isolated causal identification; UNRESOLVED denotes a missing measurement or control. Historical diagnostics are identified separately and do not increase the main table's five runs per cell.

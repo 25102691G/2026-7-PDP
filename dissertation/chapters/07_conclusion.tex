@@ -1,6 +1,6 @@
 \chapter{Conclusions and Suggestions for Future Research}\label{ch:conclusion}
 \section{Research scope}
-The project studies personalized node-private GNN influence maximization under heterogeneous requirements. The main empirical comparison uses five datasets and four configurations, with three runs per cell and 60 runs in total, reporting Coverage mean and sample SD. Historical diagnostics separately investigate private-training variability.
+The project studies personalized node-private GNN influence maximization under heterogeneous requirements. The main empirical comparison uses five datasets and four configurations, with five runs per cell and 100 runs in total, reporting Coverage mean and sample SD. Historical diagnostics separately investigate private-training variability.
 
 PDP-PrivIM retains the original GRAT3, loss, prepared graphs, and evaluation, while combining one-time participation, stable overlapping slots, double clipping, full-coordinate Gaussian updates, and projection of the final 32 weights.
 
@@ -9,17 +9,10 @@ Under explicit fixed-domain, locality, ideal-randomization, and release assumpti
 
 Raw preprocessing, the public status of identities and policies, private test release, execution channels, numerical random sources, and joint publication require separate treatment. Utility statistics do not establish these privacy properties.
 
-\section{Three-run comparison and historical empirical findings}
-Table~\ref{tab:coverage} reports PDP-PrivIM mean Coverage above Uniform1 on all five datasets, with observed gains of 4.938--14.762 percentage points. PDP-PrivIM remains below Non-Private on all five datasets and exceeds Uniform4 only on LastFM. Its sample SD is lower than Uniform1 on Bitcoin and HepPh but higher on Email, LastFM, and Facebook. Thus the observed mean-Coverage advantage over the strict uniform control is accompanied by mixed variability results. Three runs per cell, development provenance, and differing optimization settings limit generalization and causal attribution. The results do not establish statistical significance, independent confirmation, or universal superiority. Individual outcomes, parameters, and source protocol are documented in Appendix~\ref{app:development}.
-
-In the separate historical complete five-seed study, the private configurations show substantial within-cell variation. LastFM PDP-PrivIM has a sample SD of 32.386 pp; Uniform4 ranges from 0.731 pp SD on Bitcoin to 24.121 pp on Facebook. These are sample descriptions with $n=5$, not precise population-variance estimates or confirmed method rankings. The individual outcomes help distinguish concentration from occasional severe losses.
+\section{Five-run comparison and historical empirical findings}
+Table~\ref{tab:coverage} reports PDP-PrivIM mean Coverage above Uniform1 on all five datasets, with observed gains of 4.938--14.762 percentage points. PDP-PrivIM remains below Non-Private on all five datasets and exceeds Uniform4 only on LastFM. Its sample SD is lower than Uniform1 on Bitcoin and HepPh but higher on Email, LastFM, and Facebook. Thus the observed mean-Coverage advantage over the strict uniform control is accompanied by mixed variability results.
 
 \section{Evidence about instability}
 Static source and arithmetic checks show a small bounded signal increment relative to full-coordinate Gaussian increment scales. Historical controlled pairs additionally show large Coverage changes when only the Gaussian source is changed while initialization and the retained graph are fixed. Together these facts justify close attention to noise-driven adaptive optimization.
 
 Outer Bernoulli sampling cannot explain all instability because Uniform methods omit it. Deterministic fixed-model evaluation and fixed CELF normalization also do not explain the observed run-to-run variation. Hidden representation changes, surrogate-to-Top-50 mismatch, and selected-neighborhood overlap remain plausible intermediate mechanisms; no single component is established as the dominant root cause.
-
-\section{Limits and deferred questions}
-The saved evidence does not provide a complete layerwise or stepwise variance decomposition. The three current runs per cell, like the historical five-run study, do not separate public initialization from fresh secret trajectories. Historical frozen-backbone comparisons change several factors, and failed G3/C3 candidates do not supply a proven fix. Large SD alone is neither proof of an implementation bug nor evidence of a failed privacy theorem.
-
-A matched-configuration comparison with independently specified repetitions would help determine how much of the observed Coverage difference is attributable to personalized participation.

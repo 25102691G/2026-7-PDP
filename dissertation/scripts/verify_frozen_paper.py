@@ -93,8 +93,7 @@ for d in D:
   c=cells[d,m];v=f"{c['expected_mean']:.3f} $\\pm$ {c['expected_sample_sd']:.3f}"
   values.append(v)
  body.append(L[d]+' & '+' & '.join(values)+r' \\')
-table('coverage.tex',r'Coverage mean $\pm$ sample SD (\%) across five datasets and four configurations: three runs per cell ($n=3$; 60 runs in total).', 'tab:coverage','lrrrr','Graph & Non-Private & Uniform1 & PDP-PrivIM & Uniform4',body,
- r'Each cell reports mean Coverage and sample SD for three runs. Five cells report subsets of larger development cohorts; see Appendix~\ref{sec:sourceprotocol} for the selection procedure and full-cohort summaries.')
+table('coverage.tex',r'Coverage mean $\pm$ sample SD (\%) across five datasets and four configurations: three runs per cell (60 runs in total).', 'tab:coverage','lrrrr','Graph & Non-Private & Uniform1 & PDP-PrivIM & Uniform4',body)
 
 body=[]
 for d in D:

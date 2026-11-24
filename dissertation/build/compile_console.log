@@ -1,29 +1,32 @@
 note: Running TeX ...
 warning: algorithm.sty:11: 
 Invalid UTF-8 byte or sequence at line 11 replaced by U+FFFD.
-warning: chapters/05_experimental_design:24: Overfull \hbox (40.00311pt too wide) in paragraph at lines 23--24
-warning: chapters/05_experimental_design:51: Underfull \hbox (badness 1348) in paragraph at lines 50--51
-warning: chapters/06_results_discussion:51: Underfull \hbox (badness 1033) in paragraph at lines 51--51
+note: downloading indentfirst.sty
+warning: chapters/05_experimental_design:53: Underfull \hbox (badness 1348) in paragraph at lines 52--53
+warning: chapters/06_results_discussion:48: Underfull \hbox (badness 1033) in paragraph at lines 48--48
 note: Running BibTeX on main.aux ...
 note: Rerunning TeX because bibtex was run ...
 warning: algorithm.sty:11: 
 Invalid UTF-8 byte or sequence at line 11 replaced by U+FFFD.
-warning: chapters/05_experimental_design:24: Underfull \hbox (badness 1715) in paragraph at lines 23--24
-warning: chapters/05_experimental_design:51: Underfull \hbox (badness 1348) in paragraph at lines 50--51
-warning: chapters/06_results_discussion:51: Underfull \hbox (badness 1033) in paragraph at lines 51--51
-note: Rerunning TeX because "main.aux" changed ...
+warning: chapters/05_experimental_design:53: Underfull \hbox (badness 1348) in paragraph at lines 52--53
+warning: chapters/06_results_discussion:48: Underfull \hbox (badness 1033) in paragraph at lines 48--48
+note: Rerunning TeX because "main.toc" changed ...
 warning: algorithm.sty:11: 
 Invalid UTF-8 byte or sequence at line 11 replaced by U+FFFD.
-warning: chapters/05_experimental_design:24: Underfull \hbox (badness 1715) in paragraph at lines 23--24
-warning: chapters/05_experimental_design:51: Underfull \hbox (badness 1348) in paragraph at lines 50--51
-warning: chapters/06_results_discussion:51: Underfull \hbox (badness 1033) in paragraph at lines 51--51
+warning: chapters/05_experimental_design:53: Underfull \hbox (badness 1348) in paragraph at lines 52--53
+warning: chapters/06_results_discussion:48: Underfull \hbox (badness 1033) in paragraph at lines 48--48
+note: Rerunning TeX because "main.toc" changed ...
+warning: algorithm.sty:11: 
+Invalid UTF-8 byte or sequence at line 11 replaced by U+FFFD.
+warning: chapters/05_experimental_design:53: Underfull \hbox (badness 1348) in paragraph at lines 52--53
+warning: chapters/06_results_discussion:48: Underfull \hbox (badness 1033) in paragraph at lines 48--48
 warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
 note: Running xdvipdfmx ...
-note: Writing `build/main.pdf` (252.8740234375 KiB)
-note: Writing `build/main.bbl` (6.5107421875 KiB)
-note: Writing `build/main.toc` (6.732421875 KiB)
+note: Writing `build/main.lof` (532 B)
+note: Writing `build/main.toc` (5.615234375 KiB)
+note: Writing `build/main.pdf` (195.2607421875 KiB)
+note: Writing `build/main.lot` (1010 B)
+note: Writing `build/main.bbl` (8.53515625 KiB)
+note: Writing `build/main.aux` (15.7412109375 KiB)
 note: Writing `build/main.blg` (379 B)
-note: Writing `build/main.aux` (19.8203125 KiB)
-note: Writing `build/main.lof` (837 B)
-note: Writing `build/main.log` (22.3583984375 KiB)
-note: Writing `build/main.lot` (2.0625 KiB)
+note: Writing `build/main.log` (21.271484375 KiB)

@@ -7,12 +7,19 @@ The prepared experimental data have disjoint training and test identities. A dec
 The 50:50 preparation rule is the original split procedure, not a statement that the final active-node totals or edge counts are identical between partitions. Filtering and removal of cross-partition edges can produce unequal counts. In particular, the fixed public Email universe contains 1005 identities, while the saved prepared training and test graphs contain 462 and 458 active nodes. The public identity universe must not be reconstructed from the current private vertex set.
 
 \section{Seed selection and Coverage}
-For a test graph $G^{\mathrm{test}}$, a scoring model $f_\theta$ gives a real-valued score to each candidate. The selected set $S_\theta$ contains the 50 highest pre-sigmoid scores, using the original stable local-ID rule for ties. Let $N^+(v)$ denote outgoing neighbors. Under the actual one-step probability-one evaluation,
+For a graph $G=(V,E)$ and a seed budget $k$, the generic influence-maximization objective is
+\begin{equation}
+ \max_{\substack{S\subseteq V\\ |S|\leq k}}
+ \mathbb{E}\!\left[|\mathcal{A}(S;G)|\right],
+ \label{eq:im-objective}
+\end{equation}
+where $\mathcal{A}(S;G)$ is the set of active vertices, including the seeds, at the end of the specified diffusion process. The expectation is over the randomness of that process \cite{kempe2003}.
+
+For a test graph $G^{\mathrm{test}}$, a scoring model $f_\theta$ gives a real-valued score to each candidate. The selected set $S_\theta$ contains the 50 highest pre-sigmoid scores, using the original stable local-ID rule for ties. Let $N^+(v)$ denote outgoing neighbors in the test graph. The implemented evaluation runs one step of the independent cascade process along outgoing edges with transmission probability one, so the spread is deterministic:
 \begin{equation}
  \operatorname{Spread}(S;G^{\mathrm{test}})
  =\left|S\cup\bigcup_{v\in S}N^+(v)\right|.\label{eq:spread}
 \end{equation}
-The generic IM objective is to maximize expected spread subject to $|S|\leq k$. Equation~\eqref{eq:spread} specializes the generic objective to the implemented evaluation. It is not the size of all nodes reachable over arbitrarily many steps.
 
 For graph $d$, let $c_d$ be the frozen CELF reference spread. The reported outcome is
 \begin{equation}
@@ -55,7 +62,7 @@ Uniform4 also retains all identities, but calibrates to the relaxed target 4. It
 A historical New Matched PDP mechanism trains only a 33-coordinate head with a publicly initialized frozen backbone. It has a useful privacy-matched conditional framework, but addresses a different training-space question. It remains a historical development reference and is not part of the main four-configuration comparison.
 
 \section{Descriptive research question}
-For each graph and configuration, the current empirical quantities are the Coverage mean and sample SD of three runs, with all three individual values documented. The comparison covers five datasets and four configurations, or 60 runs in total. Mean differences describe the observed utility tradeoff; historical results separately inform possible mechanisms of run-to-run variability. No confirmatory superiority, equivalence, or noninferiority test is introduced. A positive difference of sample means alone does not establish higher expected utility, and a smaller sample SD does not establish lower population variance.
+For each graph and configuration, the current empirical quantities are the Coverage mean and sample SD of five runs, with all five individual values documented. The comparison covers five datasets and four configurations, or 100 runs in total. Mean differences describe the observed utility tradeoff; historical results separately inform possible mechanisms of run-to-run variability. No confirmatory superiority, equivalence, or noninferiority test is introduced. A positive difference of sample means alone does not establish higher expected utility, and a smaller sample SD does not establish lower population variance.
 
 The comparison examines the trade-off between heterogeneous privacy requirements and influence-maximization utility. Initialization and fresh secret paths vary together across ordinary repeats, so the run summaries cannot separate their contributions to variability.
 

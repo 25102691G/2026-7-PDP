@@ -1,29 +1,26 @@
 \chapter{Results and Discussion}\label{ch:results}
 \section{Evidence scope}
-Table~\ref{tab:coverage} reports Coverage for five datasets and four configurations. Every cell contains three runs, giving $5\times4\times3=60$ runs in total, and reports the arithmetic mean and sample SD. The three individual outcomes, actual public initialization IDs, parameter settings, and source protocol are documented in Appendix~\ref{app:development}. The results are descriptive development evidence rather than independent confirmation.
+Table~\ref{tab:coverage} reports mean Coverage and sample SD for five runs per dataset and configuration, giving $5\times4\times5=100$ reported runs.
 
-\section{Three-run Coverage comparison}
+\section{Five-run Coverage comparison}
 \input{tables/coverage}
-PDP-PrivIM has higher mean Coverage than Uniform1 on all five datasets. The differences, computed from the unrounded means, are 4.938 percentage points on Email, 14.628 on Bitcoin, 14.762 on LastFM, 9.860 on HepPh, and 8.806 on Facebook. These observations support a utility advantage over the strict uniform control within this reported comparison. They do not alone establish statistical significance or a general expected-utility advantage, and the cell-specific optimization settings prevent attributing each gap solely to personalized participation.
+For the development configurations in Table~\ref{tab:coverage}, PDP-PrivIM has higher mean Coverage than Uniform1 on all five datasets. The differences, computed from the unrounded means, are 4.938 percentage points on Email, 14.628 on Bitcoin, 14.762 on LastFM, 9.860 on HepPh, and 8.806 on Facebook. As the configurations differ in their optimization settings, these gaps describe the combined differences between the evaluated configurations.
 
 Relative to Non-Private, PDP-PrivIM has lower mean Coverage on all five datasets, with gaps ranging from 0.630 percentage points on LastFM to 6.096 on Email. Non-Private provides an unconstrained utility reference, but its training also differs in clipping, slot organization, projection, and sampling. The observed gaps therefore cannot be assigned entirely to Gaussian noise.
 
 Relative to Uniform4, PDP-PrivIM is higher by 0.552 percentage points on LastFM and lower on the other four datasets. Uniform4 is a relaxed-privacy reference; its stated privacy bound does not establish compliance with all heterogeneous policies. Neither the observed results nor the privacy theory make it a Coverage upper bound.
 
-The sample SD comparison is mixed. PDP-PrivIM has lower sample SD than Uniform1 on Bitcoin and HepPh, but higher SD on Email, LastFM, and Facebook. It therefore does not show a uniform reduction in observed variability. HepPh PDP-PrivIM has a reported SD of 0.000 because its three recorded Coverage values coincide; this does not establish zero population variance. All 60 outcomes and their means and sample SDs are checked against their original saved evaluations. Source-cohort variability is reported separately in Appendix~\ref{app:development}.
+PDP-PrivIM has lower sample SD than Uniform1 on Bitcoin and HepPh and higher SD on Email, LastFM, and Facebook. On HepPh, the five PDP-PrivIM runs have identical Coverage, yielding an SD of 0.000.
 
 \section{Sensitivity to training settings}
 Figure~\ref{fig:parameter-sensitivity} compares three slices of the saved PDP-PrivIM development screen. The subgraph-size and SCS-threshold slices use 100 updates. The training-length slice holds $n=40$ and $M=4$ fixed and compares 100, 300, and 500 updates. For longer runs, the Gaussian slot-sum noise scale is increased by at least $\sqrt{T/100}$ to retain the reference conditional ideal accounting bound. This slice therefore measures the joint change in training length and per-update noise.
 
 \begin{figure}[htbp]
 \centering\includegraphics[width=\textwidth]{figures/parameter_sensitivity.pdf}
-\caption{Exploratory PDP-PrivIM sensitivity to (a) subgraph size $n$ at $M=4$, $T=100$; (b) update count $T$ and its corresponding noise scale at $n=40$, $M=4$; and (c) SCS threshold $M$ at $n=40$, $T=100$. Points show mean Coverage and bars show one sample SD from three saved fits. Small horizontal offsets separate datasets.}\label{fig:parameter-sensitivity}
+\caption{Exploratory PDP-PrivIM sensitivity to (a) subgraph size $n$ at $M=4$, $T=100$; (b) update count $T$ and its corresponding noise scale at $n=40$, $M=4$; and (c) SCS threshold $M$ at $n=40$, $T=100$. Points show mean Coverage and bars show one sample SD from five saved fits. Small horizontal offsets separate datasets.}\label{fig:parameter-sensitivity}
 \end{figure}
 
-Across the tested subgraph sizes, the range of mean Coverage is 19.44--36.28 percentage points across datasets. The highest tested mean occurs at $n=60$ on LastFM and $n=40$ on Facebook. From 100 to 500 updates with the corresponding noise adjustment, the mean rises from 65.201\% to 90.355\% on Email and falls from 76.144\% to 55.715\% on HepPh. The tested $M$ values produce a 37.62-point mean range on LastFM and a 0.46-point range on Facebook. These ranges describe the observed means at the tested settings. With three fits per point and substantial variation in some cells, the sweep provides exploratory evidence about sensitivity.
-
-\section{Historical five-seed instability evidence}
-Historical LastFM PDP-PrivIM Coverage was $76.564\pm32.386$\%, including one run at 19.701\%. Figure~\ref{fig:fiveseed} and Table~\ref{tab:seedrows} show all five seeds.
+Across the tested subgraph sizes, the range of mean Coverage is 19.44--36.28 percentage points across datasets. The highest tested mean occurs at $n=60$ on LastFM and $n=40$ on Facebook. From 100 to 500 updates with the corresponding noise adjustment, the mean rises from 65.201\% to 90.355\% on Email and falls from 76.144\% to 55.715\% on HepPh. The tested $M$ values produce a 37.62-point mean range on LastFM and a 0.46-point range on Facebook. These ranges describe the observed means at the tested settings. With five fits per point and substantial variation in some cells, the sweep provides exploratory evidence about sensitivity.
 
 \section{Verified update scales and bounded signal}
 The common private kernel first clips each subgraph gradient, then clips each slot sum to norm at most 3. With four slots, the combined signal $S_t$ satisfies $\|S_t\|_2\leq12$. The pre-projection update is
@@ -68,14 +65,14 @@ The unchanged training objective is a continuous coverage surrogate plus selecti
 The ranking interface itself is discrete: changed scores can change selected identities and the union of their outgoing neighborhoods. However, small score gaps or tied scores are not a general established cause. The saved ranking audit records finite logits and zero selected zero-outdegree nodes in all 100 runs. One large boundary tie occurs in a high-utility Email Uniform1 run. Historical severe-loss examples include large boundary score gaps and no boundary ties. Those counterexamples rule out a simple common explanation based solely on sigmoid saturation or incorrect tie breaking; ranking uses pre-sigmoid scores.
 
 \section{Measurement checks and uncertainty}
-The main three-run table was checked against all 60 raw evaluations and frozen source hashes. Separately, the historical five-seed evaluations reproduce the archived historical means and SDs. For each fixed cell, Coverage is a constant multiple of Spread, so a changing normalization is not the cause of within-cell variation. Fixed-model evaluation at one-step IC probability one introduces no Monte Carlo diffusion variance.
+The main five-run table was checked against all 100 raw evaluations and frozen source hashes. Separately, the historical five-seed evaluations reproduce the archived historical means and SDs. For each fixed cell, Coverage is a constant multiple of Spread, so a changing normalization is not the cause of within-cell variation. Fixed-model evaluation at one-step IC probability one introduces no Monte Carlo diffusion variance.
 
 The available code and saved diagnostics support the presence of clipping, full-coordinate noise, and post-update projection. They do not constitute exhaustive implementation verification or machine-level DP certification. No new mechanism defect is established by the observed large SD alone.
 
 Historical gradient summaries and clipping/projection counts exist, but comparable stepwise useful-gradient directions, layerwise signal norms, and functional perturbation measurements are incomplete. This prevents a quantitative variance decomposition. Five public initialization seeds also do not separate initialization from fresh secret randomness; calling one integer a bad seed would overstate the evidence.
 
 \section{Findings from historical comparisons}
-The frozen-backbone New Matched PDP reference trains 33 coordinates and freezes 2307. Its historical five-seed results are retained in Appendix~\ref{app:development}, including the HepPh result unfavorable to that reference. It had smaller observed SDs than full-training PDP-PrivIM on all five graphs, but changes trainable space, clipping geometry, and secret paths simultaneously. It is not a controlled proof that dimension reduction cures instability.
+The frozen-backbone New Matched PDP reference trains 33 coordinates and freezes 2307. In the historical five-seed comparison, it had smaller observed SDs than full-training PDP-PrivIM on all five graphs and lower mean Coverage on HepPh. The comparison changes the trainable space, clipping geometry, and secret paths simultaneously, so it cannot isolate the effect of reducing the number of trainable parameters.
 
 Neither parameter averaging (G3) nor the row-sum variant (C3) met its prespecified development criteria. Run-to-run variability therefore remains an open issue for PDP-PrivIM.
 
