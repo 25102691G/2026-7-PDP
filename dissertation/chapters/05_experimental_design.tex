@@ -24,7 +24,7 @@ The split procedure does not require equal final active-node or edge counts. The
 \section{Main experimental comparison}\label{sec:main-experiment}
 Table~\ref{tab:coverage} summarizes results for five datasets and four configurations. Each configuration has five runs on each dataset, giving 100 runs in total. Each run consists of model initialization, training for the specified number of updates, and one final-state evaluation. Each cell reports mean Coverage and sample SD.
 
-The training-subgraph size, SCS threshold, and update count vary by differrent dataset. Runs use 100, 300, or 500 updates. In the private runs, $n$ and $M$ modify the local sampler. The two-slot membership bound, fixed update denominator, and slot clipping remain the same, so Lemma~\ref{lem:sensitivity} still gives sensitivity at most 12 under its stated assumptions.
+The training-subgraph size, SCS threshold, and update count vary by dataset. Runs use 100, 300, or 500 updates. In the private runs, $n$ and $M$ modify the local sampler. The two-slot membership bound, fixed update denominator, and slot clipping remain the same, so Lemma~\ref{lem:sensitivity} still gives sensitivity at most 12 under its stated assumptions.
 
 \paragraph{Noise calibration.}
 The longer runs multiply each reference Gaussian draw by a public factor $f_T\geq\sqrt{T/100}$. In the ideal mechanism, the resulting scale is $\sigma_T=\sigma_{100}f_T$. Substituting into Equation~\eqref{eq:rdp} gives $\rho_T(\alpha)\leq\rho_{100}(\alpha)$ at every order $\alpha>1$. The reference conversion and, for PDP-PrivIM, one-time amplification therefore give the same conditional ideal upper bounds for each individual model. For example, PDP-PrivIM uses 500 updates with nominal $\sigma_T\approx581.378$ on Email and 300 updates with $\sigma_T\approx450.333$ on LastFM. The recorded scales for all cells accompany the run records described below. Development selection and joint model publication require separate accounting.
@@ -48,7 +48,7 @@ The private configurations have four stable slots, two memberships per identity,
 
 Non-Private retains ordinary batch-mean SGD without private slots, clipping, Gaussian noise, or private post-update projection. Its sampling parameter is $Q=256$, whereas each private slot uses $Q=64$. Consequently its comparison with private training changes several operations, not just the noise source. Uniform1 and PDP-PrivIM meet the same declared caps through different sufficient bounds, without equal actual privacy loss. Uniform4 is neither a same-policy substitute nor a theoretical Coverage upper bound.
 
-\section{five-run summaries and historical repetition}
+\section{Five-run summaries and historical repetition}
 The main comparison uses five runs in every cell. Separately, the earlier complete reference study used fixed public initialization seeds $0,1,2,3,4$ for each graph/configuration cell, trained for 100 updates, and evaluated each model once at its final state. That historical design has $5\times4\times5=100$ outcomes, with 100 attempts, no failures, no retries, and no unexecuted tasks. All historical outcomes remain in their original summaries \cite{projectdev}. Those counts describe the historical study, not the current 100-run table or the entire development search.
 
 Both sets of experiments informed development decisions. Public initialization seeds identify initial model states. Each private fit uses fresh secret Gaussian or Bernoulli draws as applicable. Runs with the same public seed can therefore follow different training paths across configurations.
@@ -58,7 +58,7 @@ For $r$ Coverage values, summaries use $r=5$ for every current dataset/configura
  \bar C=\frac{1}{r}\sum_{i=0}^{r-1}C_i,\qquad
  s=\sqrt{\frac{1}{r-1}\sum_{i=0}^{r-1}(C_i-\bar C)^2}.\label{eq:fiveseed}
 \end{equation}
-The displayed uncertainty is sample SD, not standard error or a confidence interval. With five observations, its denominator is $r-1=4$; sample variance is $s^2$ and is not substituted under the SD label. five runs provide a limited estimate of variability, and zero observed SD does not imply zero population variance. Within each fit, the final model is evaluated without test-Coverage checkpoint selection.
+The displayed uncertainty is sample SD, not standard error or a confidence interval. With five observations, its denominator is $r-1=4$; sample variance is $s^2$ and is not substituted under the SD label. Five runs provide a limited estimate of variability, and zero observed SD does not imply zero population variance. Within each fit, the final model is evaluated without test-Coverage checkpoint selection.
 
 \section{Final evaluation}
 Final ranking uses pre-sigmoid scores and the original stable local-ID tie rule to choose 50 unique nodes. Spread is one-step outgoing IC with $p=1$; Coverage is $100\,\mathrm{Spread}/\mathrm{CELF}$ using the fixed denominator in Table~\ref{tab:datasets}. Evaluation is deterministic for a fixed model and graph. Training-path variability, rather than repeated Monte Carlo diffusion, is the source investigated here.

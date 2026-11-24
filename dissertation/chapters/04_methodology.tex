@@ -1,4 +1,13 @@
 \chapter{Proposed Personalized Node-DP Mechanism}\label{ch:method}
+Figure~\ref{fig:pdp-workflow} shows how the public Registry informs one-time participation, how the retained graph supports slot-local training, and how the final model is evaluated on the held-out test graph. The workflow uses the GRAT3 model and RWR/SCS/BES sampling inherited from PrivIM \cite{hou2025}.
+
+\begin{figure}[htbp]
+\centering
+\input{figures/pdp_workflow}
+\caption[PDP-PrivIM training and evaluation workflow]{PDP-PrivIM training and evaluation workflow. The training mechanism releases the final model parameters and genuinely public configuration. Test evaluation combines the model with a separate held-out graph.}
+\label{fig:pdp-workflow}
+\end{figure}
+
 \section{Frozen system and model}
 PDP-PrivIM changes the private training organization while preserving the existing GRAT3, loss, and subgraph construction. The trained parameter vector has dimension 2340. Its three layers map 32 to 32, 32 to 32, and 32 to 1 dimensions, using all-one 32-dimensional input features.
 
@@ -19,6 +28,29 @@ For a sampled subgraph, let $q_i$ be its sigmoid node output and $A^+$ the origi
 \end{equation}
 The first term penalizes uncovered vertices in the differentiable surrogate; the second penalizes selection mass. The Top-50 training argument does not replace this penalty with a new constrained optimizer. The mathematical description follows the frozen loss implementation rather than proposing a revised objective.
 
+\subsection{What the training surrogate rewards}
+On a sampled subgraph, consider an auxiliary seed set in which each node $i$ is selected independently with probability $q_i$. This is a mathematical interpretation of the loss in Equation~\eqref{eq:loss}. The frozen training code evaluates the product directly, and the final evaluator takes the Top-50 scores. Under the auxiliary interpretation, node $j$ is uncovered exactly when every candidate $i$ with $A^+_{ij}=1$ is omitted. Thus
+\begin{align}
+ \Pr[j\text{ is uncovered}]
+ &=\prod_i(1-q_iA^+_{ij}),\\
+ \mathcal L(q,A^+)
+ &=|V_{\mathrm{sub}}|-\mathbb E[\operatorname{Spread}(S)]
+    +0.5\,\mathbb E[|S|],
+ \label{eq:expected-surrogate}
+\end{align}
+where $V_{\mathrm{sub}}$ is the local subgraph vertex set and $S$ in the expectation is the auxiliary seed set. The added identity matrix counts every seed as covered. The product represents one-step spread on the sampled subgraph, with the orientation inherited from the frozen adjacency.
+
+Differentiating with respect to one score gives
+\begin{equation}
+ \frac{\partial \mathcal L}{\partial q_i}
+ =0.5-
+   \sum_{j:A^+_{ij}=1}\;\prod_{\ell\ne i}(1-q_\ell A^+_{\ell j}).
+ \label{eq:surrogate-derivative}
+\end{equation}
+The sum is the expected additional reach of seed $i$ under the other candidates' auxiliary probabilities. When another likely seed already covers $j$, the factor for that seed is small, and $j$ contributes less to the benefit of increasing $q_i$. This is how the loss represents neighborhood overlap. For a sigmoid logit $z_i$, the derivative with respect to $z_i$ multiplies Equation~\eqref{eq:surrogate-derivative} by $q_i(1-q_i)$, so the gradient can be small near either endpoint even when the expected marginal reach differs from the selection penalty.
+
+Equations~\eqref{eq:expected-surrogate} and~\eqref{eq:surrogate-derivative} distinguish two training and evaluation decisions. The penalty controls expected selection mass locally during training, while the evaluator imposes a fixed cardinality on a separate graph. In addition, $\operatorname{Spread}$ on the sampled subgraph uses only edges visible in that subgraph. Neighboring vertices outside it can contribute to the test objective but cannot contribute to this gradient. These properties explain why cache construction, model scoring, and the discrete ranking must all be specified to interpret the reported utility.
+
 \section{Public Registry and one-time participation}
 The Registry fixes targets for all identities in $U$ before graph training. Its nominal public proportions are 20\%, 40\%, and 40\% for targets 1, 2, and 4, with integer quotas resolved by the existing rule. Those proportions concern the full public universe, not realized training membership or a secret retained graph.
 
@@ -35,6 +67,64 @@ Slot $j$ accesses only $H[V(H)\cap U_j]$. It has its own deterministic sampling 
 
 Every update obtains up to four positions from each slot's cache, padding missing positions with zero contribution. There is no borrowing from other slots. Four slots and four positions produce a fixed denominator $B=16$. Cache reuse across updates is allowed because the proof handles arbitrary private within-slot state rather than treating every sampled subgraph as an independent protected record.
 
+\subsection{Role of the inherited sampling stages}
+The PrivIM framework organizes subgraph extraction, private training, and accounting as distinct computations \cite{hou2025}. Random Walk with Restart builds training examples around starting vertices. A walk preferentially sees graph paths accessible from its current vertex and periodically returns to its start. Sensitivity-Constrained Sampling (SCS) tracks how often nodes have entered accepted subgraphs. Its frequency-dependent rule limits repeated use of the same vertices. Boundary-Enhanced Sampling (BES) uses the remaining allowances to include structure that the first stage may have missed. In PDP-PrivIM both stages read and update the state for one slot at a time.
+
+The order of these operations matters. Outer participation decides which vertices and incident edges exist in the retained graph for all subsequent updates. Slot membership then determines which retained nodes and edges a sampler can access. Only after those steps can RWR, SCS, and BES form training examples. For instance, having spare allowance in BES can make a vertex eligible for an additional subgraph, provided the vertex already lies in the retained slot graph. An edge unavailable in every slot remains unavailable to the sampler no matter how many walks are taken. Table~\ref{tab:sampling-design} traces each decision to the part of the pipeline it controls.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Participation, locality, and sampling decisions in PDP-PrivIM}
+\label{tab:sampling-design}
+\begin{tabularx}{\textwidth}{@{}p{.21\textwidth}XX@{}}
+\toprule
+Operation & Effect on training input & Role in the conditional analysis \\
+\midrule
+Outer participation & Retains whole identities and induces a graph for the complete run. & Provides one law for mixing presence and absence of the protected node. \\
+Stable slots & Exposes only the induced graph and local state of each slot. & Bounds the number of slot contributions that can change under node removal. \\
+RWR, SCS, and BES & Build and reuse local caches with the public size and frequency settings. & May change arbitrarily within a slot touched by the removed node. \\
+Zero padding and slot clipping & Reserve a fixed number of positions and bound each slot sum. & Give a common gradient scale and a bounded contribution before Gaussian noise. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{How participation and local views change structural information}
+Some differences in the information available to training can be quantified before a cache is built. For a fixed input graph let $I_v$ indicate whether a present node survives the one-time participation draw. Then $|V(H)|=\sum_{v\in V}I_v$, with expectation $\sum_{v\in V}p_v$. An edge $(u,v)$ with distinct endpoints survives in $H$ exactly when $I_u I_v=1$, giving
+\begin{equation}
+ \mathbb E[|E(H)|]=\sum_{(u,v)\in E}p_up_v.
+ \label{eq:expected-retained-edges}
+\end{equation}
+The edge indicators need not be independent. For distinct $u,v,w$ with edges $(u,v)$ and $(u,w)$, their covariance is $p_u(1-p_u)p_vp_w$. One strict node's participation decision is shared across all of its incident edges. Its removal can eliminate several paths together, even though the endpoint draws are independent.
+
+Let $c_{uv}=\sum_{j=0}^{3}\mathbf{1}\{u,v\in U_j\}$ count the fixed slots that contain both endpoints. At each of the two partition levels, the endpoints can share at most one slot, so $c_{uv}\in\{0,1,2\}$. The edge has $c_{uv}I_u I_v$ copies across the local graphs. In particular,
+\begin{equation}
+ \mathbb E\!\left[\sum_{j=0}^{3}|E(H_j)|\right]
+ =\sum_{(u,v)\in E}c_{uv}p_up_v .
+ \label{eq:expected-slot-edges}
+\end{equation}
+This sum counts edge copies across slots before cache construction. An edge whose endpoints separate at both levels has no local copy. An edge whose endpoints share a slot at both levels has two copies whenever it survives. A surviving vertex itself occupies exactly two local graphs, including when it is isolated in either one. Node membership and edge visibility are therefore quantified by different expressions.
+
+As an illustration, at the reference participation probability a strict target-1 vertex with two target-2 neighbors retains both incident edges with probability about $0.269$ before slot induction, or loses both with probability about $0.731$. If the two edges have $c_{uv}=0$ and $c_{uw}=2$ respectively, the first edge is absent from every local graph and the second contributes either two copies or none. This calculation uses a hypothetical neighborhood and public parameters. The resulting counts precede the walk, frequency constraints, and optimization, so they cannot determine either the learned ranking or its Coverage.
+
+Group edges by the targets assigned to their two endpoints, ignoring the order of the endpoints for this grouping. Write $p_1=1/(e+1)$ for the participation probability of a target-1 identity. Table~\ref{tab:edge-retention} gives the analytical retention factors for the three types of endpoint pairs induced by the policy. Each factor multiplies the original number of edges of that type when calculating the expected retained count in $H$. For local graphs, it instead multiplies the sum of $c_{uv}$ over that edge class. The public proportions constrain how many identities carry each label, while the edge profile depends on how the graph connects them. Both expectations therefore depend on the endpoints of the actual edges.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Analytical edge retention factors before local cache construction}
+\label{tab:edge-retention}
+\begin{tabularx}{\textwidth}{@{}Xcc@{}}
+\toprule
+Endpoint target classes & $\Pr[(u,v)\in E(H)]$ & Expected local edge copies \\
+\midrule
+Both targets are 1 & $p_1^2\approx0.0723$ & $c_{uv}p_1^2$ \\
+One target is 1, the other is 2 or 4 & $p_1\approx0.2689$ & $c_{uv}p_1$ \\
+Both targets are in $\{2,4\}$ & $1$ & $c_{uv}$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Uniform1 assigns participation probability one to every vertex, so before cache construction it exposes $c_{uv}$ copies of each input edge. This gives a precise structural contrast with PDP-PrivIM while holding the public slot rule fixed. A neighborhood consisting mainly of edges between strict identities has lower marginal edge retention than one connected mainly to targets 2 and 4. The analysis concerns what is available to the learner. It gives no ordering of the eventual training losses: cache construction changes which examples enter, and the two private configurations use different Gaussian scales.
+
 \section{Double clipping and Gaussian update}
 Let $g_{tji}\in\R^{2340}$ be the full gradient at update $t$, slot $j$, position $i$. Use the frozen clipping operation, whose real-arithmetic norm bound is 3, to form
 \begin{align}
@@ -44,7 +134,7 @@ Let $g_{tji}\in\R^{2340}$ be the full gradient at update $t$, slot $j$, position
 \end{align}
 The implementation includes a $10^{-6}$ denominator offset and inward norm margin. The proof uses the resulting bound rather than claiming that its literal code is identical to an ideal radial clip at every point. Missing positions and predefined nonfinite contributions are replaced by zero. These conventions do not constitute a proof covering every floating-point execution.
 
-For a run with a fixed public update count $T$ and sum-scale noise standard deviation $\sigma_T$, each complete slot sum receives an independent Gaussian vector:
+For a fixed public update count $T$ and sum-scale noise standard deviation $\sigma_T$, each update adds one Gaussian vector to the aggregate $S_t$ of all four slot contributions. The vectors are drawn independently across updates:
 \begin{align}
  Z_t&\sim\mathcal{N}(0,\sigma_T^2I_{2340}), &Y_t&=S_t+Z_t,\\
  \theta_{t+1}&=\Pi\!\left(F\left(\theta_t-\frac{0.005}{16}Y_t\right)\right).
@@ -54,18 +144,25 @@ Here $F$ denotes the specified finite-state repair in the implementation, interp
 
 The Gaussian is full-rank in all 2340 trained coordinates. The update divides both the sum-scale sensitivity and standard deviation by 16, so their ratio is unchanged. In the reference setting, the resulting sensitivity and standard deviation are 0.75 and 16.25. Learning-rate multiplication is further postprocessing.
 
-\begin{algorithm}[htbp]
+\begin{algorithm}[H]
 \caption{PDP-PrivIM training (ideal mathematical description)}\label{alg:pdp}
 \begin{algorithmic}[1]
 \Require Legal decoded graph $G$, fixed public $U,\mathcal R$, public initialization seed
 \Require Public sampler settings $n,M$, update count $T$, and sum-noise scale $\sigma_T$
 \State Draw one independent participation decision per present identity using \eqref{eq:participation}
 \State Let $H$ be the induced retained graph; initialize all 2340 GRAT3 coordinates
-\State Build four isolated slot caches from $H$ with RWR/SCS/BES using $n,M$
+\For{$j=0,\ldots,3$}
+  \State Induce the local graph $H_j = H[V(H)\cap U_j]$
+  \State Build slot $j$'s cache from $H_j$ with RWR/SCS/BES using $n,M$
+\EndFor
 \For{$t=0,\ldots,T-1$}
- \State Obtain four padded positions per slot; initialize missing contributions to zero
- \State Compute original full-coordinate loss gradients and individual Clip3
- \State Clip each slot sum to norm at most 3 and sum all four slots as $S_t$
+ \For{$j=0,\ldots,3$}
+  \State Read up to four positions using slot $j$'s local cache and cursor
+  \State Compute and clip each available full-coordinate loss gradient
+  \State Set missing or predefined nonfinite contributions to zero
+  \State Clip the sum of the four contributions to obtain $b_{tj}$
+ \EndFor
+ \State Sum the four slot vectors as $S_t=\sum_{j=0}^{3} b_{tj}$
  \State Draw fresh $Z_t\sim\mathcal N(0,\sigma_T^2I_{2340})$ and set $Y_t=S_t+Z_t$
  \State Update with fixed denominator 16 and learning rate 0.005
  \State Apply original state handling; project only the last 32 feature-map weights
@@ -83,7 +180,88 @@ Second, all graph-dependent sampling and gradient computations remain slot-local
 
 Third, the ideal mechanism uses independent exact Gaussian innovations and the stated participation probabilities; updates and projection depend only on public information and noisy history. The release is the fixed parameter vector, not timing, failure behavior, cache statistics, or unrestricted research diagnostics. Exact continuous arithmetic and distributions are mathematical assumptions rather than certified properties of the machine.
 
+\section{Occurrence-Capped PrivIM}\label{sec:floor1}
+\subsection{Personalizing the PrivIM sampler}
+Original PrivIM uses a common occurrence threshold in its SCS and BES stages \cite{hou2025}. The alternative implementation replaces that threshold with a node-specific cap and retains the shared frequency state between the two stages. We call it \emph{Occurrence-Capped PrivIM}. The run archive calls it \texttt{PDP-Floor1}, a name that refers to its minimum nominal target of 1 \cite{floor1runs}.
+
+The historical configuration assigned nominal targets $\epsilon_v^{\mathrm{tar}}\in\{1,2,4\}$ to groups with proportions $30\%$, $40\%$, and $30\%$, and mapped those targets to occurrence caps $M_v\in\{4,10,100\}$, respectively. The assignment seed was 0 and the privacy-dependent sampling exponent was 0. The sampler checks the remaining allowance when selecting starts and walk candidates. It increments a node's count only when a subgraph containing that node is accepted. Boundary-Enhanced Sampling (BES) starts from nodes with remaining allowance and shares the counts accumulated by Sensitivity-Constrained Sampling (SCS). The cap therefore limits total accepted occurrences across both stages on a given input graph \cite{floor1runs}.
+
+Algorithm~\ref{alg:floor1-sampler} summarizes the cap logic. A node can exhaust its allowance during SCS and become unavailable to BES. A node with unused allowance can be sampled in BES. Thus the number of accepted occurrences reflects both its assigned cap and the order in which subgraphs enter the container.
+
+\begin{algorithm}[!htbp]
+\caption{Shared counting in Occurrence-Capped PrivIM}\label{alg:floor1-sampler}
+\begin{algorithmic}[1]
+\Require Graph $G$, target subgraph size $n$, start sampling rate $q$, caps $(M_v)$
+\State Initialize counts $f_v\gets 0$ and container $\mathcal S\gets [\,]$
+\For{stage in SCS, then BES}
+ \State Select candidate starts using the stage's rule and remaining allowance
+ \For{each selected start $s$ in the stage's processing order}
+  \If{$f_s<M_s$}
+   \State Run the stage's walk, allowing candidate nodes $v$ only if $f_v<M_v$
+   \If{the stage accepts the resulting subgraph $A$}
+    \State Append $A$ to $\mathcal S$ and increment $f_v$ for every $v$ in $A$
+   \EndIf
+  \EndIf
+ \EndFor
+\EndFor
+\State \Return $\mathcal S$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Noise calibration and its assumptions}
+Training clips each subgraph gradient before summing the batch and adding Gaussian noise. For container size $m$ and batch size $B$, the legacy \texttt{paper\_binomial} accountant assigns each batch term an affected-term probability $r_v=\min(M_v,m)/m$ and models the affected count as $\operatorname{Binomial}(B,r_v)$. It uses $Cj$ as the displacement of the gradient sum when $j$ terms are affected, composes over the training updates, and converts the result to an $\epsilon$ value for each group. The implementation searches for one standard deviation on the gradient sum that meets all three nominal targets under this calculation. Applying the calculation to node removal requires a justification for using $M_v$ to control affected terms across adjacent graphs \cite{floor1audit,floor1runs}.
+
+Two bounds are needed for this argument. One must relate the regenerated containers on adjacent inputs to count the affected batch terms. The other must account for how those terms differ. Adding or dropping a vector of norm at most $C$ changes the sum by at most $C$. Replacing it with another clipped vector can change the sum by up to $2C$. The larger per-term bound still requires a justified count of affected terms.
+
+\subsection{Counterexamples under node removal}
+Consider the undirected path $0$--$1$--$2$--$3$--$4$--$5$ with target subgraph size $n=2$, cap $M=1$ for every node, and start sampling rate $q=1$. With SCS and BES enabled, all starts are candidates, and SCS considers them in fixed order. An unsaturated start with an admissible neighbour has only one such neighbour in this example. Removing node 0 shifts the SCS pairings by one position and leaves node 5 for BES. Figure~\ref{fig:floor1-removal} shows how the regenerated containers differ \cite{floor1audit}.
+
+\begin{figure}[!htbp]
+\centering
+\input{figures/floor1_removal}
+\caption[Occurrence-capped sampling before and after node removal]{Regenerated subgraphs on the six-node path. Thick blue edges form SCS pairs. Thin grey edges are unselected path edges. The orange node is the BES singleton, and the dashed outline marks the removed node.}
+\label{fig:floor1-removal}
+\end{figure}
+
+On the original graph, accepting $\{0,1\}$ exhausts the allowance of both nodes. The next available starts are 2 and then 4. After removing 0, the first start is 1 and its only available neighbour is 2. This leaves 3 to pair with 4, and BES takes the remaining singleton $\{5\}$.
+
+Node 0 appears only once on the original graph. Yet the equal-sized containers have no identical items when matched by original node identities and induced edges. Even an optimal matching requires three replacements, including the two original subgraphs that exclude node 0. Both containers are fixed in this construction, so coupling the sampler randomness cannot reduce the discrepancy. The occurrence cap holds on each graph, while the claimed bound of $M$ replacements fails.
+
+A second audit example checks the effect on actual clipped gradients. At fixed model parameters, the directed-path construction with $n=2$, $M=1$, $B=16$, and $C=3$ yields a Euclidean difference of approximately $48$ between the two clipped gradient sums. This exceeds both $CM=3$ and $2CM=6$ for the audited query. Allowing up to $2C$ per changed term accounts for replacement, but using $M$ to count those terms still fails in this example. The witness concerns the audited construction and update. The final-model guarantee for the original caps $(4,10,100)$ remains unestablished, and determining whether that configuration exceeds its targets would require a separate analysis \cite{floor1audit}.
+
+\subsection{Choice of mechanism}
+The three-graph sensitivity panel contains 180 newly trained and evaluated runs of Occurrence-Capped PrivIM. The separate six-graph archive records 30 checkpoints from five runs per graph and three budget-group evaluation rows per checkpoint. The later Bitcoin and Facebook step-size study includes 20 runs of this alternative. The audit and the later study record matching source digests for the sampler, accountant, and training entry point. Source equivalence between the audit and the earlier runs remains unverified \cite{floor1audit,floor1runs}.
+
+Both implementations inherit PrivIM's SCS and BES sampling. Occurrence-Capped PrivIM directly extends the original sampler's frequency threshold. PDP-PrivIM runs the inherited sampler inside a redesigned training mechanism. Table~\ref{tab:floor1-comparison} compares the two designs.
+
+\begin{table}[H]
+\centering
+\caption{Personalization and sensitivity in the two PrivIM-based designs}
+\label{tab:floor1-comparison}
+\begin{tabularx}{\textwidth}{@{}p{.19\textwidth}XX@{}}
+\toprule
+Design element & Occurrence-Capped PrivIM & PDP-PrivIM \\
+\midrule
+Use of targets & Three node occurrence caps & One-time retention, with targets 2 and 4 sharing the base bound \\
+Sampling state & One container with shared SCS/BES counts & Separate state in fixed public slots \\
+Clipping & Individual subgraph gradients & Individual gradients and each slot sum \\
+Node removal & Cross-graph stability remains unestablished & At most two slot contributions can change under the locality assumptions \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+PDP-PrivIM distinguishes privacy groups through one-time participation. Targets 2 and 4 share the same participation probability and base privacy bound. The sensitivity argument instead relies on a fixed public slot assignment and clipping of whole slot contributions. Under Section~\ref{sec:conditions}, at most two slots can change on node removal, even if every subgraph within those slots changes. Lemma~\ref{lem:sensitivity} bounds the resulting displacement by $2CK=12$. This bound supports the Gaussian accounting and subsequent personalized amplification used for the single-model guarantee in this dissertation.
+
 \section{Locality and sensitivity}
+Figure~\ref{fig:pdp-slot-locality} illustrates locality after participation. At a fixed past noisy transcript, the two slots that exclude $v$ receive identical local graphs on both sides, so their contributions agree under the same local role streams.
+
+\begin{figure}[!htbp]
+\centering
+\input{figures/pdp_slot_locality}
+\caption[Node removal under stable slot assignment]{Node removal under stable slot assignment. In this illustrative retained graph, $v$ belongs to $U_0$ and $U_2$. Removing $v$ deletes its incident edges and can change computations only in those two slots. The slot assignments of $a$ and $b$ stay fixed.}
+\label{fig:pdp-slot-locality}
+\end{figure}
+
 \begin{lemma}[Conditional slot-sum sensitivity]\label{lem:sensitivity}
 For any fixed data-independent non-Gaussian role tape and common past noisy transcript, node add/remove adjacency changes $S_t$ by at most $2CK=12$ in Euclidean norm.
 \end{lemma}
@@ -98,6 +276,18 @@ At most two slots contain $v$. Within those slots, node deletion may change ever
 \end{equation}
 Changing public $n$ or $M$ can change all samples in an affected slot. The same sensitivity bound holds as long as slot membership and local sampling satisfy Section~\ref{sec:conditions}, the fixed four-by-four padding rule is preserved, and each slot contribution is clipped to $C=3$. The SCS threshold $M$ controls within-slot sampling; the public slot assignment fixes $K=2$. Separately, $\|S_t\|_2\leq4C=12$ by the triangle inequality.
 \end{proof}
+
+\subsection{Clipping and padding as parts of the query}
+Clipping at the two levels addresses different features of the computation. At the position level, each of the up to four gradient vectors in a slot enters the sum with a bounded norm, and a missing vector is zero. At the slot level, the entire sum is mapped into the radius-$C$ ball before aggregation. The proof tolerates complete replacement of that slot sum. For comparison, with only position clipping, the sum of four bounded vectors can have norm $4C$. Bounding two changed slot sums by their radii would then give the weaker generic sensitivity bound $2K(4C)$, using the same locality argument. Slot clipping replaces $4C$ by $C$ in that calculation. The positional clipping remains relevant to the training direction when a single subgraph gradient would otherwise dominate the sum before slot clipping.
+
+The fixed batch denominator also has a direct role. For the mean-scaled query, dividing by $B=16$ multiplies both the sensitivity bound and the Gaussian standard deviation by the same public factor. A mean normalized by the number of nonempty positions would be a different query. To see the issue, write $m$ and $m'$ for positive, possibly different position counts on adjacent graphs. The difference between normalized signals would decompose as
+\begin{equation}
+ \frac{S}{m}-\frac{S'}{m'}
+ =\frac{S-S'}{m}+
+       S'\left(\frac{1}{m}-\frac{1}{m'}\right).
+ \label{eq:variable-normalization}
+\end{equation}
+The second term can change the weight of even the unchanged slots. The stored kernel instead uses the same denominator for empty, partially filled, and full batches. The Gaussian enters on the sum scale, and the fixed scaling of the noisy sum preserves the accounting in the update.
 
 \section{Gaussian RDP and adaptive composition}
 For fixed common history, the conditional distributions of $Y_t$ are Gaussians with covariance $\sigma_T^2 I_{2340}$. At any real order $\alpha>1$, their divergence satisfies
@@ -161,6 +351,43 @@ Since $D_*\geq1$ and $[1+p(a-1)]D_*-a=p(1-p)(a-1)^2\geq0$, the common pair in \e
 \end{proof}
 
 Targets 2 and 4 have the same participation probability and base mechanism. Therefore the extra allowance above 2 is unused. This is not a proof error, nor does $1.982/4$ measure exact budget consumption. The bound is sufficient and potentially conservative.
+
+\subsection{Interpreting the target-to-bound curve}
+Figure~\ref{fig:target-bound} evaluates Equation~\eqref{eq:amplified} with the reference $\epsilon_0$ and the policy in Equation~\eqref{eq:participation}. For a nominal target $\tau$ between zero and two, substituting the participation probability gives
+\begin{equation}
+ \epsilon(\tau)=\log\bigl(1+\lambda(e^\tau-1)\bigr),
+ \qquad \lambda=\frac{e^{\epsilon_0}-1}{e^2-1}<1 .
+ \label{eq:target-curve}
+\end{equation}
+For $\tau>0$, the argument of the logarithm is strictly less than $e^\tau$. The reference epsilon bound is therefore below the nominal target on this branch. Above two, the cap $p_v\leq1$ fixes $\epsilon(\tau)=\epsilon_0$. The delta bound follows the same participation probability and reaches $\delta_0$ at target two. The policy uses the three marked targets. The continuous curve shows how the same formula behaves between those choices.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=2.1cm,y=1.55cm]
+ \draw[->,>=stealth] (0,0) -- (4.35,0)
+   node[below right,align=left] {Nominal target\\$\tau$};
+ \draw[->,>=stealth] (0,0) -- (0,2.65)
+   node[above,align=center] {Certified bound $\epsilon(\tau)$};
+ \foreach \x in {1,2,4}
+   \draw (\x,0.045) -- (\x,-0.045) node[below] {$\x$};
+ \foreach \y in {1,2}
+   \draw (0.04,\y) -- (-0.04,\y) node[left] {$\y$};
+ \draw[gray,densely dashed] (0,0) -- (2.48,2.48)
+   node[above right,black] {$\epsilon=\tau$};
+ \draw[very thick,blue!65!black,domain=0:2,samples=70]
+   plot (\x,{ln(1+(exp(1.982093)-1)*(exp(\x)-1)/(exp(2)-1))});
+ \draw[very thick,blue!65!black] (2,1.982093) -- (4.15,1.982093);
+ \foreach \x/\y in {1/0.98694,2/1.982093,4/1.982093} {
+   \draw[densely dotted,gray] (\x,0.05) -- (\x,\y);
+   \fill[blue!65!black] (\x,\y) circle[radius=1.8pt];
+ }
+ \node[below,blue!65!black] at (3.08,1.94) {$p_v=1$};
+\end{tikzpicture}
+\caption[Conditional epsilon bound under the participation policy]{Analytical reference curve for the sufficient epsilon bound. Points mark the nominal targets 1, 2, and 4. The curve uses the conservative reference base value 1.982093.}
+\label{fig:target-bound}
+\end{figure}
+
+The curve also clarifies what a policy comparison can hold constant. Uniform1 meets the strict target with full retention and stronger base perturbation. PDP-PrivIM instead reduces participation for the strict group and uses the reference base guarantee for the retained graph, before amplification. Both satisfy the declared caps under the ideal assumptions. Conditional adjacency bounds address output distributions. They do not determine whether extra retained edges or weaker base perturbation is more valuable for the learning objective on a particular graph.
 
 \section{Uniform controls and theoretical limitations}\label{sec:uniform-bounds}
 The uniform controls use the same sensitivity construction with $p_v=1$ for every identity. At 100 projected updates, Uniform1 uses $\sigma_{100}=486$. The grid value is approximately 0.9986929644 at order 17.8, and its rational certificate verifies $\epsilon<0.998694<1$. Uniform4 uses $\sigma_{100}=139$ and order 6.1, with approximate value 3.99699597485 and a strict certificate below 3.997. Both use $\delta=10^{-5}$ for the complete model.

@@ -16,3 +16,10 @@ Table~\ref{tab:coverage} reports PDP-PrivIM mean Coverage above Uniform1 on all 
 Static source and arithmetic checks show a small bounded signal increment relative to full-coordinate Gaussian increment scales. Historical controlled pairs additionally show large Coverage changes when only the Gaussian source is changed while initialization and the retained graph are fixed. Together these facts justify close attention to noise-driven adaptive optimization.
 
 Outer Bernoulli sampling cannot explain all instability because Uniform methods omit it. Deterministic fixed-model evaluation and fixed CELF normalization also do not explain the observed run-to-run variation. Hidden representation changes, surrogate-to-Top-50 mismatch, and selected-neighborhood overlap remain plausible intermediate mechanisms; no single component is established as the dominant root cause.
+
+\section{Limitations and directions for future research}
+The proof assumes a fixed public identity domain and Registry, slot-local computation, ideal randomization, and a single model release. A deployment study could trace which information is public and which outputs are observable, then assess preprocessing, test reporting, and repeated releases separately.
+
+An independent study could preregister the configurations, initialization schedule, and evaluation criterion before running new fits. Reporting all outcomes and the frequency of low-Coverage runs would show whether the observed differences in mean and variability persist.
+
+To investigate instability, a controlled study could vary the Gaussian training path while fixing initialization and the retained graph. Tracking surrogate loss, scores near the Top-50 cutoff, and overlap in seed sets and covered neighborhoods could clarify how training changes translate into Coverage differences.

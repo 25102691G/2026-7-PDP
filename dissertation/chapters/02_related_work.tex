@@ -6,6 +6,53 @@ Efficient seed selection must account for overlap. Two high-degree seeds may rea
 
 The project deliberately uses one-step outgoing IC with transmission probability one. Its spread is the size of the union of the selected seeds and their outgoing neighbors. This is a deterministic coverage objective for a fixed graph and seed set. Multi-hop stochastic cascades raise additional issues not tested by the current evaluation. The distinction is important because a mechanism can behave differently under long-range propagation, repeated diffusion simulation, or edge probabilities below one.
 
+\subsection{From cascade reachability to a coverage function}
+The live-edge representation gives a common description of the general IC objective and its one-step specialization \cite{kempe2003,hou2025}. For every directed edge $(u,v)$, draw an independent Bernoulli variable with success probability $w_{uv}$. Keep the edge when the draw succeeds. A later activation attempt can then use the draw already associated with that edge. With an unrestricted horizon, the final active vertices are precisely those reachable from at least one seed in the resulting graph. With a horizon of $h$ steps, take only paths of length at most $h$. In both cases a path of length zero includes the seed itself.
+
+For a fixed realization $\omega$, write $R_{\omega,h}(v)$ for the vertices reachable from $v$ within the horizon. The spread $F_{\omega,h}$ and the gain from adding $v$ are
+\begin{align}
+ F_{\omega,h}(S)
+ &=\left|\bigcup_{s\in S}R_{\omega,h}(s)\right|,\\
+ F_{\omega,h}(S\cup\{v\})-F_{\omega,h}(S)
+ &=\left|R_{\omega,h}(v)\setminus\bigcup_{s\in S}R_{\omega,h}(s)\right|.
+\end{align}
+Enlarging $S$ can only shrink the set counted in the second line. The gain is nonnegative and decreases weakly as the seed set grows. Both inequalities hold for every realization and therefore also hold after taking expectations. In the thesis evaluation, $h=1$ and every tested edge is live with probability one, so $R_{\omega,1}(v)=\{v\}\cup N^+(v)$ is fixed. This reduces the probability model to the closed outgoing-neighborhood union used in Chapter~\ref{ch:problem}.
+
+Lazy greedy evaluation exploits the same inequality. If the gain of a candidate was last computed for a smaller seed set, that value is an upper bound for its current gain. A candidate with an older upper bound above the best recomputed value may still require a fresh evaluation. Once the best recomputed gain is at least all remaining upper bounds, the next greedy choice is determined up to ties. The acceleration changes how the greedy choice is found. Its output is still a set produced by a sequence of marginal comparisons under the fixed reference protocol \cite{leskovec2007}.
+
+\subsection{Redundancy among high-scoring candidates}
+Consider an illustrative directed graph with vertices $a,b,c,x,y,z,u,w$. The arcs from each of $a$ and $b$ point to $x,y,z$. The arcs from $c$ point to $u,w$. All other vertices have no outgoing edges. For the one-step objective, the singleton spreads of $a,b,c$ are $4,4,3$. Ranking once by singleton spread and taking the first two selects $a,b$, which cover five vertices because their three reachable neighbors coincide. Selecting $a,c$ covers seven. With $\{a\}$ already selected, the marginal gain of $b$ is one, whereas the marginal gain of $c$ is three.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+ x=1cm,y=1cm,
+ vertex/.style={circle,draw,minimum size=7mm,inner sep=0pt},
+ seed/.style={vertex,draw=blue!65!black,fill=blue!10},
+ reached/.style={vertex,fill=black!5},
+ arc/.style={->,>=stealth,semithick,draw=black!65}]
+ \node[seed] (a) at (0,2) {$a$};
+ \node[seed] (b) at (0,0) {$b$};
+ \node[reached] (x) at (2,2) {$x$};
+ \node[reached] (y) at (2,1) {$y$};
+ \node[reached] (z) at (2,0) {$z$};
+ \node[seed] (c) at (4.3,1) {$c$};
+ \node[reached] (u) at (6.3,1.65) {$u$};
+ \node[reached] (w) at (6.3,0.35) {$w$};
+ \foreach \source in {a,b}
+   \foreach \destination in {x,y,z}
+     \draw[arc] (\source) -- (\destination);
+ \draw[arc] (c) -- (u);
+ \draw[arc] (c) -- (w);
+ \node[align=center] at (1,-0.9) {Shared outgoing\\neighbors};
+ \node[align=center] at (5.3,-0.9) {Separate outgoing\\neighbors};
+\end{tikzpicture}
+\caption[Overlapping and complementary seed neighborhoods]{Illustrative graph for one-step spread. Selecting $a$ and $b$ covers five vertices. Selecting $a$ and $c$ covers seven.}
+\label{fig:seed-overlap}
+\end{figure}
+
+Figure~\ref{fig:seed-overlap} shows the information a scoring model needs to act as a useful surrogate for set selection. A scoring map that reads the graph can use information beyond a node's degree. Since the final Top-$k$ rule chooses individual scores in one pass, the model has to encode any preference for complementary candidates in those scores. Greedy CELF can recompute the benefit of each candidate conditional on the seeds chosen so far.
+
 \section{Learning structural influence scores}
 A GNN replaces repeated combinatorial decisions with a learned map from graph structure to scores. Message passing can represent structural interactions, while a differentiable objective can encourage a useful covering set. FastCover introduces an unsupervised framework with a graph reversed attention network, GRAT, and obtains a seed set from learned node scores \cite{ni2021}. This provides architectural context for the released GRAT components inherited by the present project.
 

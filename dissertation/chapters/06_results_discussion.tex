@@ -22,6 +22,18 @@ Figure~\ref{fig:parameter-sensitivity} compares three slices of the saved PDP-Pr
 
 Across the tested subgraph sizes, the range of mean Coverage is 19.44--36.28 percentage points across datasets. The highest tested mean occurs at $n=60$ on LastFM and $n=40$ on Facebook. From 100 to 500 updates with the corresponding noise adjustment, the mean rises from 65.201\% to 90.355\% on Email and falls from 76.144\% to 55.715\% on HepPh. The tested $M$ values produce a 37.62-point mean range on LastFM and a 0.46-point range on Facebook. These ranges describe the observed means at the tested settings. With five fits per point and substantial variation in some cells, the sweep provides exploratory evidence about sensitivity.
 
+\subsection{Interpreting the three parameter slices}
+Subgraph size $n$ changes the training examples seen by GRAT3. Larger subgraphs can include more neighborhood structure and change the terms of the coverage surrogate in Equation~\eqref{eq:loss}. The observed ranges describe how much the saved mean Coverage changes over the tested sizes. They leave open whether the differences arise from the available graph context, the resulting gradients, or their interaction with training noise.
+
+The SCS threshold $M$ controls how frequently a node can enter the subgraph cache within a slot. The large mean range on LastFM and the smaller range on Facebook show why a threshold selected on one graph need not transfer to another. Varying $M$ alters the sampler's output while the conditional update sensitivity bound remains fixed by the two affected slots and the norm bound on each slot sum.
+
+The update-count slice changes the number of optimization steps and the Gaussian scale per step together. At 300 and 500 steps, the multiplier on the reference scale is at least $\sqrt{3}$ and $\sqrt{5}$, respectively. The opposite directions observed on Email and HepPh concern this joint schedule. Identifying the separate effects of training duration and noise scale would require additional controlled comparisons.
+
+\subsection{Computational work and timing evidence}
+The private update consumes up to four cached subgraphs from each of four slots. A schedule of 100, 300, or 500 updates therefore reserves 1,600, 4,800, or 8,000 gradient positions, respectively. Empty positions contribute zero, so the reserved count is an upper bound on the number of evaluated subgraph gradients. The slot caches can be reused, and the cost of each gradient depends on the graph structure of its subgraph. These counts describe algorithmic work.
+
+The saved development artifacts include separate training and final evaluation times. A wall-clock comparison would require matching hardware, the timing boundaries for cache construction and training, and the update schedules. In particular, a ratio between runs with different update counts combines computational cost per update with the chosen training duration. The available chapter evidence supports the workload comparison above. A controlled timing comparison remains open.
+
 \section{Verified update scales and bounded signal}
 The common private kernel first clips each subgraph gradient, then clips each slot sum to norm at most 3. With four slots, the combined signal $S_t$ satisfies $\|S_t\|_2\leq12$. The pre-projection update is
 \begin{equation}
